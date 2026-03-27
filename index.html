@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Italy 2026 — R&H</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --terracotta:#C65D3E;--olive:#6B7B3F;--cream:#F5F0E8;--brown:#3D2B1F;--gold:#D4A959;
+  --milan:#6B7B8A;--como:#4A8BAD;--florence:#8B6B4A;--pisa:#C65D3E;--rome:#D4A959;
+  --card-bg:#FFFFFF;--shadow:0 2px 12px rgba(61,43,31,0.08);
+  --radius:12px;--tab-h:64px;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',sans-serif;background:var(--cream);color:var(--brown);
+  max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;
+  padding-bottom:calc(var(--tab-h) + 20px);overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:600;line-height:1.25}
+h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+/* Header */
+.app-header{
+  padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(61,43,31,0.06);background:var(--cream);
+  position:sticky;top:0;z-index:100;
+}
+.app-header h1{font-size:1.1rem;letter-spacing:0.02em}
+.app-header .subtitle{font-size:0.7rem;color:var(--olive);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;margin-top:2px}
+.header-date{font-size:0.75rem;color:var(--terracotta);font-weight:500;text-align:right}
+.header-date .tz{font-size:0.65rem;color:rgba(61,43,31,0.4);display:block;margin-top:1px}
+
+/* Bottom Tabs */
+.tab-bar{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;height:var(--tab-h);
+  background:var(--card-bg);border-top:1px solid rgba(61,43,31,0.08);
+  display:flex;align-items:center;justify-content:space-around;
+  z-index:200;padding-bottom:env(safe-area-inset-bottom,0);
+}
+.tab-btn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;padding:6px 12px;cursor:pointer;
+  color:rgba(61,43,31,0.35);transition:color 0.2s;min-width:56px;
+  -webkit-tap-highlight-color:transparent;
+}
+.tab-btn svg{width:22px;height:22px;transition:transform 0.15s}
+.tab-btn span{font-size:0.6rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
+.tab-btn.active{color:var(--terracotta)}
+.tab-btn.active svg{transform:scale(1.1)}
+
+/* Panels */
+.panel{display:none;padding:16px 20px 20px;animation:fadeIn 0.2s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* City badge */
+.city-badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 8px;
+  border-radius:20px;font-size:0.65rem;font-weight:600;letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.city-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.city-milan{background:rgba(107,123,138,0.1);color:#6B7B8A}.city-milan::before{background:#6B7B8A}
+.city-como{background:rgba(74,139,173,0.1);color:#4A8BAD}.city-como::before{background:#4A8BAD}
+.city-florence{background:rgba(139,107,74,0.1);color:#8B6B4A}.city-florence::before{background:#8B6B4A}
+.city-pisa{background:rgba(198,93,62,0.1);color:#C65D3E}.city-pisa::before{background:#C65D3E}
+.city-rome{background:rgba(212,169,89,0.12);color:#B8923A}.city-rome::before{background:#D4A959}
+
+/* Day card */
+.day-selector{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.day-selector::-webkit-scrollbar{display:none}
+.day-pill{
+  flex-shrink:0;padding:8px 14px;border-radius:20px;border:1.5px solid rgba(61,43,31,0.1);
+  background:var(--card-bg);cursor:pointer;text-align:center;transition:all 0.2s;
+  -webkit-tap-highlight-color:transparent;min-width:60px;
+}
+.day-pill .dnum{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;line-height:1.2}
+.day-pill .dname{font-size:0.55rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(61,43,31,0.4);margin-top:1px}
+.day-pill.active{border-color:var(--terracotta);background:var(--terracotta);color:#fff}
+.day-pill.active .dname{color:rgba(255,255,255,0.8)}
+.day-pill.today-ring{box-shadow:0 0 0 2px var(--terracotta)}
+
+/* Activity Card */
+.activity-card{
+  background:var(--card-bg);border-radius:var(--radius);padding:14px 16px;
+  margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;
+  transition:box-shadow 0.2s;position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.activity-card:active{box-shadow:0 1px 4px rgba(61,43,31,0.12)}
+.activity-card.now{border-left:3px solid var(--terracotta)}
+.activity-card.past{opacity:0.5}
+.ac-time{font-size:0.7rem;font-weight:600;color:var(--terracotta);letter-spacing:0.02em;margin-bottom:3px}
+.ac-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;line-height:1.3}
+.ac-subtitle{font-size:0.75rem;color:rgba(61,43,31,0.5);margin-top:3px;line-height:1.4}
+.ac-expand{display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(61,43,31,0.06)}
+.activity-card.open .ac-expand{display:block}
+.ac-expand-section{margin-bottom:10px}
+.ac-expand-label{font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--olive);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.ac-expand-label svg{width:12px;height:12px;color:var(--olive)}
+.ac-expand-text{font-size:0.8rem;line-height:1.6;color:rgba(61,43,31,0.7)}
+.ac-tip{
+  background:rgba(198,93,62,0.06);border-radius:8px;padding:8px 10px;
+  font-size:0.75rem;line-height:1.5;color:var(--terracotta);margin-top:8px;
+}
+.ac-food{
+  background:rgba(107,123,63,0.06);border-radius:8px;padding:8px 10px;
+  font-size:0.75rem;line-height:1.5;color:var(--olive);margin-top:6px;
+}
+.ac-chevron{
+  position:absolute;top:14px;right:14px;width:16px;height:16px;
+  color:rgba(61,43,31,0.2);transition:transform 0.2s;
+}
+.activity-card.open .ac-chevron{transform:rotate(180deg)}
+
+/* Day header */
+.day-header{margin-bottom:16px}
+.day-header h2{margin-bottom:4px}
+.day-header .route{font-size:0.8rem;color:rgba(61,43,31,0.5);font-style:italic;font-family:'Playfair Display',serif}
+
+/* Hotel card */
+.hotel-card{
+  background:linear-gradient(135deg,rgba(212,169,89,0.08),rgba(212,169,89,0.02));
+  border:1px solid rgba(212,169,89,0.2);border-radius:var(--radius);padding:12px 14px;
+  margin-bottom:14px;
+}
+.hotel-card .label{font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.hotel-card .name{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600}
+.hotel-card .addr{font-size:0.75rem;color:rgba(61,43,31,0.5);margin-top:2px}
+
+/* Warning card */
+.warn-card{
+  background:rgba(198,93,62,0.06);border:1px solid rgba(198,93,62,0.15);
+  border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;
+  font-size:0.8rem;line-height:1.5;color:var(--terracotta);
+}
+.warn-card strong{font-weight:600}
+
+/* Map panel */
+#map-container{height:calc(100vh - 140px);height:calc(100dvh - 140px);border-radius:var(--radius);overflow:hidden;margin-top:8px}
+.map-day-tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0;scrollbar-width:none}
+.map-day-tabs::-webkit-scrollbar{display:none}
+.map-day-tab{
+  flex-shrink:0;padding:6px 12px;border-radius:16px;border:1px solid rgba(61,43,31,0.1);
+  background:var(--card-bg);font-size:0.7rem;font-weight:600;cursor:pointer;
+  transition:all 0.2s;-webkit-tap-highlight-color:transparent;
+}
+.map-day-tab.active{background:var(--terracotta);color:#fff;border-color:var(--terracotta)}
+
+/* Expense panel */
+.expense-form{
+  background:var(--card-bg);border-radius:var(--radius);padding:16px;
+  box-shadow:var(--shadow);margin-bottom:16px;
+}
+.expense-form label{font-size:0.7rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:rgba(61,43,31,0.5);display:block;margin-bottom:4px;margin-top:10px}
+.expense-form label:first-child{margin-top:0}
+.expense-form input,.expense-form select{
+  width:100%;padding:10px 12px;border:1.5px solid rgba(61,43,31,0.1);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:0.9rem;background:var(--cream);
+  color:var(--brown);outline:none;transition:border-color 0.2s;
+  -webkit-appearance:none;
+}
+.expense-form input:focus,.expense-form select:focus{border-color:var(--terracotta)}
+.expense-row{display:flex;gap:10px}
+.expense-row>div{flex:1}
+.btn-primary{
+  width:100%;padding:12px;border:none;border-radius:8px;
+  background:var(--terracotta);color:#fff;font-family:'Inter',sans-serif;
+  font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:14px;
+  transition:background 0.2s;-webkit-tap-highlight-color:transparent;
+}
+.btn-primary:active{background:#B04E30}
+.btn-secondary{
+  width:100%;padding:10px;border:1.5px solid rgba(61,43,31,0.12);border-radius:8px;
+  background:transparent;color:var(--brown);font-family:'Inter',sans-serif;
+  font-size:0.8rem;font-weight:500;cursor:pointer;margin-top:8px;
+  transition:all 0.2s;-webkit-tap-highlight-color:transparent;
+}
+.btn-secondary:active{background:rgba(61,43,31,0.04)}
+.camera-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px;border:1.5px dashed rgba(61,43,31,0.15);border-radius:8px;
+  background:transparent;width:100%;cursor:pointer;color:rgba(61,43,31,0.4);
+  font-size:0.8rem;font-weight:500;margin-top:10px;transition:all 0.2s;
+  font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;
+}
+.camera-btn svg{width:18px;height:18px}
+.camera-btn:active{background:rgba(61,43,31,0.03)}
+.camera-btn.has-photo{border-color:var(--olive);color:var(--olive);border-style:solid}
+
+/* Expense list */
+.expense-summary{
+  display:flex;gap:12px;margin-bottom:16px;
+}
+.expense-stat{
+  flex:1;background:var(--card-bg);border-radius:var(--radius);padding:14px;
+  box-shadow:var(--shadow);text-align:center;
+}
+.expense-stat .val{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--terracotta)}
+.expense-stat .lbl{font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(61,43,31,0.4);margin-top:2px}
+.expense-item{
+  background:var(--card-bg);border-radius:10px;padding:12px 14px;
+  margin-bottom:6px;box-shadow:0 1px 4px rgba(61,43,31,0.05);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.expense-item .ei-left{flex:1}
+.expense-item .ei-cat{font-size:0.6rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--olive)}
+.expense-item .ei-note{font-size:0.8rem;margin-top:2px}
+.expense-item .ei-amount{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--terracotta)}
+.expense-item .ei-hkd{font-size:0.65rem;color:rgba(61,43,31,0.4);text-align:right}
+.expense-day-label{font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(61,43,31,0.3);margin:14px 0 6px;padding-top:8px;border-top:1px solid rgba(61,43,31,0.06)}
+.expense-day-label:first-child{margin-top:0;padding-top:0;border-top:none}
+.expense-delete{
+  background:none;border:none;color:rgba(61,43,31,0.2);cursor:pointer;
+  padding:4px 0 4px 10px;font-size:1.1rem;-webkit-tap-highlight-color:transparent;
+}
+
+/* More panel */
+.more-section{margin-bottom:20px}
+.more-section h2{font-size:1.1rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.more-section h2 svg{width:20px;height:20px;color:var(--terracotta)}
+
+/* Converter */
+.converter-box{
+  background:var(--card-bg);border-radius:var(--radius);padding:16px;
+  box-shadow:var(--shadow);
+}
+.converter-input-group{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.converter-input-group .curr{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;width:44px;flex-shrink:0}
+.converter-input-group input{
+  flex:1;padding:10px 12px;border:1.5px solid rgba(61,43,31,0.1);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:1rem;background:var(--cream);
+  color:var(--brown);outline:none;text-align:right;
+}
+.converter-input-group input:focus{border-color:var(--terracotta)}
+.converter-swap{
+  display:flex;align-items:center;justify-content:center;margin:6px 0;
+  color:rgba(61,43,31,0.2);
+}
+.converter-swap svg{width:20px;height:20px}
+.quick-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.quick-btn{
+  padding:6px 12px;border-radius:16px;border:1px solid rgba(61,43,31,0.1);
+  background:var(--card-bg);font-size:0.75rem;font-weight:500;cursor:pointer;
+  transition:all 0.15s;-webkit-tap-highlight-color:transparent;
+  font-family:'Inter',sans-serif;
+}
+.quick-btn:active{background:var(--terracotta);color:#fff;border-color:var(--terracotta)}
+.converter-rate{
+  margin-top:10px;padding-top:10px;border-top:1px solid rgba(61,43,31,0.06);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.converter-rate label{font-size:0.7rem;color:rgba(61,43,31,0.4);font-weight:500}
+.converter-rate input{
+  width:70px;padding:6px 8px;border:1px solid rgba(61,43,31,0.1);border-radius:6px;
+  font-family:'Inter',sans-serif;font-size:0.8rem;text-align:center;
+  background:var(--cream);outline:none;
+}
+
+/* Phrasebook */
+.phrase-group{margin-bottom:14px}
+.phrase-group-title{
+  font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--olive);margin-bottom:8px;padding-bottom:4px;
+  border-bottom:1px solid rgba(107,123,63,0.15);
+}
+.phrase-item{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:7px 0;border-bottom:1px solid rgba(61,43,31,0.04);
+}
+.phrase-it{font-weight:600;font-size:0.85rem}
+.phrase-pro{font-size:0.7rem;color:rgba(61,43,31,0.35);font-style:italic;margin-left:6px}
+.phrase-zh{font-size:0.8rem;color:rgba(61,43,31,0.5);flex-shrink:0;margin-left:8px}
+
+/* Checklist */
+.checklist-group{margin-bottom:14px}
+.checklist-group-title{
+  font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--terracotta);margin-bottom:6px;
+}
+.check-item{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid rgba(61,43,31,0.04);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.check-box{
+  width:20px;height:20px;border-radius:5px;border:1.5px solid rgba(61,43,31,0.2);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.check-item.done .check-box{background:var(--olive);border-color:var(--olive)}
+.check-item.done .check-box svg{display:block}
+.check-box svg{display:none;width:12px;height:12px;color:#fff}
+.check-item.done .check-label{text-decoration:line-through;opacity:0.4}
+.check-label{font-size:0.85rem}
+.checklist-progress{font-size:0.75rem;color:rgba(61,43,31,0.4);margin-bottom:12px}
+
+/* Emergency */
+.emergency-card{
+  background:var(--card-bg);border-radius:var(--radius);padding:14px 16px;
+  box-shadow:var(--shadow);margin-bottom:8px;
+}
+.emergency-card .em-label{font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(61,43,31,0.3);margin-bottom:6px}
+.emergency-card a{
+  display:flex;align-items:center;gap:8px;padding:6px 0;
+  color:var(--terracotta);text-decoration:none;font-weight:600;font-size:0.9rem;
+}
+.emergency-card a svg{width:16px;height:16px;flex-shrink:0}
+.emergency-card .em-note{font-size:0.75rem;color:rgba(61,43,31,0.5);margin-top:4px;line-height:1.4}
+
+/* Leaflet overrides */
+.leaflet-popup-content-wrapper{border-radius:10px;font-family:'Inter',sans-serif;font-size:0.8rem;box-shadow:0 4px 16px rgba(61,43,31,0.15)}
+.leaflet-popup-content{margin:10px 14px;line-height:1.5}
+.leaflet-popup-content b{font-family:'Playfair Display',serif;font-weight:600}
+.map-legend{
+  background:var(--card-bg);border-radius:8px;padding:8px 10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.12);font-size:0.65rem;line-height:1.8;
+}
+.map-legend-item{display:flex;align-items:center;gap:5px}
+.map-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Today panel specifics */
+.today-hero{
+  text-align:center;padding:20px 0 16px;
+}
+.today-hero .day-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;line-height:1;color:var(--terracotta)}
+.today-hero .day-name{font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(61,43,31,0.4);margin-top:4px}
+.today-hero .day-route{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:rgba(61,43,31,0.6);margin-top:6px}
+.now-label{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--terracotta);color:#fff;font-size:0.6rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:10px;
+  margin-bottom:8px;
+}
+.now-label::before{content:'';width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.next-up-label{
+  font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--olive);margin-bottom:8px;
+}
+
+/* No trip overlay */
+.no-trip-msg{text-align:center;padding:40px 20px;color:rgba(61,43,31,0.4)}
+.no-trip-msg h2{color:var(--brown);margin-bottom:8px}
+.no-trip-msg p{font-size:0.85rem;line-height:1.5}
+.countdown{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--terracotta);margin:16px 0 8px}
+
+/* V2: Address + Navigate */
+.ac-addr{font-size:0.72rem;color:rgba(61,43,31,0.45);margin-top:2px}
+.ac-nav{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:10px;background:var(--terracotta);color:#fff;font-size:0.6rem;font-weight:600;text-decoration:none;margin-left:6px;vertical-align:middle;letter-spacing:0.02em}
+.ac-nav svg{width:10px;height:10px}
+.ac-nav:active{background:#B04E30}
+
+/* V2: Open/Closed badge */
+.ac-status{display:inline-flex;align-items:center;gap:3px;font-size:0.6rem;font-weight:700;letter-spacing:0.04em;padding:2px 7px;border-radius:8px;margin-left:6px;vertical-align:middle}
+.ac-status.open-now{background:rgba(107,123,63,0.12);color:var(--olive)}
+.ac-status.closed-now{background:rgba(198,93,62,0.1);color:var(--terracotta)}
+
+/* V2: Practical info grid */
+.ac-prac{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:0.75rem;margin-top:8px;padding:10px 12px;background:rgba(61,43,31,0.02);border-radius:8px;border:1px solid rgba(61,43,31,0.04)}
+.ac-prac-label{font-weight:600;color:rgba(61,43,31,0.45);white-space:nowrap}
+.ac-prac-val{color:var(--brown);line-height:1.5}
+
+/* V2: Food mini-cards */
+.ac-food-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ac-food-item{background:rgba(107,123,63,0.05);border-radius:8px;padding:8px 10px}
+.ac-food-name{font-weight:600;font-size:0.8rem;color:var(--olive);display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.ac-food-addr{font-size:0.68rem;color:rgba(61,43,31,0.4);margin-top:1px}
+.ac-food-desc{font-size:0.75rem;color:rgba(61,43,31,0.6);margin-top:2px;line-height:1.45}
+
+/* V2: Getting Here */
+.ac-here{font-size:0.75rem;color:rgba(61,43,31,0.6);margin-top:8px;padding:8px 10px;background:rgba(74,139,173,0.06);border-radius:8px;line-height:1.5}
+.ac-here-label{font-weight:700;color:#4A8BAD;margin-bottom:2px;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase}
+
+/* V2: Next stop */
+.ac-next{font-size:0.72rem;color:rgba(61,43,31,0.45);margin-top:10px;padding-top:10px;border-top:1px dashed rgba(61,43,31,0.08);display:flex;align-items:center;gap:4px}
+.ac-next svg{width:12px;height:12px;color:var(--terracotta);flex-shrink:0}
+
+/* V2: Culture card */
+.culture-card{background:linear-gradient(135deg,rgba(198,93,62,0.06),rgba(198,93,62,0.02));border:1px solid rgba(198,93,62,0.12);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.culture-card h3{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600;margin-bottom:8px;color:var(--terracotta)}
+.culture-card ul{list-style:none;padding:0}
+.culture-card li{font-size:0.78rem;line-height:1.55;color:rgba(61,43,31,0.7);margin-bottom:6px;padding-left:14px;position:relative}
+.culture-card li::before{content:'\2022';position:absolute;left:0;color:var(--terracotta)}
+
+/* V2: Booking card */
+.booking-card{background:var(--card-bg);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.booking-card .bk-left{flex:1;min-width:0}
+.booking-card .bk-title{font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:600}
+.booking-card .bk-detail{font-size:0.72rem;color:rgba(61,43,31,0.5);margin-top:2px}
+.booking-card .bk-ref{font-family:'SF Mono','Menlo',monospace;font-size:0.72rem;color:var(--terracotta);font-weight:700;cursor:pointer;text-align:right;flex-shrink:0;padding:4px 8px;background:rgba(198,93,62,0.06);border-radius:6px}
+
+/* V2: Amenity list */
+.amenity-list{font-size:0.78rem;line-height:1.8;color:rgba(61,43,31,0.6);padding:4px 0}
+.amenity-list strong{color:var(--brown);font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+  <div>
+    <h1>Italy 2026</h1>
+    <div class="subtitle">Ronald & Hazel</div>
+  </div>
+  <div class="header-date" id="headerDate"></div>
+</header>
+
+<!-- Panels -->
+<main>
+  <!-- TODAY -->
+  <div class="panel" id="panelToday"></div>
+
+  <!-- DAYS -->
+  <div class="panel" id="panelDays">
+    <div class="day-selector" id="daySelector"></div>
+    <div id="dayContent"></div>
+  </div>
+
+  <!-- MAP -->
+  <div class="panel" id="panelMap">
+    <div class="map-day-tabs" id="mapDayTabs"></div>
+    <div id="map-container"></div>
+  </div>
+
+  <!-- EXPENSES -->
+  <div class="panel" id="panelExpenses">
+    <h2 style="margin-bottom:14px">Expenses</h2>
+    <div class="expense-summary" id="expenseSummary"></div>
+    <div class="expense-form">
+      <label>Amount (EUR)</label>
+      <input type="number" id="expAmount" placeholder="0.00" step="0.01" inputmode="decimal">
+      <div class="expense-row">
+        <div>
+          <label>Category</label>
+          <select id="expCategory">
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Tickets">Tickets</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label>Day</label>
+          <select id="expDay"></select>
+        </div>
+      </div>
+      <label>Note</label>
+      <input type="text" id="expNote" placeholder="What was it for?">
+      <button class="camera-btn" id="cameraBtn" onclick="document.getElementById('cameraInput').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span id="cameraBtnText">Add photo</span>
+      </button>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+      <button class="btn-primary" onclick="addExpense()">Add Expense</button>
+    </div>
+    <div id="expenseList"></div>
+    <button class="btn-secondary" onclick="exportCSV()" id="exportBtn" style="display:none">Export CSV</button>
+  </div>
+
+  <!-- MORE -->
+  <div class="panel" id="panelMore">
+    <!-- Bookings -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Bookings
+      </h2>
+      <div id="bookingsList"></div>
+    </div>
+
+    <!-- Culture Tips -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Culture Tips
+      </h2>
+      <div id="cultureTips"></div>
+    </div>
+
+    <!-- Converter -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+        EUR / HKD
+      </h2>
+      <div class="converter-box">
+        <div class="converter-input-group">
+          <span class="curr">EUR</span>
+          <input type="number" id="convEur" placeholder="0" inputmode="decimal" oninput="convertEur()">
+        </div>
+        <div class="converter-swap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 16 3 12 7 8"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+        </div>
+        <div class="converter-input-group">
+          <span class="curr">HKD</span>
+          <input type="number" id="convHkd" placeholder="0" inputmode="decimal" oninput="convertHkd()">
+        </div>
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="quickConvert(5)">5</button>
+          <button class="quick-btn" onclick="quickConvert(10)">10</button>
+          <button class="quick-btn" onclick="quickConvert(20)">20</button>
+          <button class="quick-btn" onclick="quickConvert(50)">50</button>
+          <button class="quick-btn" onclick="quickConvert(100)">100</button>
+        </div>
+        <div class="converter-rate">
+          <label>1 EUR =</label>
+          <input type="number" id="convRate" value="8.5" step="0.01" inputmode="decimal" onchange="saveRate()">
+          <label>HKD</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phrasebook -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Italian Phrasebook
+      </h2>
+      <div id="phrasebook"></div>
+    </div>
+
+    <!-- Packing -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-4V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M10 4h4v3h-4z"/></svg>
+        Packing Checklist
+      </h2>
+      <div class="checklist-progress" id="checkProgress"></div>
+      <div id="checklist"></div>
+    </div>
+
+    <!-- Nearby Amenities -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Nearby Amenities
+      </h2>
+      <div id="amenitiesList"></div>
+    </div>
+
+    <!-- Emergency -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        Emergency
+      </h2>
+      <div id="emergencyInfo"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Tab Bar -->
+<nav class="tab-bar">
+  <button class="tab-btn active" data-tab="panelToday" onclick="switchTab('panelToday',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>Today</span>
+  </button>
+  <button class="tab-btn" data-tab="panelDays" onclick="switchTab('panelDays',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Days</span>
+  </button>
+  <button class="tab-btn" data-tab="panelMap" onclick="switchTab('panelMap',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+    <span>Map</span>
+  </button>
+  <button class="tab-btn" data-tab="panelExpenses" onclick="switchTab('panelExpenses',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    <span>Expenses</span>
+  </button>
+  <button class="tab-btn" data-tab="panelMore" onclick="switchTab('panelMore',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    <span>More</span>
+  </button>
+</nav>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const TRIP_START = '2026-03-29';
+const TRIP_END = '2026-04-04';
+const TZ = 'Europe/Rome';
+const DEFAULT_RATE = 8.5;
+
+const HOTELS = {
+  milan: { name: 'Palazzo Touring Club Milan', addr: 'Corso Italia 10, Milan', lat: 45.459850, lng: 9.189200 },
+  florence: { name: 'C-Hotels Ambasciatori', addr: 'Via Luigi Alamanni 3, Florence', note: 'Breakfast included', lat: 43.775500, lng: 11.254800 },
+  rome: { name: 'UNA Hotels Deco Roma', addr: 'Via Giovanni Amendola 57, Rome', note: '2 min from Termini', lat: 41.901400, lng: 12.499200 }
+};
+
+const DAYS = [
+  {
+    date: '2026-03-29', day: 'Sun', label: 'Day 1', route: 'London \u2192 Milan', city: 'milan',
+    hotel: 'milan',
+    activities: [
+      { time: '03:45', end: '04:00', title: 'Wake up', subtitle: 'Early start for airport transfer' },
+      { time: '04:00', end: '05:00', title: 'Pickup to airport', subtitle: 'Car service to Heathrow' },
+      { time: '05:00', end: '06:50', title: 'Arrive LHR', subtitle: 'Check-in & security' },
+      { time: '06:50', end: '09:50', title: 'Flight LHR \u2192 LIN', subtitle: 'Arrive Milan Linate 09:50',
+        lat: 45.486504, lng: 9.204274,
+        here: 'Uber/cab from home \u2192 Heathrow T2. Allow 90 min for check-in and security.',
+        next: 'Linate Airport Bus to Milano Centrale (\u20ac5, 25 min, every 20 min) or taxi ~\u20ac25' },
+      { time: '10:00', end: '11:00', title: 'Airport \u2192 Hotel', subtitle: 'Linate to city center',
+        here: 'From Linate arrivals: exit and find Airport Bus stop (\u20ac5, every 20 min, 25 min to Milano Centrale). Or taxi ~\u20ac25.',
+        next: 'From Centrale: Metro M3 (yellow) \u2192 Missori station (2 stops, \u20ac2.20). Hotel is 3 min walk from Missori exit.' },
+      { time: '11:00', end: '11:30', title: 'Hotel check-in', subtitle: 'Palazzo Touring Club Milan',
+        addr: 'Corso Italia 10, 20122 Milano',
+        lat: 45.459850, lng: 9.189200,
+        next: 'Brunch spots within 5\u201315 min walk. Princi closest.' },
+      { time: '11:30', end: '13:00', title: 'Brunch near hotel', subtitle: 'Refuel after the early flight',
+        lat: 45.460500, lng: 9.189800,
+        food: [
+          { n: 'Princi', a: 'Via Speronari 6', d: 'Milanese bakery institution. Fresh focaccia, pizza al taglio, pastries. \u20ac5\u201312. Quick & casual.' },
+          { n: 'Pav\u00e9', a: 'Via Felice Casati 27', d: 'Artisan bakery with excellent brunch. Try their pastries & eggs. \u20ac10\u201318. 15 min walk.' }
+        ],
+        here: 'Walk from hotel. Princi is 5 min walk north via Via Speronari.',
+        next: 'Walk north to Duomo \u2014 15 min via Via Torino, or Metro M3 Missori \u2192 Duomo (1 stop)' },
+      { time: '13:00', end: '15:00', title: 'Duomo di Milano', subtitle: 'Rooftop booked 13:30',
+        addr: 'Piazza del Duomo, 20122 Milano',
+        lat: 45.464194, lng: 9.191926,
+        guide: "Milan\u2019s Gothic cathedral is the largest in Italy and took nearly 6 centuries to complete (1386\u20131965). The rooftop is the real highlight \u2014 walk among 135 marble spires and 3,400 statues with 360\u00b0 views across Milan to the Alps on clear days. Inside, 52 massive pillars line the nave, and a nail said to be from Christ\u2019s crucifixion hangs above the altar. The underground Battistero di San Giovanni beneath the cathedral reveals 4th-century ruins.",
+        prac: { hrs: '9:00\u201319:00', adm: 'Cathedral \u20ac5 / Rooftop stairs \u20ac10 / Combo \u20ac14 / Elevator \u20ac25', book: 'Rooftop pre-booked for 13:30', dress: 'Cover shoulders & knees (enforced at entrance)' },
+        tips: { photo: 'Rooftop terraces \u2014 west side for piazza views, east side for Alps on clear days', crowd: 'Before 10:00 or after 16:00 for shorter queues', insider: 'Take the stairs (251 steps), not elevator \u2014 cheaper and you walk among the spires. The underground Battistero (\u20ac8) is worth 15 min.', planB: 'If rooftop queue is long, explore the underground archaeological area (\u20ac8) or Museo del Duomo across the square.' },
+        food: [
+          { n: 'Panzerotti Luini', a: 'Via S. Radegonda 16', d: 'Fried panzerotti institution since 1888. Get tomato & mozzarella. \u20ac3\u20135. Cash only. 2 min from Duomo.' },
+          { n: 'Al Cantinone', a: 'Via Agnello 19', d: 'Classic Lombard cuisine \u2014 risotto alla Milanese, cotoletta, ossobuco. \u20ac15\u201325.' }
+        ],
+        here: '15 min walk north from hotel via Via Torino. Or Metro M3 Missori \u2192 Duomo (1 stop, \u20ac2.20).',
+        next: 'Starbucks Reserve + Galleria \u2192 2 min walk across the piazza' },
+      { time: '15:00', end: '16:30', title: 'Starbucks Reserve + Galleria + Marchesi', subtitle: 'Shopping & coffee',
+        addr: 'Via Cordusio 1, 20123 Milano',
+        lat: 45.463520, lng: 9.189980,
+        guide: "Europe\u2019s only Starbucks Reserve Roastery occupies a stunning former post office (Palazzo delle Poste, 1901). The Galleria Vittorio Emanuele II next door is Italy\u2019s oldest shopping mall (1877), nicknamed \u2018Milan\u2019s living room\u2019 \u2014 a cruciform glass-vaulted arcade with Prada, Gucci, and Louis Vuitton. Look for the bull mosaic on the floor and spin your heel on its testicles for good luck. Marchesi 1824, now Prada-owned, does exquisite pastries upstairs.",
+        prac: { hrs: 'Starbucks 7:00\u201322:00 / Galleria shops 10:00\u201319:30 / Marchesi 7:30\u201320:30' },
+        tips: { photo: 'Galleria center under the glass dome \u2014 look up for the best shot', insider: 'Marchesi 1824 (2nd floor) has a sit-down caf\u00e9 with exquisite pastries & panettone. Less crowded than ground floor.', planB: 'If Galleria is packed, walk to nearby Piazza dei Mercanti \u2014 medieval square, usually quiet.' },
+        here: '2 min walk from Duomo \u2014 exit piazza northwest.',
+        next: 'Walk to Last Supper \u2192 24 min walk west or Tram 16 from Duomo (15 min)' },
+      { time: '16:30', end: '17:00', title: 'Walk to Last Supper', subtitle: '24 min walk or Tram 16 (15 min)',
+        here: 'Walk west from Galleria via Via Meravigli \u2192 Via Magenta \u2192 Santa Maria delle Grazie. Route passes Castello Sforzesco (worth a quick photo stop). Or Tram 16 from Piazza del Duomo.',
+        next: 'Arrive at Santa Maria delle Grazie by 16:45 \u2014 15 min before your slot' },
+      { time: '17:00', end: '19:00', title: 'The Last Supper', subtitle: 'Santa Maria delle Grazie (booked via trip.com)',
+        addr: 'Piazza di Santa Maria delle Grazie 2, 20123 Milano',
+        lat: 45.465962, lng: 9.170981,
+        guide: "Leonardo da Vinci\u2019s masterpiece (1495\u20131498) fills the refectory wall of Santa Maria delle Grazie. Only 25 visitors enter every 15 minutes, making this one of the most exclusive art viewings in the world. Painted directly on the wall using experimental tempera/oil technique that began deteriorating within decades. Its survival through WWII bombing \u2014 the wall remained standing while the roof collapsed \u2014 is miraculous. Spend the first minute just looking: the perspective illusion makes the painted room extend the real room.",
+        prac: { hrs: 'Tue\u2013Sun 8:15\u201319:00 (closed Mon)', adm: '\u20ac15 + \u20ac2 booking fee', book: 'Pre-booked via trip.com', dress: 'No flash photography. Bags allowed.' },
+        tips: { photo: 'No flash! Phone photos OK. Best shot from the center of the room, standing back.', crowd: 'Your slot is fixed \u2014 arrive 15 min early to clear security.', insider: 'Notice how Judas is the only figure leaning backward. The geometric perspective converges on Christ\u2019s right temple.', planB: 'The church itself (free) has beautiful frescoes by Bramante. Vigna di Leonardo (Leonardo\u2019s vineyard) is across the street (\u20ac10).' },
+        here: '24 min walk from Galleria, passing Castello Sforzesco. Or Tram 16 (15 min).',
+        next: 'Brera district \u2192 20 min walk north via Via Brera, or taxi \u20ac8\u201310' },
+      { time: '19:00', end: '22:00', title: 'Brera district', subtitle: 'Dinner & aperitivo',
+        addr: 'Via Fiori Chiari, 20121 Milano',
+        lat: 45.472091, lng: 9.187815,
+        guide: "Milan\u2019s bohemian-artistic quarter, centered around the Pinacoteca di Brera and Accademia di Belle Arti. Via Fiori Chiari is the main artery \u2014 cobblestoned, lined with art galleries, vintage shops, and cozy wine bars. After dark it becomes aperitivo central: \u20ac8\u201312 gets you a cocktail plus generous buffet spread. The perfect end to Day 1.",
+        prac: { hrs: 'Restaurants 12:00\u201314:30, 19:00\u201323:00 / Aperitivo bars from 18:00' },
+        tips: { photo: 'Via Fiori Chiari at dusk \u2014 fairy lights + ivy on old buildings', insider: 'Aperitivo (18:00\u201321:00) includes free buffet with your drink \u2014 can replace dinner if you\u2019re not too hungry after a long travel day.', planB: 'If Brera is too crowded, try nearby Corso Como for a more modern vibe.' },
+        food: [
+          { n: 'Osteria di Brera', a: 'Via Fiori Chiari 8', d: 'Cozy trattoria in the heart of Brera. Risotto alla Milanese, ossobuco, excellent wine list. \u20ac20\u201335.' },
+          { n: "N\u2019Ombra de Vin", a: 'Via S. Marco 2', d: 'Historic wine bar in a former monastery. Perfect for aperitivo + cheese/salumi boards. \u20ac8\u201315.' }
+        ],
+        here: '20 min walk north from Santa Maria delle Grazie via Via Brera. Or taxi \u20ac8\u201310.',
+        next: 'Hotel \u2192 Metro M2 Lanza \u2192 M3 Missori (10 min), or 20 min walk south via Via Monte Napoleone' }
+    ]
+  },
+  {
+    date: '2026-03-30', day: 'Mon', label: 'Day 2', route: 'Milan \u2192 Como \u2192 Milan', city: 'como',
+    hotel: 'milan',
+    activities: [
+      { time: '09:00', end: '10:00', title: 'Hotel breakfast', subtitle: 'At hotel or nearby caf\u00e9',
+        next: 'Metro M3 Missori \u2192 Centrale FS (4 stops, 10 min, \u20ac2.20)' },
+      { time: '10:00', end: '10:20', title: 'Milano Centrale station', subtitle: 'Head to platform',
+        addr: 'Piazza Duca d\u2019Aosta 1, 20124 Milano',
+        lat: 45.486504, lng: 9.204274,
+        guide: "Milan\u2019s monumental train station (1931) is worth a look itself \u2014 Mussolini-era grandeur with soaring marble halls. Check departure boards for your platform (usually displayed 20 min before departure). Trenitalia regional trains to Varenna depart roughly every hour.",
+        prac: { hrs: 'Station open 4:00\u201301:00' },
+        here: 'Metro M3 (yellow) from Missori \u2192 Centrale FS (4 stops, 10 min, \u20ac2.20). Or taxi ~\u20ac12.',
+        next: 'Find your platform on the departures board. Regional trains usually platform 1\u20135.' },
+      { time: '10:20', end: '11:24', title: 'Train to Varenna-Esino', subtitle: 'Exchangeable ticket, runs every 60 min',
+        guide: "1 hour of stunning scenery \u2014 the train follows the shore of Lake Como for the final 20 min. Sit on the LEFT side (facing direction of travel) for the best lake views. Varenna-Esino is a small station; don\u2019t miss the stop.",
+        tips: 'Sit on the LEFT side for lake views. The stop is called \u201cVarenna-Esino\u201d \u2014 watch for it as it\u2019s a small station. Ticket is exchangeable if you miss this one.',
+        here: 'Departs Milano Centrale, platform shown on departure board ~20 min before.',
+        next: 'Exit Varenna station \u2192 turn right \u2192 5 min downhill walk to the waterfront & ferry dock' },
+      { time: '12:05', end: '12:20', title: 'Ferry Varenna \u2192 Bellagio', subtitle: '15 min, return ticket bought',
+        lat: 46.010130, lng: 9.284990,
+        guide: "The ferry crosses the lake with spectacular mountain-and-village views. Ferries run roughly every 30\u201360 min. The dock is a 5 min walk downhill from Varenna station.",
+        tips: 'Stand on the open deck for photos. Return tickets are valid on any sailing back.',
+        here: 'From Varenna station: turn right, walk 5 min downhill to the waterfront ferry dock.',
+        next: 'Disembark at Bellagio \u2192 harbor and town center are right at the dock' },
+      { time: '12:30', end: '14:30', title: 'Bellagio', subtitle: 'Lunch + harbor walk + gelato',
+        addr: 'Bellagio, Lake Como',
+        lat: 45.986220, lng: 9.261740,
+        guide: "Known as \u2018The Pearl of Lake Como.\u2019 George Clooney\u2019s Villa Oleandra is nearby (visible from the waterfront). Cobblestone stepped streets (salite) climb from the harbor through boutique-lined alleys. The promontory where the two branches of Lake Como meet offers one of Italy\u2019s most iconic panoramic views. Visit the gardens of Villa Melzi (\u20ac8) for lakeside strolling if time permits.",
+        prac: { hrs: 'Shops 10:00\u201319:00 / Villa Melzi 9:30\u201318:30 (\u20ac8)', adm: 'Town is free. Villa Melzi \u20ac8 (optional).' },
+        tips: { photo: 'The promontory tip (Punta Spartivento) \u2014 where the lake splits into two branches. Also the stepped streets (salite) with lake peeping through.', crowd: 'Lunch before 13:00 or after 14:00 to avoid peak', insider: 'Skip the touristy waterfront restaurants. Walk 2 min uphill for better food at half the price.', planB: 'If it rains, the covered market arcade and boutique shops along Via Garibaldi stay dry.' },
+        food: [
+          { n: 'Enoteca Cava Turacciolo', a: 'Via Garibaldi 6, Bellagio', d: 'Wine bar with local cheese & salumi boards. Excellent lake-view terrace. \u20ac10\u201320.' },
+          { n: 'Gelateria del Borgo', a: 'Via Garibaldi 46, Bellagio', d: 'Artisan gelato. Try the nocciola (hazelnut) or limone. \u20ac3\u20134.' }
+        ],
+        here: 'Ferry dock is right at the harbor. Town starts immediately.',
+        next: 'Return ferry to Varenna \u2192 ferries run every 30\u201360 min. Check schedule at dock.' },
+      { time: '14:45', end: '15:15', title: 'Ferry Bellagio \u2192 Varenna', subtitle: 'Return ferry, ~15 min',
+        here: 'Walk back to Bellagio ferry dock. Check return schedule posted at the dock.',
+        next: 'Disembark at Varenna \u2192 explore Varenna waterfront before your train' },
+      { time: '15:15', end: '16:30', title: 'Varenna', subtitle: 'Lovers\u2019 Walk + waterfront',
+        addr: 'Varenna, Lake Como',
+        lat: 46.010130, lng: 9.284990,
+        guide: "Varenna is Como\u2019s quieter, more authentic gem. The Passeggiata degli Innamorati (Lovers\u2019 Walk) is a romantic lakeside path carved into the cliff edge, barely wide enough for two people side by side. Pastel-colored houses cascade down to the waterfront, and Villa Monastero\u2019s gardens (\u20ac10) stretch along the lake with exotic plants and stunning views. Less touristy than Bellagio, more intimate.",
+        prac: { hrs: 'Lovers\u2019 Walk: always open (free) / Villa Monastero 9:30\u201319:00 (\u20ac10)' },
+        tips: { photo: 'Lovers\u2019 Walk at the narrowest cliff section. Also the view from Villa Monastero\u2019s garden terrace.', insider: 'The Lovers\u2019 Walk connects the ferry dock to the old town \u2014 walk the full length (10 min).', planB: 'If the walk is closed for weather, explore the old town streets and have a lakeside coffee instead.' },
+        food: [
+          { n: 'Bar Il Molo', a: 'Via per Esino 4, Varenna', d: 'Lake-view aperitivo spot right by the dock. Spritz + views. \u20ac5\u201315.' },
+          { n: 'Il Cavatappi', a: 'Via XX Settembre 10, Varenna', d: 'Fresh pasta & lake fish (try the lavarello). \u20ac25\u201340. Book ahead if dinner.' }
+        ],
+        here: 'From ferry dock, Lovers\u2019 Walk starts immediately along the waterfront.',
+        next: 'Walk 5 min uphill to Varenna-Esino station for return train to Milan' },
+      { time: '17:35', end: '18:40', title: 'Train Varenna \u2192 Milan', subtitle: 'Exchangeable ticket',
+        here: 'Varenna-Esino station is a 5 min uphill walk from the waterfront. Trains back roughly hourly.',
+        next: 'Arrive Milano Centrale \u2192 Metro M2 (green) Centrale FS \u2192 Porta Genova (Navigli district), or taxi ~\u20ac15' },
+      { time: '19:00', end: '21:00', title: 'Navigli aperitivo', subtitle: 'Canal-side dinner & drinks',
+        addr: 'Naviglio Grande, 20143 Milano',
+        lat: 45.451655, lng: 9.178068,
+        guide: "Milan\u2019s canal district \u2014 the Naviglio Grande was part of a canal system partly designed by Leonardo da Vinci in the 15th century. At sunset, bars line up tables along the water for aperitivo: order a drink (\u20ac8\u201312) and help yourself to a generous buffet of pasta, salads, focaccia, and more. The canal reflects the colourful buildings beautifully at golden hour. On the last Sunday of each month, there\u2019s a huge antique market along the canal.",
+        prac: { hrs: 'Aperitivo 18:00\u201321:00 / Restaurants until 23:00' },
+        tips: { photo: 'Sunset on Naviglio Grande from the bridges \u2014 golden hour reflections on the canal', crowd: 'Arrive by 19:00 for an outdoor table along the canal', insider: 'The side streets (vicoli) off the main canal have less touristy, more authentic restaurants.', planB: 'If weather is bad, the covered courtyard at El Brellin or indoor tables at Trattoria Madonnina.' },
+        food: [
+          { n: 'El Brellin', a: 'Vicolo dei Lavandai 1', d: 'Historic setting on the old washhouse canal. Ossobuco, risotto alla Milanese. \u20ac20\u201335.' },
+          { n: 'Trattoria Madonnina', a: 'Via Gentilino 6', d: 'Authentic Milanese trattoria. Cotoletta, mondeghili (meatballs). \u20ac12\u201320. Cash preferred.' }
+        ],
+        here: 'From Centrale: Metro M2 (green) \u2192 Porta Genova (15 min, \u20ac2.20). Canal is 3 min walk from station. Or taxi ~\u20ac15.',
+        next: 'Hotel \u2192 Metro M2 Porta Genova \u2192 change at Cadorna \u2192 M1 Duomo \u2192 walk 10 min. Or taxi ~\u20ac12.' }
+    ]
+  },
+  {
+    date: '2026-03-31', day: 'Tue', label: 'Day 3', route: 'Milan \u2192 Florence', city: 'florence',
+    hotel: 'florence',
+    activities: [
+      { time: '09:00', end: '09:30', title: 'Hotel breakfast', subtitle: 'Last Milan morning',
+        next: 'Check out \u2192 Metro M3 Missori \u2192 Centrale FS (4 stops, 10 min)' },
+      { time: '09:30', end: '10:10', title: 'Head to Milano Centrale', subtitle: 'Check out & transfer',
+        here: 'Check out, store bags at hotel if needed. Metro M3 Missori \u2192 Centrale FS (4 stops).',
+        next: 'Find platform on departure board. Frecciarossa high-speed trains use platforms 16\u201321.' },
+      { time: '10:10', end: '12:04', title: 'Train Milan \u2192 Florence SMN', subtitle: 'Frecciarossa, ticket in wallet',
+        guide: "1h54 on Italy\u2019s high-speed Frecciarossa. The train passes through the Apennine Mountains \u2014 after Bologna, watch for green rolling hills and the first Tuscan landscapes. Florence Santa Maria Novella (SMN) is the central station, right in the historic center.",
+        tips: 'Sit on the RIGHT side after Bologna for Tuscan hill views. There\u2019s a caf\u00e9 car if you want coffee. WiFi is free but unreliable in tunnels.',
+        here: 'Milano Centrale \u2192 platform shown on departure board ~20 min before.',
+        next: 'Exit Florence SMN from the main exit \u2192 hotel is 1 min walk across the street' },
+      { time: '12:10', end: '12:20', title: 'Hotel check-in', subtitle: 'C-Hotels Ambasciatori (breakfast incl.)',
+        addr: 'Via Luigi Alamanni 3, 50123 Firenze',
+        lat: 43.775500, lng: 11.254800,
+        next: 'Mercato Centrale is literally next door \u2014 1 min walk' },
+      { time: '12:20', end: '14:00', title: 'Mercato Centrale lunch', subtitle: 'Historic food hall',
+        addr: 'Via dell\u2019Ariento, Piazza del Mercato Centrale, Firenze',
+        lat: 43.776420, lng: 11.253530,
+        guide: "Florence\u2019s 19th-century iron-and-glass food hall is a two-level gastronomic paradise. Ground floor: fresh produce, meats, cheeses (great for picnic supplies). First floor: artisan food stalls by some of Florence\u2019s best chefs \u2014 lampredotto (Florentine tripe sandwich, a MUST try), fresh pasta made in front of you, Neapolitan-style pizza, and gelato. It\u2019s touristy but the food quality is genuinely high.",
+        prac: { hrs: 'Ground floor 7:00\u201314:00 / First floor 10:00\u201324:00', adm: 'Free entry. Individual stalls \u20ac5\u201315.' },
+        tips: { photo: 'The iron-and-glass ceiling from the first floor balcony', insider: 'Lampredotto sandwich (tripe, \u20ac5) is THE Florentine street food. Try it with salsa verde. If you can\u2019t stomach tripe, the fresh pasta stalls are excellent.', planB: 'If too crowded, Trattoria Mario is across the street \u2014 no-frills, shared tables, amazing Florentine food (\u20ac8\u201315). Opens 12:00, expect a queue.' },
+        food: [
+          { n: 'Lampredotto stall (Da Nerbone)', a: 'Ground floor, Mercato Centrale', d: 'The iconic lampredotto sandwich with salsa verde. \u20ac5. A Florentine institution since 1872.' },
+          { n: 'Fresh Pasta Lab', a: 'First floor, Mercato Centrale', d: 'Watch pasta being made, then eat it. Pappardelle al rag\u00f9, cacio e pepe. \u20ac8\u201312.' }
+        ],
+        here: 'From hotel: literally 1 min walk \u2014 exit hotel, turn left, it\u2019s right there.',
+        next: 'Duomo is 10 min walk south via Via dei Cerretani' },
+      { time: '14:15', end: '15:00', title: 'Brunelleschi\u2019s Dome climb', subtitle: '463 steps \u2014 bring photo ID!',
+        addr: 'Piazza del Duomo, 50122 Firenze',
+        lat: 43.773136, lng: 11.256024,
+        guide: "Brunelleschi\u2019s Dome is the largest masonry dome ever built (completed 1436), an engineering marvel that defined the Renaissance. The 463-step climb takes you between the inner and outer shells of the dome \u2014 halfway up, you\u2019ll walk around the interior gallery with Vasari\u2019s massive Last Judgement fresco directly below you. At the top: breathtaking 360\u00b0 views over Florence\u2019s terracotta rooftops to the Tuscan hills.",
+        prac: { hrs: '8:15\u201319:00 (last entry 17:30)', adm: 'Combo ticket \u20ac30 (Dome + Baptistery + Bell Tower + Museum)', book: 'Timed entry required. NOMINATIVE ticket \u2014 bring photo ID (passport).', dress: 'Comfortable shoes (463 narrow steps). No claustrophobia \u2014 narrow spiral passages.' },
+        tips: { photo: 'Best views from the west-facing terrace at the top. Also, the interior gallery halfway up gives unique close-up views of the Last Judgement fresco.', crowd: 'Your time slot is fixed \u2014 arrive on time. The climb takes 30\u201345 min.', insider: 'There are NO rest stops on the climb once you start. Make sure you\u2019re comfortable with 463 steep, narrow, spiraling steps. The passage between the two shells of the dome is fascinating.', planB: 'If you can\u2019t do the climb, Giotto\u2019s Bell Tower next door (414 steps, less claustrophobic) has equally good views. Or the Cathedral itself (free) is stunning inside.' },
+        here: '10 min walk south from Mercato Centrale via Via dei Cerretani.',
+        next: 'Florence walking tour starts right here at the Duomo' },
+      { time: '15:00', end: '17:30', title: 'Florence walking tour', subtitle: 'Duomo \u2192 Piazza Signoria \u2192 Ponte Vecchio',
+        lat: 43.767960, lng: 11.253154,
+        guide: "A self-guided walk through Florence\u2019s greatest hits. From the Duomo, walk south to Piazza della Signoria \u2014 Florence\u2019s political heart and an open-air sculpture gallery (copy of Michelangelo\u2019s David, Cellini\u2019s Perseus, Neptune Fountain). Continue to Ponte Vecchio (1345), the only Florentine bridge that survived WWII because Hitler personally ordered it spared. The bridge\u2019s gold shops have been there since the 16th century. Rub the bronze boar\u2019s (Porcellino) nose at the Mercato Nuovo for luck.",
+        tips: { photo: 'Ponte Vecchio from the eastern bank (looking west at sunset). Also the Porcellino bronze boar for a fun portrait.', crowd: 'Ponte Vecchio is always crowded \u2014 it\u2019s narrowest at the center. Walk through briskly and enjoy views from the side openings.', insider: 'The Corridoio Vasariano runs above the shops on Ponte Vecchio \u2014 a secret passageway built for the Medici. Currently being restored for public visits.' },
+        food: [
+          { n: 'Grom Gelato', a: 'Via del Campanile 2', d: 'Organic gelato chain but genuinely excellent. Try pistachio or dark chocolate. \u20ac3\u20135.' },
+          { n: 'Pegna', a: 'Via dello Studio 8', d: 'Gourmet deli since 1860. Great for Tuscan olive oil, wine, and snacks to bring home. Browse-worthy.' }
+        ],
+        here: 'Start from the Duomo (you\u2019re already here). Walk south via Via dei Calzaiuoli (10 min) to Piazza della Signoria.',
+        next: 'From Ponte Vecchio: Bus 12 or 13 to Piazzale Michelangelo (20 min), or walk (30 min uphill via Costa San Giorgio)' },
+      { time: '17:30', end: '19:00', title: 'Piazzale Michelangelo sunset', subtitle: '+ San Miniato church',
+        addr: 'Piazzale Michelangelo, 50125 Firenze',
+        lat: 43.762920, lng: 11.264975,
+        guide: "THE sunset spot in Florence. This hilltop terrace offers a panoramic view that captures the Duomo, Ponte Vecchio, Arno River, and Tuscan hills all in one frame \u2014 the iconic Florence postcard shot. A bronze replica of David stands in the center. Walk 5 min further uphill to San Miniato al Monte (1018) \u2014 Florence\u2019s oldest church with an extraordinarily beautiful Romanesque facade, geometric marble patterns, and a serene atmosphere. Free entry.",
+        prac: { hrs: 'Piazzale always open / San Miniato 9:30\u201319:00 (summer)' },
+        tips: { photo: 'From the left side of the terrace for the classic panorama with Duomo + Ponte Vecchio + Arno. Sunset time: ~19:30 in late March.', crowd: 'Arrive 30\u201345 min before sunset to claim a good spot on the wall. Weekends busier.', insider: 'Bring a bottle of wine and some cheese from Pegna \u2014 everyone picnics here at sunset. San Miniato above (5 min walk) has even better, quieter views from its terrace.', planB: 'If it\u2019s cloudy, skip the sunset wait and spend more time at San Miniato church (the interior mosaics are stunning regardless of weather).' },
+        here: 'Bus 12 or 13 from Ponte Vecchio area (Lungarno stop, 20 min). Or walk from Ponte Vecchio \u2192 cross Arno \u2192 uphill via Costa San Giorgio (30 min, scenic but steep).',
+        next: 'Walk downhill to Oltrarno / Santo Spirito (15 min downhill via stairs)' },
+      { time: '19:30', end: '21:00', title: 'Santo Spirito dinner', subtitle: 'Oltrarno neighborhood',
+        addr: 'Piazza Santo Spirito, 50125 Firenze',
+        lat: 43.766300, lng: 11.245500,
+        guide: "Oltrarno (literally \u2018beyond the Arno\u2019) is Florence\u2019s most authentic neighborhood \u2014 artisan workshops, student bars, and neighborhood trattorias. Piazza Santo Spirito is the living room: locals hang out on the church steps, restaurants spill onto the square, and the vibe is genuinely non-touristy. The church facade is deliberately plain but the interior (by Brunelleschi) is elegant.",
+        prac: { hrs: 'Restaurants 19:00\u201323:00. Book ahead for Il Santo Bevitore.' },
+        tips: { photo: 'Piazza Santo Spirito at dusk with restaurant lights and the plain church facade', insider: 'Volume (wine bar on the square) does excellent natural wines and small plates if you want a lighter dinner after the sunset picnic.', planB: 'If your first choice is full, walk to Borgo San Jacopo \u2014 more restaurants with Arno views.' },
+        food: [
+          { n: 'Il Santo Bevitore', a: 'Via di Santo Spirito 66r', d: 'Contemporary Tuscan, romantic setting. Pappardelle, bistecca, excellent wine list. \u20ac20\u201335. BOOK AHEAD.' },
+          { n: 'La Casalinga', a: 'Via dei Michelozzi 9r', d: 'Legendary family trattoria since 1963. No-frills Florentine home cooking. Ribollita, trippa. \u20ac10\u201318. No reservations \u2014 queue early.' }
+        ],
+        here: '15 min walk downhill from Piazzale Michelangelo via the stairs. Or 10 min walk from Ponte Vecchio.',
+        next: 'Hotel \u2192 walk back across Ponte alla Carraia + north to station area (20 min)' }
+    ]
+  },
+  {
+    date: '2026-04-01', day: 'Wed', label: 'Day 4', route: 'Florence \u2192 Pisa \u2192 Florence', city: 'pisa',
+    hotel: 'florence',
+    activities: [
+      { time: '08:30', end: '09:28', title: 'Breakfast at hotel', subtitle: 'Included with room',
+        next: 'Walk to Florence SMN station \u2014 1 min from hotel' },
+      { time: '09:28', end: '10:35', title: 'Train Florence \u2192 Pisa Centrale', subtitle: 'Regional train, exchangeable ticket',
+        guide: "About 1 hour on a regional train through the Tuscan countryside. Pisa Centrale station is the main station, about 25 min walk from the Leaning Tower. The walk takes you through Pisa\u2019s charming historic center along the Arno River.",
+        tips: 'Exchangeable ticket \u2014 take any regional train. They run every 30 min. No seat reservation needed.',
+        here: 'Florence SMN station \u2014 1 min walk from hotel. Regional trains depart from platforms 1\u20138.',
+        next: 'Exit Pisa Centrale \u2192 25 min walk north to Piazza dei Miracoli, or Bus LAM Rossa (15 min, \u20ac1.50)' },
+      { time: '10:40', end: '11:15', title: 'Walk to Piazza dei Miracoli', subtitle: '25 min walk through historic Pisa',
+        lat: 43.722952, lng: 10.396597,
+        guide: "The walk from Pisa Centrale to the Tower is part of the experience. Cross the Arno on Ponte di Mezzo, then follow Corso Italia north through the shopping district, then Via Santa Maria past medieval churches. You\u2019ll see the Tower appear dramatically above the rooftops.",
+        here: 'Exit Pisa Centrale from the main exit. Walk north: Via Crispi \u2192 Ponte di Mezzo \u2192 Borgo Stretto \u2192 Via Santa Maria. OR Bus LAM Rossa from the station (15 min, \u20ac1.50).',
+        next: 'Piazza dei Miracoli appears through the old city wall gate \u2014 dramatic first view' },
+      { time: '11:15', end: '13:00', title: 'Leaning Tower + Piazza dei Miracoli', subtitle: 'Tower climb booked 11:45 (\u20ac20)',
+        addr: 'Piazza dei Miracoli, 56126 Pisa',
+        lat: 43.722952, lng: 10.396597,
+        guide: "UNESCO World Heritage site. The Tower took 177 years to build (1173\u20131350) and leans because of soft clay soil on one side of the foundation. It tilts 3.97\u00b0 (about 4 meters off vertical). The 294-step spiral staircase tilts under your feet \u2014 a disorienting, unforgettable sensation. The Piazza also holds the Cathedral (free, stunning interior), Baptistery (remarkable acoustics \u2014 staff demonstrate every 30 min), and Camposanto cemetery.",
+        prac: { hrs: '9:00\u201320:00 (Apr)', adm: 'Tower \u20ac20 (pre-booked 11:45) / Cathedral free / Baptistery \u20ac7 / Combo \u20ac27', book: 'Tower climb booked for 11:45. Arrive 15 min early.', dress: 'No large bags (free lockers near ticket office). Comfortable shoes for 294 uneven steps.' },
+        tips: { photo: 'Classic lean-support pose from the lawn south of the Tower. For a non-clich\u00e9 shot, frame the Tower through the Cathedral colonnade.', crowd: 'Arrive 15 min before your 11:45 slot. Groups of 30 every 15 min.', insider: 'After climbing, visit the Cathedral (free) and wait for the Baptistery acoustics demonstration \u2014 a guard sings a note and the echo creates a natural chord. Magical.', planB: 'If you feel dizzy on the climb, there are rest platforms. The Cathedral and Baptistery are equally impressive and don\u2019t require climbing.' },
+        here: 'You just walked here from the station (or Bus LAM Rossa).',
+        next: 'Lunch in Pisa \u2192 walk 10 min south back toward Via Santa Maria' },
+      { time: '13:00', end: '14:00', title: 'Pizza lunch in Pisa', subtitle: 'Quick lunch before train back',
+        lat: 43.717000, lng: 10.399000,
+        food: [
+          { n: 'Pizzeria Il Montino', a: 'Vicolo del Monte 1', d: 'Century-old Pisan institution. Try cecina (chickpea flatbread) and castagnaccio. \u20ac5\u201310. Cash preferred.' },
+          { n: 'Osteria dei Cavalieri', a: 'Via San Frediano 16', d: 'More substantial Tuscan lunch. Pappardelle al cinghiale (wild boar), bistecca. \u20ac20\u201335.' }
+        ],
+        here: '10 min walk south from the Tower via Via Santa Maria.',
+        next: 'Walk to Pisa Centrale station (10\u201315 min from restaurant area)' },
+      { time: '14:27', end: '15:35', title: 'Train Pisa \u2192 Florence', subtitle: 'Regional train, exchangeable',
+        here: 'Walk back to Pisa Centrale (10\u201315 min). Regional trains to Florence every 30 min.',
+        next: 'Arrive Florence SMN \u2192 drop bags at hotel (1 min walk) then explore' },
+      { time: '16:00', end: '17:00', title: 'Coffee at Ponte Vecchio', subtitle: 'River views + Mercato Nuovo',
+        lat: 43.767960, lng: 11.253154,
+        guide: "Revisit Ponte Vecchio in the afternoon light. The Mercato Nuovo (straw market) nearby has the famous Porcellino bronze boar \u2014 rub his nose and drop a coin for luck. This is also a good area for leather goods shopping (negotiate!). Grab an espresso at one of the cafes along the Arno for river views.",
+        tips: { photo: 'Ponte Vecchio from Ponte Santa Trinita (one bridge east) \u2014 the classic angle', insider: 'The gold shops on Ponte Vecchio are gorgeous but overpriced. Better jewelry shopping on Via dei Tornabuoni or side streets.' },
+        here: 'From hotel: 15 min walk south via Via dei Cerretani + Via dei Calzaiuoli.',
+        next: 'Shopping is right here \u2014 Via dei Tornabuoni starts 5 min west' },
+      { time: '17:00', end: '19:00', title: 'Shopping in Florence', subtitle: 'Via de\u2019 Tornabuoni (luxury) + Via dei Calzaiuoli',
+        guide: "Via dei Tornabuoni is Florence\u2019s luxury mile \u2014 Gucci, Ferragamo (both founded in Florence!), Prada, Valentino. Via dei Calzaiuoli is more mid-range with Zara, H&M, and Italian chains. For leather, try the shops on Via dei Guicciardini (Oltrarno side) or the San Lorenzo leather market (near hotel). Scuola del Cuoio (leather school inside Santa Croce church) sells premium handmade pieces.",
+        tips: { insider: 'Ferragamo Museum (Via dei Tornabuoni 2) is free and fascinating if you like fashion history. For genuine leather, check if it smells rich and organic \u2014 fake leather smells chemical.', planB: 'If shops are closing (most close 19:30), head to Officina Profumo-Farmaceutica di Santa Maria Novella \u2014 a pharmacy/perfumery in a stunning 14th-century chapel. Open until 20:00.' },
+        here: 'From Ponte Vecchio: 5 min walk west to Via dei Tornabuoni.',
+        next: 'Dinner \u2192 walk to your chosen restaurant' },
+      { time: '19:00', end: '21:00', title: 'Dinner in Florence', subtitle: 'Last Florence evening',
+        lat: 43.770000, lng: 11.252000,
+        food: [
+          { n: 'Trattoria Sostanza', a: 'Via del Porcellana 25r', d: 'Legendary since 1869. Famous for butter chicken breast and artichoke omelette. No-frills, shared tables. \u20ac20\u201335. Cash only. No reservations.' },
+          { n: 'Buca Mario', a: 'Piazza degli Ottaviani 16r', d: 'Classic Florentine bistecca in a vaulted cellar since 1886. Reservations recommended. \u20ac25\u201345.' }
+        ],
+        here: 'Both restaurants are within 10 min walk of Via dei Tornabuoni.',
+        next: 'Hotel \u2192 short walk north to station area. Pack tonight \u2014 early train to Rome tomorrow!' }
+    ]
+  },
+  {
+    date: '2026-04-02', day: 'Thu', label: 'Day 5', route: 'Florence \u2192 Rome', city: 'rome',
+    hotel: 'rome',
+    activities: [
+      { time: '08:14', end: '09:49', title: 'Train Florence \u2192 Rome Termini', subtitle: 'Car #2, seats 7D & 8D \u2014 NON-exchangeable!',
+        guide: "1h35 on Frecciarossa high-speed. This ticket is NON-exchangeable \u2014 don\u2019t miss it. The train passes through Tuscan hills, then the Roman campagna. Rome Termini is the main station, right in the city center.",
+        prac: { book: 'Car #2, Seats 7D & 8D. NON-exchangeable \u2014 this specific train only.' },
+        tips: 'Arrive at Florence SMN 15 min early. Find your car number on the platform display. Seats 7D & 8D should be together.',
+        here: 'Florence SMN station \u2014 1 min from hotel. Check out before leaving.',
+        next: 'Exit Rome Termini from main exit (Via Giovanni Giolitti side) \u2192 hotel is 2 min walk' },
+      { time: '10:00', end: '10:10', title: 'Hotel check-in', subtitle: 'UNA Hotels Deco Roma (2 min from Termini)',
+        addr: 'Via Giovanni Amendola 57, 00185 Roma',
+        lat: 41.901400, lng: 12.499200,
+        next: 'Drop bags \u2192 Metro B from Termini \u2192 Colosseo (2 stops, 4 min, \u20ac1.50)' },
+      { time: '10:10', end: '10:30', title: 'Metro B \u2192 Colosseo', subtitle: 'Termini \u2192 Colosseo (2 stops, \u20ac1.50)',
+        here: 'From hotel: walk 2 min to Termini station. Find Metro B (blue line) entrance inside the station. Direction: Laurentina.',
+        next: 'Exit Colosseo metro \u2192 the Colosseum is RIGHT THERE above you. Walk to the entrance on the south side.' },
+      { time: '10:30', end: '11:30', title: 'Colosseum', subtitle: 'Booked 10:50 \u2014 arrive 20 min early!',
+        addr: 'Piazza del Colosseo 1, 00184 Roma',
+        lat: 41.890210, lng: 12.492231,
+        guide: "The Flavian Amphitheatre (80 AD) is the largest ever built, holding 50,000\u201380,000 spectators for gladiatorial games, animal hunts, and mock naval battles. The underground hypogeum had 80 vertical shafts with mechanical lifts to transport wild animals to the arena floor. The velarium \u2014 a retractable canvas awning operated by sailors \u2014 shaded spectators from the sun. Look for the cross-section where you can see the internal structure of arches and corridors that made Roman engineering revolutionary.",
+        prac: { hrs: '9:00\u201319:15 (Apr)', adm: '\u20ac16 (Colosseum + Forum + Palatine, valid 24h)', book: 'Timed entry at 10:50. Arrive 20 min early \u2014 time slot is STRICT.', dress: 'Comfortable shoes. Sun protection in summer.' },
+        tips: { photo: 'Upper level looking down into the hypogeum (underground). Also from the 2nd tier for the full arena perspective.', crowd: 'Follow your timed entry. The upper levels are less crowded and have better views.', insider: 'The included ticket covers Roman Forum + Palatine Hill too (valid 24h). Do Forum right after. The arena floor reconstruction gives you a gladiator\u2019s perspective.', planB: 'If entry is delayed, walk around the exterior \u2014 the Arch of Constantine (free) is right next to it.' },
+        here: 'Exit Colosseo metro and it\u2019s right above you. Entrance on the south side (near Arch of Constantine).',
+        next: 'Roman Forum \u2192 5 min walk. Exit Colosseum, walk west past the Arch of Constantine, entrance on Via dei Fori Imperiali.' },
+      { time: '11:30', end: '12:15', title: 'Roman Forum + Palatine Hill', subtitle: 'Included with Colosseum ticket',
+        addr: 'Via della Salara Vecchia 5/6, 00186 Roma',
+        lat: 41.892410, lng: 12.485325,
+        guide: "The political, religious, and commercial center of ancient Rome for over 1,000 years. Walk along the Via Sacra (Sacred Road) past the Arch of Titus (depicting the sack of Jerusalem), Temple of Saturn (where Rome\u2019s treasury was kept), and the Curia (Senate house). Palatine Hill above has the ruins of imperial palaces and stunning views over the Forum and Circus Maximus.",
+        prac: { hrs: '9:00\u201319:15 (included with Colosseum ticket)', adm: 'Included with Colosseum ticket (valid 24h)' },
+        tips: { photo: 'From the Palatine Hill terrace overlooking the entire Forum. Also the Arch of Titus with Colosseum behind you.', crowd: 'Walk through Forum first, then climb to Palatine \u2014 most people go straight to Palatine.', insider: 'The Farnese Gardens on Palatine Hill have the best panoramic view and are usually quiet. The House of Augustus has well-preserved frescoes (check if open).' },
+        here: 'From Colosseum: walk 5 min west past Arch of Constantine. Forum entrance on Via dei Fori Imperiali.',
+        next: 'Pantheon \u2192 15 min walk north via Via dei Fori Imperiali + side streets' },
+      { time: '12:15', end: '12:45', title: 'Pantheon', subtitle: '\u20ac5 entry \u2014 15 min walk from Forum',
+        addr: 'Piazza della Rotonda, 00186 Roma',
+        lat: 41.898637, lng: 12.476862,
+        guide: "The best-preserved ancient Roman building, built by Hadrian around 125 AD. The dome\u2019s 8.7m open oculus is still the world\u2019s largest unreinforced concrete dome \u2014 rain falls through and drains via imperceptible floor slopes. Inside lies the tomb of Raphael. Stand in the center and look up: the play of light through the oculus changes throughout the day, and on rainy days a column of rain falls straight through into the floor drain.",
+        prac: { hrs: 'Mon\u2013Sat 9:00\u201319:00 / Sun 9:00\u201318:00', adm: '\u20ac5 (online booking recommended)' },
+        tips: { photo: 'Stand directly under the oculus and shoot straight up. On sunny days, the light beam sweeping the interior is magical.', insider: 'Visit at noon for the most dramatic light beam effect. The floor tiles are original Roman marble. Raphael\u2019s tomb is on the left side.' },
+        food: [
+          { n: 'Armando al Pantheon', a: 'Salita dei Crescenzi 31', d: 'Roman institution since 1961. Cacio e pepe, amatriciana, carciofi. \u20ac15\u201330. BOOK ONLINE ONLY \u2014 no walk-ins.' }
+        ],
+        here: '15 min walk north from Forum: Via dei Fori Imperiali \u2192 Piazza Venezia \u2192 Via del Corso \u2192 side streets to Piazza della Rotonda.',
+        next: 'Trevi Fountain \u2192 10 min walk east via Via del Seminario' },
+      { time: '12:45', end: '13:15', title: 'Trevi Fountain', subtitle: '\u20ac2 entry \u2014 10 min walk from Pantheon',
+        addr: 'Piazza di Trevi, 00187 Roma',
+        lat: 41.900932, lng: 12.483313,
+        guide: "Rome\u2019s most famous fountain (1762). The tradition: throw a coin with your right hand over your left shoulder to ensure your return to Rome. About \u20ac3,000 is collected daily, donated to Caritas charity. The baroque masterpiece depicts Neptune\u2019s chariot pulled by sea horses \u2014 one calm, one wild, symbolizing the moods of the sea.",
+        prac: { hrs: 'Open 24/7. Viewing area entry \u20ac2 (new regulation, limited capacity).', adm: '\u20ac2 entry to the viewing area (reduces overcrowding)' },
+        tips: { photo: 'From the right side of the staircase for the classic angle. Early morning or late evening for fewer people.', crowd: '\u20ac2 entry now limits crowds, but still busy 10:00\u201316:00.', insider: 'The \u20ac2 fee was introduced to combat overcrowding \u2014 it actually makes the experience much better now. The fountain is beautifully lit at night if you pass by later.' },
+        here: '10 min walk east from Pantheon via Via del Seminario + Via dei Crociferi.',
+        next: 'Metro A to Vatican \u2192 walk to Barberini metro (8 min) or continue to Spagna' },
+      { time: '13:15', end: '13:45', title: 'Metro A \u2192 Vatican', subtitle: 'Barberini or Spagna \u2192 Ottaviano',
+        here: 'Walk 8 min to Barberini metro station (or 5 min to Spagna). Metro A (orange) \u2192 direction Battistini \u2192 exit at Ottaviano. ~15 min ride.',
+        next: 'Exit Ottaviano metro \u2192 walk 10 min to Vatican Museums entrance on Viale Vaticano. Follow the signs (or the crowds).' },
+      { time: '13:45', end: '17:00', title: 'Vatican Museums + Sistine Chapel', subtitle: 'Guided tour booked 14:00',
+        addr: 'Viale Vaticano, 00165 Roma',
+        lat: 41.906830, lng: 12.453720,
+        guide: "The Vatican Museums house one of the world\u2019s greatest art collections: 54 galleries, 1,400 rooms, and 20,000 works spanning 5,000 years. The route leads through the Gallery of Maps (stunning painted topographical maps of Italy, 120m long), the Raphael Rooms (School of Athens), and culminates in the Sistine Chapel \u2014 Michelangelo\u2019s ceiling (1508\u20131512) and Last Judgement (1536\u20131541). After the Sistine Chapel, exit directly into St. Peter\u2019s Basilica \u2014 the largest church in the world. Michelangelo\u2019s Piet\u00e0 is just inside the entrance on the right.",
+        prac: { hrs: 'Mon\u2013Sat 8:00\u201319:00 (last entry 16:00)', adm: '\u20ac17 (online) / Guided tour included in booking', book: 'Guided tour booked for 14:00. Meet at the entrance.', dress: 'Cover shoulders & knees (strictly enforced). No tripods. Photos OK except Sistine Chapel (officially no photos, but everyone does).' },
+        tips: { photo: 'Gallery of Maps \u2014 the long perspective shot is stunning. Raphael\u2019s School of Athens. St. Peter\u2019s interior from the nave. Piet\u00e0 through the glass.', crowd: 'The guided tour will navigate crowds for you. Stay with your guide in the Sistine Chapel.', insider: 'In the Sistine Chapel, look for Michelangelo\u2019s self-portrait in the Last Judgement (he painted his face on St. Bartholomew\u2019s flayed skin). Exit the Sistine Chapel through the right-side door to go directly into St. Peter\u2019s Basilica (ask your guide).', planB: 'If the museums are overwhelming, skip some galleries and head straight to the Raphael Rooms and Sistine Chapel (your guide will prioritize).' },
+        food: [
+          { n: 'Panificio Bonci', a: 'Via Trionfale 36', d: 'Legendary pizza al taglio (sold by weight). Try the mortadella or potato/rosemary. \u20ac5\u201310. 10 min walk from Vatican.' }
+        ],
+        here: 'From Ottaviano metro: 10 min walk to Vatican Museums entrance on Viale Vaticano. Follow signs.',
+        next: 'After St. Peter\u2019s: walk to Spanish Steps area \u2192 Bus 64 from Via della Conciliazione (30 min) or Metro A Ottaviano \u2192 Spagna (3 stops)' },
+      { time: '18:00', end: '20:00', title: 'Spanish Steps + dinner', subtitle: 'Via dei Condotti luxury shopping',
+        addr: 'Piazza di Spagna, 00187 Roma',
+        lat: 41.905990, lng: 12.482770,
+        guide: "The 135 Trinit\u00e0 dei Monti steps (1725) are Rome\u2019s most famous staircase, connecting Piazza di Spagna to the Trinit\u00e0 dei Monti church above. Sitting on the steps has been BANNED since 2019 (\u20ac400 fine) \u2014 stand and admire instead. Via dei Condotti at the base is Rome\u2019s premier luxury shopping street (Bulgari, Gucci, Valentino, Prada). The Keats-Shelley Memorial House is at the foot of the steps.",
+        prac: { hrs: 'Shops on Via dei Condotti 10:00\u201319:30' },
+        tips: { photo: 'From the bottom looking up at sunset, or from the top (Trinit\u00e0 dei Monti) looking down over the rooftops.', insider: 'The Barcaccia fountain at the base (by Bernini\u2019s father) is a low-pressure fountain shaped like a sinking boat \u2014 a clever solution to low water pressure. Via Margutta (one street over) is a quieter, artistic street where Audrey Hepburn\u2019s character lived in Roman Holiday.' },
+        food: [
+          { n: 'Pastificio Guerra', a: 'Via della Croce 8', d: 'Fresh pasta shop \u2014 \u20ac5 for a plate of the day, eaten standing. Rome\u2019s best budget lunch. CASH ONLY.' },
+          { n: 'Enoteca Antica', a: 'Via della Croce 76b', d: 'Wine bar with bruschetta, salumi, and cheese boards. Relaxed, local vibe. \u20ac12\u201325.' }
+        ],
+        here: 'From Vatican: Metro A Ottaviano \u2192 Spagna (3 stops, 8 min). Exit and you\u2019re at the bottom of the Steps.',
+        next: 'Trastevere \u2192 Bus H from Piazza Barberini (20 min) or taxi \u20ac8\u201310' },
+      { time: '20:30', end: '22:00', title: 'Trastevere night walk', subtitle: 'Rome\u2019s most charming neighborhood',
+        addr: 'Trastevere, Roma',
+        lat: 41.889300, lng: 12.469800,
+        guide: "Trastevere (\u2018across the Tiber\u2019) is Rome\u2019s most atmospheric neighborhood \u2014 narrow medieval cobblestone streets, ivy-covered ochre buildings, tiny piazzas with fountains, and live music drifting from trattorias. Piazza Santa Maria in Trastevere is the heart, with its 12th-century church (stunning gold mosaics, usually open until 21:00). The neighborhood comes alive after 20:00 \u2014 it\u2019s Rome\u2019s best area for a passeggiata (evening stroll) and late dinner.",
+        tips: { photo: 'The narrow streets lit by warm light at night. Piazza Santa Maria in Trastevere with the fountain and church facade.', insider: 'For the best experience, just wander the side streets. Via della Lungaretta and Vicolo del Cinque have the most atmosphere. Arrive at Da Enzo early (19:30) or expect a 45+ min queue.' },
+        food: [
+          { n: 'Da Enzo al 29', a: 'Via dei Vascellari 29', d: 'Legendary Roman trattoria. Cacio e pepe, carbonara, carciofi alla giudia. \u20ac12\u201320. NO reservations \u2014 queue early (19:30) or late (21:30).' },
+          { n: 'Tonnarello', a: 'Via della Paglia 77', d: 'Big portions of classic Roman pasta. Livelier atmosphere, outdoor seating. \u20ac10\u201320. More forgiving on walk-ins.' }
+        ],
+        here: 'From Spanish Steps: Bus H from Piazza Barberini (20 min) or taxi ~\u20ac10. Or walk from Piazza Venezia across Ponte Garibaldi (25 min).',
+        next: 'Hotel \u2192 Bus H or Night Bus to Termini, or taxi ~\u20ac12. Long day \u2014 rest well!' }
+    ]
+  },
+  {
+    date: '2026-04-03', day: 'Fri', label: 'Day 6', route: 'Rome \u2014 Good Friday', city: 'rome',
+    hotel: 'rome',
+    warning: 'Good Friday: Colosseum/Forum close at 1 PM. Vatican Museums OPEN. Via Crucis at Colosseum 9:15 PM (free, torchlit, led by Pope).',
+    activities: [
+      { time: '09:00', end: '10:30', title: 'Piazza Navona coffee', subtitle: 'Baroque square + gelato',
+        lat: 41.898847, lng: 12.473169,
+        addr: 'Piazza Navona, 00186 Roma',
+        guide: "One of Rome\u2019s most elegant squares, built over the ruins of Emperor Domitian\u2019s 1st-century stadium \u2014 you can still trace its oval shape. The centrepiece is Bernini\u2019s Fontana dei Quattro Fiumi (Four Rivers Fountain, 1651), representing the Nile, Ganges, Danube, and R\u00edo de la Plata. The rivalry between Bernini and Borromini plays out here: Borromini\u2019s Sant\u2019Agnese in Agone church faces Bernini\u2019s fountain directly. On a Good Friday morning, the piazza is quieter than usual \u2014 enjoy it before the crowds arrive.",
+        prac: { hrs: 'Open 24 hours (piazza)', adm: 'Free' },
+        tips: { photo: 'Stand at the south end for a full-length fountain shot with Sant\u2019Agnese in the background.', crowd: 'Good Friday morning is quieter than usual \u2014 arrive by 9 AM for near-empty piazza.', insider: 'Look for the Underground Stadium of Domitian entrance at the north end (\u20ac9, fascinating ruins below the square).', planB: 'If too crowded, walk 3 min to Piazza della Rotonda (Pantheon square) for coffee instead.' },
+        food: [
+          { n: 'Frigidarium', a: 'Via del Governo Vecchio 112', d: 'Famous for crema fritta gelato (fried cream flavour). Artisanal, no artificial colours. \u20ac3\u20135. Open 12:00\u201323:30.' },
+          { n: 'Gelateria del Teatro', a: 'Via dei Coronari 65', d: 'Small-batch gelato made on-site. Try sage-raspberry or white peach. \u20ac3\u20135. Open 10:30\u201323:00.' },
+          { n: 'Sant\u2019Eustachio Il Caff\u00e8', a: 'Piazza di Sant\u2019Eustachio 82', d: 'Since 1938 \u2014 Rome\u2019s most famous espresso. Gran Caff\u00e8 pre-sweetened. \u20ac3\u20135. 5 min walk. Open 07:30\u201301:00.' }
+        ],
+        here: 'From hotel in Trastevere: walk across Ponte Sisto → through Via dei Giubbonari → 15 min total. Or bus H from Trastevere to Corso Vittorio Emanuele, walk 3 min north.',
+        next: 'Next: Trevi Fountain \u2014 10 min walk east via Via del Governo Vecchio → Corso del Rinascimento → narrow streets to Trevi.'
+      },
+      { time: '10:30', end: '11:30', title: 'Trevi Fountain (revisit)', subtitle: 'Morning visit \u2014 fewer crowds than yesterday',
+        lat: 41.900932, lng: 12.483313,
+        addr: 'Piazza di Trevi, 00187 Roma',
+        guide: "A second, calmer visit to the Trevi Fountain. If you paid the \u20ac2 entry and tossed a coin yesterday evening in the crowd, this morning visit lets you actually appreciate the artistry. Nicola Salvi\u2019s masterpiece (1762) depicts Neptune\u2019s chariot pulled by seahorses \u2014 one calm, one wild, symbolising the two moods of the sea. The water comes from the ancient Aqua Virgo aqueduct, still feeding the fountain after 2,000 years.",
+        prac: { hrs: '24 hours (barrier access 09:00\u201321:00)', adm: '\u20ac2 entry (already paid yesterday? re-entry unclear \u2014 may need to pay again)' },
+        tips: { photo: 'Morning light (10:30 AM) hits the fountain face-on \u2014 better photos than sunset.', crowd: 'Much calmer on Good Friday morning than a regular weekday.', insider: 'From the top of the steps on the east side (Via della Stamperia), you get an elevated angle that most tourists miss.' },
+        here: 'From Piazza Navona: walk east via Via dei Crociferi \u2014 10 min.',
+        next: 'Next: Shopping at Spanish Steps area \u2014 5 min walk north via Via dei Sabini → Via del Tritone.'
+      },
+      { time: '11:30', end: '13:00', title: 'Shopping', subtitle: 'Via dei Condotti + Via Frattina',
+        lat: 41.905990, lng: 12.482770,
+        addr: 'Via dei Condotti, 00187 Roma',
+        guide: "Rome\u2019s luxury shopping street, running from the Spanish Steps to Via del Corso. Via dei Condotti has all the major Italian houses: Bulgari (#10, born here in 1884), Gucci, Prada, Valentino, Ferragamo. Parallel Via Frattina is slightly more accessible with contemporary Italian brands. For something unique, check Via del Babuino for art galleries and design shops.",
+        prac: { hrs: 'Most shops: 10:00\u201319:30 (some may close 13:00\u201315:30 for riposo on Good Friday)' },
+        tips: { photo: 'Via dei Condotti looking toward the Spanish Steps is the classic Rome shopping shot.', crowd: 'Good Friday \u2014 some smaller shops may close early or for the afternoon. Major brands stay open.', insider: 'For leather goods without luxury markup, try Pelletteria Nives (Via dei Pastini 36, near Pantheon) \u2014 handmade bags from \u20ac50.', planB: 'If shops are closing for Good Friday, browse Via del Corso (high-street brands, mostly open) or visit Galleria Alberto Sordi (covered shopping arcade, air-conditioned).' },
+        here: 'From Trevi: 5 min walk north \u2014 Via del Tritone → left on Via dei Due Macelli → Via dei Condotti.',
+        next: 'Next: Capitoline Museums \u2014 15 min walk south via Via del Corso → Piazza Venezia → up the hill.'
+      },
+      { time: '13:00', end: '15:00', title: 'Capitoline Museums', subtitle: 'World\u2019s oldest public museum',
+        lat: 41.892410, lng: 12.485325,
+        addr: 'Piazza del Campidoglio 1, 00186 Roma',
+        guide: "Founded in 1471 when Pope Sixtus IV donated a collection of bronze statues to the Roman people, making this the world\u2019s oldest public museum. The piazza was designed by Michelangelo in 1536 \u2014 note the geometric star pattern on the pavement. Inside: the original bronze Marcus Aurelius equestrian statue, the iconic Capitoline Wolf (Lupa), the Dying Gaul, and Caravaggio\u2019s stunning \u201cSt. John the Baptist\u201d and \u201cFortune Teller\u201d. Don\u2019t miss the underground Tabularium gallery connecting the two buildings \u2014 it has the best views of the Roman Forum.",
+        prac: { hrs: '09:30\u201319:30 (last entry 18:30)', adm: '\u20ac15 full / \u20ac13 reduced (EU 18-25)', dress: 'No dress code. Bring water \u2014 museum is large.' },
+        tips: { photo: 'The Tabularium gallery frames the Forum perfectly \u2014 the best elevated Forum photo in Rome.', crowd: 'Good Friday = many museums are busy. Go straight to the Tabularium first, then work backwards.', insider: 'The Palazzo dei Conservatori caf\u00e9 on the 2nd floor terrace has an incredible view of Rome\u2019s rooftops with coffee for \u20ac3. Hidden gem.', planB: 'If queue is long (unlikely on Good Friday), the Vittoriano rooftop elevator next door (\u20ac7) offers 360\u00b0 views of Rome.' },
+        food: [
+          { n: 'Terrazza Caffarelli', a: 'Inside Capitoline Museums, 2nd floor', d: 'Museum rooftop caf\u00e9 with panoramic view. Light lunch: panini \u20ac8\u201312, wine \u20ac5. No museum ticket needed (separate entrance from Piazzale Caffarelli).' },
+          { n: 'Taverna degli Amici', a: 'Piazza Margana 37', d: 'Hidden piazza 3 min from Campidoglio. Roman classics: cacio e pepe \u20ac12, saltimbocca \u20ac16. Outdoor seating in a medieval courtyard. Open 12:00\u201323:00.' }
+        ],
+        here: 'From Spanish Steps area: walk south on Via del Corso → Piazza Venezia → up the Cordonata steps (Michelangelo\u2019s ramp) to Piazza del Campidoglio. 15 min.',
+        next: 'Next: Trastevere lunch \u2014 walk down to Via del Teatro di Marcello → cross Ponte Fabricio to Isola Tiberina → into Trastevere. 15 min.'
+      },
+      { time: '15:00', end: '17:00', title: 'Trastevere late lunch', subtitle: 'Relaxed afternoon in the village quarter',
+        lat: 41.889300, lng: 12.469800,
+        addr: 'Trastevere, 00153 Roma',
+        guide: "Trastevere (\u201cacross the Tiber\u201d) is Rome\u2019s most atmospheric neighbourhood \u2014 cobblestoned streets, ivy-covered buildings, and a village-like feel despite being in the city centre. The heart is Piazza di Santa Maria in Trastevere, one of Rome\u2019s oldest churches (3rd century) with stunning gold mosaics. On Good Friday afternoon, the neighbourhood has a special quiet character as locals prepare for the evening\u2019s Via Crucis.",
+        prac: { hrs: 'Restaurants: most open 12:00\u201315:00 & 19:00\u201323:00. Some have continuous service.' },
+        tips: { photo: 'The golden mosaics of Santa Maria in Trastevere are spectacular \u2014 best photographed from the piazza fountain.', crowd: 'Good Friday afternoon: quieter than usual. Perfect for a long, relaxed lunch.', insider: 'Walk up to Gianicolo Hill (10 min uphill from Trastevere) for the cannon firing at noon \u2014 but since it\u2019s 3 PM, just enjoy the panoramic view instead.', planB: 'If favourite restaurants are closed for Good Friday, Pizzeria Ai Marmi (\u201cl\u2019obitorio\u201d \u2014 the morgue, named for its marble tables) is almost always open.' },
+        food: [
+          { n: 'Da Enzo al 29', a: 'Via dei Vascellari 29', d: 'Legendary Roman trattoria. Cacio e pepe, amatriciana, fried artichokes. NO reservations \u2014 queue by 12:00 or after 15:00 for shorter wait. \u20ac12\u201318/dish. Closed Sun.' },
+          { n: 'Tonnarello', a: 'Via della Paglia 77', d: 'Huge portions of tonnarelli cacio e pepe (\u20ac10). Lively atmosphere, outdoor tables on the piazza. Open daily 12:00\u201300:00.' },
+          { n: 'Suppli\u0300', a: 'Via di San Francesco a Ripa 137', d: 'Best suppl\u00ec (fried rice balls) in Rome \u2014 the classic tomato-mozzarella is \u20ac2. Perfect street snack. Open 12:00\u201323:30.' }
+        ],
+        here: 'From Capitoline Museums: walk down to Via del Teatro di Marcello → cross the ancient Ponte Fabricio (Rome\u2019s oldest bridge, 62 BC) to Isola Tiberina → cross to Trastevere. 15 min scenic walk.',
+        next: 'Next: Castel Sant\u2019Angelo \u2014 walk north along the Tiber via Lungotevere → 20 min pleasant riverside walk.'
+      },
+      { time: '17:00', end: '19:00', title: 'Castel Sant\u2019Angelo', subtitle: 'Hadrian\u2019s Tomb + best sunset view',
+        lat: 41.903087, lng: 12.466319,
+        addr: 'Lungotevere Castello 50, 00193 Roma',
+        guide: "Built by Emperor Hadrian as his mausoleum in 139 AD, this cylindrical fortress has served as a castle, prison, papal refuge, and museum. The Passetto di Borgo \u2014 a secret elevated passage \u2014 connects it directly to the Vatican, used by popes fleeing danger (most famously by Pope Clement VII during the 1527 Sack of Rome). The rooftop terrace offers arguably the best view of St. Peter\u2019s dome in all of Rome, and the bronze angel statue on top commemorates the plague\u2019s end in 590 AD when Archangel Michael appeared above.",
+        prac: { hrs: '09:00\u201319:30 (last entry 18:30)', adm: '\u20ac15 full / \u20ac2 reduced (EU 18-25). Free first Sunday of month.', dress: 'Comfortable shoes \u2014 lots of stairs to the rooftop. No dress code.' },
+        tips: { photo: 'The rooftop terrace at golden hour (17:30\u201318:30 in April) gives the iconic St. Peter\u2019s dome shot with warm light.', crowd: 'Late afternoon is perfect \u2014 morning crowds have left, and you\u2019ll catch golden hour from the top.', insider: 'In the Papal Apartments on the upper floors, look for the bathroom of Pope Clement VII \u2014 frescoed by Giulio Romano (Raphael\u2019s student) with scenes too risqu\u00e9 for a pope.', planB: 'If closed for Good Friday (unlikely but possible): walk across Ponte Sant\u2019Angelo instead \u2014 the bridge itself has 10 angel statues by Bernini and is free to enjoy.' },
+        food: [
+          { n: 'La Fraschetta', a: 'Via di Panico 49', d: 'Traditional Roman dishes: trippa alla romana, polpette al sugo. Cosy wine-bar feel. \u20ac12\u201322/dish. 5 min walk south. Open 12:00\u201323:30.' },
+          { n: 'Pizzeria La Montecarlo', a: 'Vicolo Savelli 13', d: 'No-frills Roman pizza since 1949. Paper-thin, crispy. Pizza margherita \u20ac7. Expect a short queue. 8 min walk. Open 12:00\u201301:00.' }
+        ],
+        here: 'From Trastevere: walk north along Lungotevere dei Tebaldi → past Ponte Umberto I → Castel Sant\u2019Angelo is on the right. 20 min riverside walk.',
+        next: 'Next: Dinner & rest at hotel \u2014 then Via Crucis at 21:15. Walk back to Trastevere via Ponte Sisto (20 min) or bus 23/280 from Lungotevere.'
+      },
+      { time: '19:00', end: '21:00', title: 'Dinner & rest', subtitle: 'Light dinner before Via Crucis',
+        guide: "Head back to Trastevere for a light early dinner before the Via Crucis ceremony. This is a good time to rest your feet \u2014 you\u2019ll be standing for 1.5\u20132 hours at the Colosseum later. Eat light, dress warm (April evenings in Rome are 10\u201314\u00b0C).",
+        food: [
+          { n: 'Pizzeria Ai Marmi', a: 'Viale di Trastevere 53', d: 'Known as \u201cl\u2019obitorio\u201d for its marble tables. Thin Roman pizza, suppl\u00ec, fried baccal\u00e0. Quick, cheap (\u20ac8\u201312). Open daily.' },
+          { n: 'Forno La Renella', a: 'Via del Moro 15', d: 'Historic bakery. Pizza al taglio (by the slice, \u20ac2\u20134), focaccia, bread. Perfect for a light bite. Open until 00:00.' }
+        ],
+        tips: { insider: 'Dress in layers \u2014 April evenings drop to 10\u201314\u00b0C. Bring a scarf. The ceremony is ~1.5 hours standing.', planB: 'If too tired for Via Crucis, watch the live RAI broadcast from the hotel. Still moving, but less exhausting.' },
+        here: 'Walk back to Trastevere from Castel Sant\u2019Angelo via Ponte Sisto \u2014 20 min. Or bus 23/280 from Lungotevere.',
+        next: 'Next: Via Crucis at Colosseum at 21:15 \u2014 Take metro or taxi (15 min). Leave by 20:30 latest.'
+      },
+      { time: '21:15', end: '23:00', title: 'Via Crucis at Colosseum', subtitle: 'Free, torchlit, led by Pope Francis',
+        lat: 41.890210, lng: 12.492231,
+        addr: 'Colosseum area, Piazza del Colosseo, 00184 Roma',
+        guide: "The Via Crucis (Way of the Cross) is one of the most solemn and spectacular events of Holy Week in Rome. Held every Good Friday evening at the Colosseum since 1749, the ceremony recreates the 14 Stations of the Cross with a torchlit procession. Led by Pope Francis, it draws tens of thousands of pilgrims and visitors. The Colosseum is illuminated, enormous crosses are carried between stations, and the atmosphere is profoundly moving regardless of your faith. Meditations are read in multiple languages. This is a once-in-a-lifetime experience.",
+        prac: { hrs: 'Starts 21:15, ends approx. 22:45. Arrive by 19:30\u201320:00 for a decent spot.', adm: 'Free \u2014 no tickets required. Open to all.', dress: 'Warm layers essential. Standing 2\u20133 hours total (waiting + ceremony). Comfortable shoes.' },
+        tips: { photo: 'Torchlit photos are magical but tricky \u2014 use night mode. The cross against the illuminated Colosseum is the iconic shot.', crowd: 'Arrive 19:30\u201320:00 for a spot with a view. By 20:30 the area is packed. The closer to the Colosseum, the better the view.', insider: 'The area between Via dei Fori Imperiali and the Colosseum (near the Arch of Constantine) offers the best sightlines. Vatican officials and media take the spots closest to the Colosseum \u2014 public viewing is slightly further out but still incredible.', planB: 'If the crowds are too overwhelming, watch from the elevated Via Nicola Salvi (the road above, near the Colosseum metro exit) \u2014 you can see the illuminated Colosseum and hear the ceremony via speakers.' },
+        here: 'From Trastevere: taxi or Uber is easiest (15 min, \u20ac8\u201312). Or bus H to Termini, then metro B one stop to Colosseo. Leave hotel by 20:00\u201320:30.',
+        next: 'Back to hotel: metro B Colosseo → Circo Massimo, then 10 min walk to Trastevere. Or taxi \u20ac8\u201310. Last metro ~23:30.'
+      }
+    ]
+  },
+  {
+    date: '2026-04-04', day: 'Sat', label: 'Day 7', route: 'Rome \u2192 Hong Kong', city: 'rome',
+    hotel: null,
+    activities: [
+      { time: '08:00', end: '09:00', title: 'Wake up & pack', subtitle: 'Last morning in Rome',
+        guide: "Final morning! Double-check the room for chargers, adapters, and toiletries. Italy uses Type C/F plugs (same as most EU). If you bought wine or olive oil, wrap bottles in dirty clothes inside your checked luggage. Leave any coins as a tip for housekeeping (\u20ac2\u20135).",
+        tips: { insider: 'Pack a power bank and earphones in your carry-on for the long flight. Fill your water bottles after airport security.', planB: 'If you have time, grab one last cornetto and cappuccino from the hotel breakfast or a nearby bar.' }
+      },
+      { time: '09:00', end: '09:35', title: 'Depart hotel \u2192 Trastevere station', subtitle: 'Tram 8 or walk',
+        guide: "From the hotel in Trastevere, head to Trastevere train station. You can walk (10\u201315 min) or take tram 8 from Viale di Trastevere (runs every 5 min, \u20ac1.50 ticket, validate on board). The station is small and easy to navigate.",
+        here: 'Walk south on Viale di Trastevere to the train station, or take tram 8 (direction Casaletto) 3 stops. Station entrance is on Piazzale Flavio Biondo.',
+        next: 'Next: Leonardo Express connection. From Trastevere station, take any train toward Fiumicino Aeroporto or change at Roma Ostiense/Termini for the Leonardo Express.'
+      },
+      { time: '09:35', end: '10:10', title: 'Train to Fiumicino (FCO)', subtitle: 'Leonardo Express or regional',
+        lat: 41.7935, lng: 12.2533,
+        guide: "Two options to FCO: (1) Leonardo Express from Termini \u2014 \u20ac14, non-stop 32 min, departs every 15 min from Platform 23/24. (2) Regional FL1 train from Trastevere \u2014 \u20ac8, ~30 min, runs every 15 min, direct to Fiumicino Aeroporto station. The FL1 from Trastevere is cheaper, direct, and avoids the Termini detour. Both arrive at the same airport station.",
+        prac: { hrs: 'FL1 from Trastevere: every 15 min, 05:57\u201323:27. Leonardo Express from Termini: every 15 min, 05:20\u201323:35.', adm: 'FL1: \u20ac8 | Leonardo Express: \u20ac14. Buy at ticket machine or Trenitalia app. VALIDATE paper tickets!' },
+        tips: { insider: 'The FL1 regional from Trastevere is the smart choice \u2014 \u20ac8, direct, no need to go to Termini. Buy ticket from the machine at Trastevere station or use the Trenitalia app.', crowd: 'Saturday morning trains are not crowded. But allow buffer \u2014 aim to be at airport by 10:00\u201310:15 for a 13:00 flight.', planB: 'If train is delayed/cancelled: Uber/taxi to FCO costs \u20ac48 fixed rate from anywhere in central Rome. Journey ~35\u201345 min depending on traffic.' },
+        here: 'At Trastevere station: find the regional departure board, look for trains marked "Fiumicino Aeroporto". Platform usually 3 or 4. Validate paper ticket at yellow machine before boarding.',
+        next: 'Next: Arrive FCO Fiumicino Airport \u2014 follow signs to Terminal you need. Most international flights depart from Terminal 1 or 3.'
+      },
+      { time: '10:15', end: '13:00', title: 'Fiumicino Airport (FCO)', subtitle: 'Check-in, duty free, last espresso',
+        lat: 41.8003, lng: 12.2389,
+        addr: 'Fiumicino Airport, Via dell\u2019Aeroporto di Fiumicino, 00054',
+        guide: "Fiumicino (Leonardo da Vinci Airport) is Rome\u2019s main international airport. After check-in and security, the duty-free area has Italian specialities worth a last-minute purchase: Venchi chocolate, limoncello, dried pasta from Eataly, and Italian coffee beans. The airport is modern and well-organized.",
+        prac: { hrs: 'Check-in usually opens 3 hours before departure. Security is efficient (15\u201330 min).', adm: 'Tax refund (Tax Free): if you spent \u20ac154.95+ at a single store, bring receipts + goods + passport to the Tax Free counter BEFORE check-in (goods must be unused).' },
+        tips: { insider: 'Grab a final espresso at Illy Caff\u00e8 in the departure area \u2014 a proper Italian goodbye. Venchi duty-free chocolates make great gifts (\u20ac10\u201320 boxes).', planB: 'If flight is delayed, the airport has decent restaurants landside and airside. Free WiFi throughout.' },
+        food: [
+          { n: 'Illy Caff\u00e8', a: 'Terminal 3 departure area', d: 'Last proper Italian espresso before leaving. Espresso \u20ac1.50, cappuccino \u20ac3. Worth the ritual.' },
+          { n: 'Eataly Roma', a: 'Terminal 3 airside', d: 'Pasta, olive oil, balsamic vinegar, pesto \u2014 packable Italian souvenirs. Small restaurant section too.' }
+        ],
+        here: 'Train arrives at Fiumicino Aeroporto station. Follow signs to your terminal (T1 or T3 for international). Airport shuttle bus connects terminals (free, every 5 min).',
+        next: 'Next: Flight home. Gate closes 30 min before departure \u2014 be at gate by 12:30.'
+      },
+      { time: '13:00', end: '23:59', title: 'Flight home', subtitle: 'Arrivederci, Italia! \u2708\ufe0f',
+        guide: "The flight from Rome to Hong Kong is approximately 11\u201312 hours (via a connection, as there are no direct flights). Settle in, browse through your 500+ photos, and start planning the next trip. Arrivederci, Italia \u2014 ci vediamo presto!",
+        tips: { insider: 'Set your watch to HK time as soon as you board. Drink water, avoid too much alcohol. The memories will last forever.' }
+      }
+    ]
+  }
+];
+
+const OPTIONAL_STOPS = [
+  { name: 'Accademia Gallery', city: 'florence', desc: 'Real David by Michelangelo', lat: 43.776775, lng: 11.258637 },
+  { name: 'Boboli Gardens', city: 'florence', desc: 'Renaissance garden', lat: 43.762735, lng: 11.248267 },
+  { name: 'Bocca della Verit\u00e0', city: 'rome', desc: '"Mouth of Truth"', lat: 41.888040, lng: 12.481330 },
+  { name: 'Villa Borghese', city: 'rome', desc: 'Park + museum', lat: 41.911950, lng: 12.485280 },
+  { name: 'Scuola di Cuoio', city: 'florence', desc: 'Leather school', lat: 43.768400, lng: 11.262800 }
+];
+
+const PHRASES = {
+  'Greetings': [
+    ['Buongiorno', 'bwon-JOHR-noh', '\u65e9\u5b89'],
+    ['Buonasera', 'bwoh-nah-SEH-rah', '\u665a\u4e0a\u597d'],
+    ['Ciao', 'chow', '\u4f60\u597d/\u518d\u898b'],
+    ['Grazie', 'GRAH-tsee-eh', '\u8b1d\u8b1d'],
+    ['Prego', 'PREH-goh', '\u4e0d\u5ba2\u6c23'],
+    ['Per favore', 'pehr fah-VOH-reh', '\u8acb'],
+    ['Mi scusi', 'mee SKOO-zee', '\u4e0d\u597d\u610f\u601d']
+  ],
+  'Restaurant': [
+    ['Un tavolo per due', 'oon TAH-voh-loh pehr DOO-eh', '\u5169\u4f4d'],
+    ['Il conto per favore', 'eel KOHN-toh pehr fah-VOH-reh', '\u57cb\u55ae'],
+    ['Vorrei...', 'vohr-RAY', '\u6211\u60f3\u8981...'],
+    ['Acqua naturale', 'AH-kwah nah-too-RAH-leh', '\u84b8\u993e\u6c34'],
+    ['Acqua frizzante', 'freet-ZAHN-teh', '\u6709\u6c23\u6c34'],
+    ['Vino rosso/bianco', 'VEE-noh ROHS-soh/bee-AHN-koh', '\u7d05/\u767d\u9152'],
+    ['Il menu per favore', 'eel meh-NOO', '\u83dc\u55ae']
+  ],
+  'Shopping': [
+    ['Quanto costa?', 'KWAHN-toh KOH-stah', '\u5e7e\u9322\uff1f'],
+    ['Troppo caro', 'TROHP-poh KAH-roh', '\u592a\u8cb4'],
+    ['Posso provare?', 'POHS-soh proh-VAH-reh', '\u53ef\u4ee5\u8a66\uff1f'],
+    ["Dov'\u00e8 il bagno?", 'doh-VEH eel BAH-nyoh', '\u5ec1\u6240\u5592\u908a\uff1f']
+  ],
+  'Directions': [
+    ["Dov'\u00e8...?", 'doh-VEH', '\u5592\u908a\uff1f'],
+    ['A destra', 'ah DEH-strah', '\u53f3'],
+    ['A sinistra', 'ah see-NEE-strah', '\u5de6'],
+    ['Dritto', 'DREET-toh', '\u76f4\u884c'],
+    ['La stazione', 'lah stah-tsee-OH-neh', '\u8eca\u7ad9']
+  ],
+  'Emergency': [
+    ['Aiuto!', 'ah-YOO-toh', '\u6551\u547d\uff01'],
+    ['Ho bisogno di un medico', 'oh bee-ZOH-nyoh dee oon MEH-dee-koh', '\u6211\u8981\u777d\u91ab\u751f'],
+    ['Chiamate la polizia', 'kyah-MAH-teh lah poh-lee-TSEE-ah', '\u5831\u8b66'],
+    ['Non parlo italiano', 'nohn PAHR-loh ee-tah-lee-AH-noh', '\u6211\u5514\u8b58\u610f\u5927\u5229\u6587']
+  ]
+};
+
+const PACKING = {
+  'Documents': ['Passport', 'Travel insurance', 'Flight tickets', 'Hotel confirmations', 'Train tickets', 'Attraction tickets (Duomo, Last Supper, Pisa, Colosseum, Vatican)'],
+  'Electronics': ['Phone charger', 'Power bank', 'European adapter (Type C/L)', 'Camera', 'Headphones'],
+  'Clothing': ['Light jacket / windbreaker', 'Scarf / shawl (churches)', 'Walking shoes', 'Layers for layering', 'Compact umbrella'],
+  'Essentials': ['Refillable water bottle', 'Sunglasses', 'Cross-body day bag', 'Medications', 'Cash (EUR)']
+};
+
+const EMERGENCY = [
+  { label: 'Emergency Services', items: [
+    { name: 'Emergency (all)', number: '112' },
+    { name: 'Ambulance', number: '118' }
+  ]},
+  { label: 'Consulates', items: [
+    { name: 'Chinese Embassy Rome', number: '+39 06-44250240' },
+    { name: 'Chinese Consulate Milan', number: '+39 02-5694106' },
+    { name: 'HK Immigration 24hr', number: '+852 1868' }
+  ]},
+  { label: 'Hospitals', items: [
+    { name: 'Milan: Policlinico', note: 'Via Sforza 35' },
+    { name: 'Florence: Santa Maria Nuova', note: 'Piazza Santa Maria Nuova 1' },
+    { name: 'Rome: Policlinico Umberto I', note: 'Viale del Policlinico 155' }
+  ]},
+  { label: 'Timezone', items: [
+    { note: 'Italy = UTC+2 (CET). Hong Kong is 6 hours ahead.' }
+  ]}
+];
+
+const BOOKINGS = [
+  {title:'Duomo Rooftop',day:'Day 1',time:'13:30',ref:'Pre-booked',note:'Elevator access, Piazza del Duomo'},
+  {title:'The Last Supper',day:'Day 1',time:'17:00',ref:'trip.com',note:'Arrive 15 min early, no flash'},
+  {title:'Leaning Tower of Pisa',day:'Day 4',time:'11:45',ref:'Pre-booked \u20ac20',note:'No bags allowed (free lockers)'},
+  {title:'Colosseum',day:'Day 5',time:'10:50',ref:'Timed entry',note:'Arrive 20 min early, strict time'},
+  {title:'Vatican Guided Tour',day:'Day 5',time:'14:00',ref:'Guided tour',note:'Cover shoulders & knees'},
+  {title:'Train Florence\u2192Rome',day:'Day 5',time:'08:14',ref:'Car #2, 7D & 8D',note:'NON-exchangeable ticket'}
+];
+
+const CULTURE_TIPS = {
+  milan:{title:'Milan Culture Tips',tips:[
+    'Fashion capital \u2014 dress well, especially in Brera & Quadrilatero. No flip-flops in nice restaurants.',
+    'Aperitivo (18:00\u201321:00) is sacred: order a drink (\u20ac8\u201312) and help yourself to the buffet. Can replace dinner.',
+    'Cover shoulders & knees for Duomo and all churches. They enforce it at the door.',
+    'Coperto (\u20ac1\u20133 cover charge) at restaurants is normal, not a scam. Tipping is optional \u2014 just round up.'
+  ]},
+  florence:{title:'Florence Culture Tips',tips:[
+    'Book restaurants ahead \u2014 popular spots like Il Santo Bevitore and Trattoria Mario fill up fast.',
+    'Leather market near San Lorenzo: start at 50% of asking price when bargaining. Genuine leather smells rich, not chemical.',
+    'Free water from nasoni (small drinking fountains) all over the city. Bring a refillable bottle.',
+    'Many museums closed on Mondays. Churches are free but require modest dress (cover shoulders & knees).'
+  ]},
+  rome:{title:'Rome Culture Tips',tips:[
+    'Watch for scams: fake charity petitions, overpriced taxis (use ONLY official white taxis with meters), gladiator selfie fees (\u20ac20+).',
+    'Carry \u20ac1\u20132 coins for church donation boxes \u2014 many illuminate frescoes for a coin.',
+    'Do NOT sit on the Spanish Steps \u2014 \u20ac400 fine since 2019.',
+    'Free nasoni (drinking fountains) everywhere \u2014 block the spout hole and water shoots up for drinking.',
+    'Good Friday (Apr 3): some shops/restaurants closed early. Via Crucis at Colosseum is free but arrive 1+ hour early for a good spot.'
+  ]}
+};
+
+const AMENITIES = {
+  milan:{
+    atm:'<strong>ATM:</strong> Intesa Sanpaolo, Via Torino 25 (3 min from hotel)',
+    pharmacy:'<strong>Pharmacy:</strong> Farmacia Via Torino 28 (3 min, open 8:30\u201319:30)',
+    toilet:'<strong>WC:</strong> Duomo Metro station (\u20ac1) or any caf\u00e9 if you buy a coffee'
+  },
+  florence:{
+    atm:'<strong>ATM:</strong> Unicredit, Via dei Panzani 13 (1 min from hotel)',
+    pharmacy:'<strong>Pharmacy:</strong> Farmacia Molteni, Via dei Calzaiuoli 7r (open 24/7)',
+    toilet:'<strong>WC:</strong> Santa Maria Novella station (\u20ac1) or ask at restaurants'
+  },
+  rome:{
+    atm:'<strong>ATM:</strong> BNL, Via Cavour 44 (5 min from hotel)',
+    pharmacy:'<strong>Pharmacy:</strong> Farmacia Piram, Via Nazionale 228 (8 min, open 24/7)',
+    toilet:'<strong>WC:</strong> Termini station (\u20ac1). Free nasoni for water refills everywhere.'
+  }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let currentTab = 'panelToday';
+let selectedDayIdx = 0;
+let mapSelectedDay = -1; // -1 = all
+let map = null;
+let mapLayers = [];
+let photoData = null;
+
+// ============================================================
+// UTILS
+// ============================================================
+function italyNow() {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: TZ }));
+}
+
+function italyDateStr() {
+  const d = italyNow();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getTripDayIndex() {
+  const today = italyDateStr();
+  return DAYS.findIndex(d => d.date === today);
+}
+
+function parseTime(timeStr, dateStr) {
+  const [h, m] = timeStr.split(':').map(Number);
+  const [y, mo, da] = dateStr.split('-').map(Number);
+  return new Date(y, mo - 1, da, h, m);
+}
+
+function cityClass(city) {
+  return 'city-' + city;
+}
+
+function getRate() {
+  const stored = localStorage.getItem('italy_rate');
+  return stored ? parseFloat(stored) : DEFAULT_RATE;
+}
+
+function saveRate() {
+  const v = parseFloat(document.getElementById('convRate').value);
+  if (v > 0) localStorage.setItem('italy_rate', v);
+}
+
+function chevronSVG() {
+  return '<svg class="ac-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+}
+
+function navSVG() {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>';
+}
+
+function getOpenBadge(hrsStr) {
+  try {
+    const now = italyNow();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const match = hrsStr.match(/(\d{1,2}):(\d{2})\s*[\u2013\-]\s*(\d{1,2}):(\d{2})/);
+    if (!match) return '';
+    const openMin = parseInt(match[1]) * 60 + parseInt(match[2]);
+    const closeMin = parseInt(match[3]) * 60 + parseInt(match[4]);
+    const isOpen = nowMin >= openMin && nowMin < closeMin;
+    return ' <span class="ac-status ' + (isOpen ? 'open-now' : 'closed-now') + '">' + (isOpen ? 'Open' : 'Closed') + '</span>';
+  } catch(e) { return ''; }
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  currentTab = id;
+  if (id === 'panelMap') initMap();
+  if (id === 'panelExpenses') renderExpenses();
+}
+
+// ============================================================
+// HEADER CLOCK
+// ============================================================
+function updateHeader() {
+  const now = italyNow();
+  const opts = { weekday: 'short', month: 'short', day: 'numeric' };
+  const dateStr = now.toLocaleDateString('en-US', opts);
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+  document.getElementById('headerDate').innerHTML = `${dateStr}<br><span style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700">${timeStr}</span><span class="tz">Italy time</span>`;
+}
+
+// ============================================================
+// TODAY PANEL
+// ============================================================
+function renderToday() {
+  const panel = document.getElementById('panelToday');
+  const now = italyNow();
+  const todayStr = italyDateStr();
+  const dayIdx = getTripDayIndex();
+
+  if (dayIdx === -1) {
+    // Not a trip day
+    const tripStart = new Date(TRIP_START + 'T00:00:00');
+    const today = new Date(todayStr + 'T00:00:00');
+    const diff = Math.ceil((tripStart - today) / (1000 * 60 * 60 * 24));
+
+    if (diff > 0) {
+      panel.innerHTML = `
+        <div class="no-trip-msg">
+          <h2 style="font-family:'Playfair Display',serif">Italy awaits</h2>
+          <div class="countdown">${diff} day${diff !== 1 ? 's' : ''}</div>
+          <p>until your adventure begins</p>
+          <p style="margin-top:16px;font-size:0.8rem;color:var(--terracotta)">Mar 29 \u2013 Apr 4, 2026</p>
+        </div>`;
+    } else {
+      panel.innerHTML = `
+        <div class="no-trip-msg">
+          <h2 style="font-family:'Playfair Display',serif">Arrivederci!</h2>
+          <p style="margin-top:8px">Your Italian journey has concluded.<br>What an adventure it was.</p>
+        </div>`;
+    }
+    return;
+  }
+
+  const day = DAYS[dayIdx];
+  const dateNum = new Date(day.date).getDate();
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthName = monthNames[new Date(day.date).getMonth()];
+
+  let html = `
+    <div class="today-hero">
+      <span class="city-badge ${cityClass(day.city)}">${day.city === 'como' ? 'Lake Como' : day.city.charAt(0).toUpperCase() + day.city.slice(1)}</span>
+      <div class="day-num">${monthName} ${dateNum}</div>
+      <div class="day-name">${day.day} \u2014 ${day.label}</div>
+      <div class="day-route">${day.route}</div>
+    </div>`;
+
+  if (day.hotel) {
+    const h = HOTELS[day.hotel];
+    const hNav = `<a class="ac-nav" href="https://maps.google.com/maps?q=${h.lat},${h.lng}" target="_blank" style="margin-left:6px">${navSVG()}Go</a>`;
+    html += `<div class="hotel-card"><div class="label">Tonight</div><div class="name">${h.name}${hNav}</div><div class="addr">${h.addr}${h.note ? ' \u2014 ' + h.note : ''}</div></div>`;
+  }
+
+  if (day.warning) {
+    html += `<div class="warn-card"><strong>Note:</strong> ${day.warning}</div>`;
+  }
+
+  // Find current/next activity
+  let currentIdx = -1, nextIdx = -1;
+  for (let i = 0; i < day.activities.length; i++) {
+    const a = day.activities[i];
+    const start = parseTime(a.time, day.date);
+    const end = a.end ? parseTime(a.end, day.date) : null;
+    if (end && now >= start && now < end) { currentIdx = i; break; }
+    if (now < start && nextIdx === -1) { nextIdx = i; }
+  }
+
+  day.activities.forEach((a, i) => {
+    const isCurrent = i === currentIdx;
+    const isNext = i === nextIdx && currentIdx === -1;
+    const start = parseTime(a.time, day.date);
+    const isPast = !isCurrent && now > start && i !== nextIdx;
+
+    let label = '';
+    if (isCurrent) label = '<div class="now-label">Now</div>';
+    else if (isNext) label = '<div class="next-up-label">Up next</div>';
+
+    html += renderActivityCard(a, isCurrent, isPast, label, i, dayIdx);
+  });
+
+  panel.innerHTML = html;
+  attachCardListeners(panel);
+}
+
+// ============================================================
+// DAYS PANEL
+// ============================================================
+function renderDaySelector() {
+  const container = document.getElementById('daySelector');
+  const todayIdx = getTripDayIndex();
+  let html = '';
+  DAYS.forEach((d, i) => {
+    const dateNum = new Date(d.date).getDate();
+    const isToday = i === todayIdx;
+    const isActive = i === selectedDayIdx;
+    html += `<div class="day-pill${isActive ? ' active' : ''}${isToday && !isActive ? ' today-ring' : ''}" onclick="selectDay(${i})">
+      <div class="dnum">${dateNum}</div>
+      <div class="dname">${d.day}</div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function selectDay(idx) {
+  selectedDayIdx = idx;
+  renderDaySelector();
+  renderDayContent();
+}
+
+function renderDayContent() {
+  const day = DAYS[selectedDayIdx];
+  const container = document.getElementById('dayContent');
+  const dateObj = new Date(day.date);
+  const monthNames = ['January','February','March','April'];
+  const monthName = monthNames[dateObj.getMonth() - (dateObj.getMonth() >= 3 ? 3 : 0)] || monthNames[dateObj.getMonth()];
+
+  let html = `
+    <div class="day-header">
+      <span class="city-badge ${cityClass(day.city)}">${day.city === 'como' ? 'Lake Como' : day.city.charAt(0).toUpperCase() + day.city.slice(1)}</span>
+      <h2 style="margin-top:6px">${day.label} \u2014 ${dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</h2>
+      <div class="route">${day.route}</div>
+    </div>`;
+
+  if (day.hotel) {
+    const h = HOTELS[day.hotel];
+    const hNav = `<a class="ac-nav" href="https://maps.google.com/maps?q=${h.lat},${h.lng}" target="_blank" style="margin-left:6px">${navSVG()}Go</a>`;
+    html += `<div class="hotel-card"><div class="label">Hotel</div><div class="name">${h.name}${hNav}</div><div class="addr">${h.addr}${h.note ? ' \u2014 ' + h.note : ''}</div></div>`;
+  }
+
+  if (day.warning) {
+    html += `<div class="warn-card"><strong>Note:</strong> ${day.warning}</div>`;
+  }
+
+  day.activities.forEach((a, i) => {
+    html += renderActivityCard(a, false, false, '', i, selectedDayIdx);
+  });
+
+  // Optional stops for this city
+  const optionals = OPTIONAL_STOPS.filter(o => o.city === day.city || (day.city === 'pisa' && o.city === 'florence'));
+  if (optionals.length > 0) {
+    html += '<div style="margin-top:16px;margin-bottom:8px;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(61,43,31,0.3)">Optional Nearby</div>';
+    optionals.forEach(o => {
+      html += `<div class="activity-card" style="opacity:0.6;border-left:3px solid rgba(61,43,31,0.1)">
+        <div class="ac-title" style="font-size:0.9rem">${o.name}</div>
+        <div class="ac-subtitle">${o.desc}</div>
+      </div>`;
+    });
+  }
+
+  container.innerHTML = html;
+  attachCardListeners(container);
+}
+
+// ============================================================
+// ACTIVITY CARD RENDERER
+// ============================================================
+function renderActivityCard(a, isCurrent, isPast, label, idx, dayIdx) {
+  const hasExpand = a.guide || a.tips || a.tip || a.food || a.prac || a.here;
+  const classes = ['activity-card'];
+  if (isCurrent) classes.push('now');
+  if (isPast) classes.push('past');
+
+  // Navigate button for locations with coords
+  let navBtn = '';
+  if (a.lat && a.lng) {
+    navBtn = `<a class="ac-nav" href="https://maps.google.com/maps?q=${a.lat},${a.lng}" target="_blank" onclick="event.stopPropagation()">${navSVG()}Navigate</a>`;
+  }
+
+  let expandHtml = '';
+  if (hasExpand) {
+    expandHtml = '<div class="ac-expand">';
+
+    // Guide
+    if (a.guide) {
+      expandHtml += `<div class="ac-expand-section">
+        <div class="ac-expand-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Guide</div>
+        <div class="ac-expand-text">${a.guide}</div>
+      </div>`;
+    }
+
+    // Practical info
+    if (a.prac) {
+      expandHtml += '<div class="ac-prac">';
+      if (a.prac.hrs) expandHtml += '<span class="ac-prac-label">Hours</span><span class="ac-prac-val">' + a.prac.hrs + getOpenBadge(a.prac.hrs) + '</span>';
+      if (a.prac.adm) expandHtml += '<span class="ac-prac-label">Cost</span><span class="ac-prac-val">' + a.prac.adm + '</span>';
+      if (a.prac.book) expandHtml += '<span class="ac-prac-label">Booking</span><span class="ac-prac-val">' + a.prac.book + '</span>';
+      if (a.prac.dress) expandHtml += '<span class="ac-prac-label">Dress</span><span class="ac-prac-val">' + a.prac.dress + '</span>';
+      expandHtml += '</div>';
+    }
+
+    // Tips (supports both string and object format)
+    if (a.tips || a.tip) {
+      expandHtml += '<div class="ac-tip">';
+      if (a.tip) {
+        expandHtml += a.tip;
+      } else if (typeof a.tips === 'string') {
+        expandHtml += a.tips;
+      } else {
+        if (a.tips.photo) expandHtml += '<b>Best shot:</b> ' + a.tips.photo + '<br>';
+        if (a.tips.crowd) expandHtml += '<b>Timing:</b> ' + a.tips.crowd + '<br>';
+        if (a.tips.insider) expandHtml += '<b>Insider:</b> ' + a.tips.insider + '<br>';
+        if (a.tips.planB) expandHtml += '<b>Plan B:</b> ' + a.tips.planB;
+      }
+      expandHtml += '</div>';
+    }
+
+    // Food (array of mini-cards or legacy string)
+    if (a.food && Array.isArray(a.food)) {
+      const city = DAYS[dayIdx] ? DAYS[dayIdx].city : '';
+      expandHtml += '<div class="ac-food-list">';
+      a.food.forEach(function(f) {
+        const navUrl = 'https://maps.google.com/maps?q=' + encodeURIComponent(f.n + ', ' + city + ', Italy');
+        expandHtml += '<div class="ac-food-item">';
+        expandHtml += '<div class="ac-food-name">' + f.n + ' <a class="ac-nav" href="' + navUrl + '" target="_blank" onclick="event.stopPropagation()">' + navSVG() + 'Go</a></div>';
+        if (f.a) expandHtml += '<div class="ac-food-addr">' + f.a + '</div>';
+        expandHtml += '<div class="ac-food-desc">' + f.d + '</div>';
+        expandHtml += '</div>';
+      });
+      expandHtml += '</div>';
+    } else if (a.food && typeof a.food === 'string') {
+      expandHtml += '<div class="ac-food">' + a.food + '</div>';
+    }
+
+    // Getting Here
+    if (a.here) {
+      expandHtml += '<div class="ac-here"><div class="ac-here-label">Getting Here</div>' + a.here + '</div>';
+    }
+
+    // Next Stop
+    if (a.next) {
+      expandHtml += '<div class="ac-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>Next: ' + a.next + '</div>';
+    }
+
+    expandHtml += '</div>';
+  }
+
+  return `${label}<div class="${classes.join(' ')}" data-expandable="${hasExpand}">
+    ${hasExpand ? chevronSVG() : ''}
+    <div class="ac-time">${a.time}${a.end ? ' \u2013 ' + a.end : ''}</div>
+    <div class="ac-title">${a.title}${navBtn}</div>
+    ${a.addr ? '<div class="ac-addr">' + a.addr + '</div>' : ''}
+    ${a.subtitle ? '<div class="ac-subtitle">' + a.subtitle + '</div>' : ''}
+    ${expandHtml}
+  </div>`;
+}
+
+function attachCardListeners(container) {
+  container.querySelectorAll('.activity-card[data-expandable="true"]').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('open');
+    });
+  });
+}
+
+// ============================================================
+// MAP
+// ============================================================
+const PIN_COLORS = {
+  attraction: '#4A8BAD',
+  food: '#C65D3E',
+  hotel: '#8B5E8B',
+  optional: '#999999',
+  transport: '#6B7B3F'
+};
+
+function createPin(color, size) {
+  size = size || 10;
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${size}px;height:${size}px;background:${color};border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
+  });
+}
+
+function initMap() {
+  if (map) { map.invalidateSize(); return; }
+  setTimeout(() => {
+    map = L.map('map-container', { zoomControl: false }).setView([43.5, 11.5], 6);
+    L.control.zoom({ position: 'topright' }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap',
+      maxZoom: 18
+    }).addTo(map);
+
+    // Legend
+    const legend = L.control({ position: 'bottomright' });
+    legend.onAdd = function() {
+      const div = L.DomUtil.create('div', 'map-legend');
+      div.innerHTML = `
+        <div class="map-legend-item"><span class="map-legend-dot" style="background:${PIN_COLORS.attraction}"></span> Attraction</div>
+        <div class="map-legend-item"><span class="map-legend-dot" style="background:${PIN_COLORS.food}"></span> Food</div>
+        <div class="map-legend-item"><span class="map-legend-dot" style="background:${PIN_COLORS.hotel}"></span> Hotel</div>
+        <div class="map-legend-item"><span class="map-legend-dot" style="background:${PIN_COLORS.transport}"></span> Transport</div>
+        <div class="map-legend-item"><span class="map-legend-dot" style="background:${PIN_COLORS.optional}"></span> Optional</div>`;
+      return div;
+    };
+    legend.addTo(map);
+
+    renderMapDayTabs();
+    renderMapPins(-1);
+  }, 100);
+}
+
+function renderMapDayTabs() {
+  const container = document.getElementById('mapDayTabs');
+  let html = `<div class="map-day-tab${mapSelectedDay === -1 ? ' active' : ''}" onclick="selectMapDay(-1)">All</div>`;
+  DAYS.forEach((d, i) => {
+    html += `<div class="map-day-tab${mapSelectedDay === i ? ' active' : ''}" onclick="selectMapDay(${i})">${d.label}</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function selectMapDay(idx) {
+  mapSelectedDay = idx;
+  renderMapDayTabs();
+  renderMapPins(idx);
+}
+
+function renderMapPins(dayIdx) {
+  // Clear layers
+  mapLayers.forEach(l => map.removeLayer(l));
+  mapLayers = [];
+
+  const bounds = [];
+
+  // Hotels
+  Object.values(HOTELS).forEach(h => {
+    const m = L.marker([h.lat, h.lng], { icon: createPin(PIN_COLORS.hotel, 12) })
+      .bindPopup(`<b>${h.name}</b><br>${h.addr}`)
+      .addTo(map);
+    mapLayers.push(m);
+    bounds.push([h.lat, h.lng]);
+  });
+
+  // Activities
+  const daysToShow = dayIdx === -1 ? DAYS : [DAYS[dayIdx]];
+  const CITY_ROUTE_COLORS = { milan: '#6B7B8A', como: '#4A8BAD', florence: '#8B6B4A', pisa: '#C65D3E', rome: '#D4A959' };
+
+  daysToShow.forEach(day => {
+    const routePoints = [];
+    day.activities.forEach(a => {
+      if (!a.lat) return;
+      const isFood = a.title.toLowerCase().includes('lunch') || a.title.toLowerCase().includes('dinner') ||
+                      a.title.toLowerCase().includes('brunch') || a.title.toLowerCase().includes('aperitivo') ||
+                      a.title.toLowerCase().includes('coffee') || a.title.toLowerCase().includes('breakfast');
+      const isTransport = a.title.toLowerCase().includes('train') || a.title.toLowerCase().includes('metro') ||
+                          a.title.toLowerCase().includes('ferry') || a.title.toLowerCase().includes('station');
+      let color = PIN_COLORS.attraction;
+      if (isFood) color = PIN_COLORS.food;
+      if (isTransport) color = PIN_COLORS.transport;
+
+      const m = L.marker([a.lat, a.lng], { icon: createPin(color) })
+        .bindPopup(`<b>${a.title}</b><br><span style="color:#C65D3E;font-size:0.75rem">${a.time}</span>${a.subtitle ? '<br>' + a.subtitle : ''}`)
+        .addTo(map);
+      mapLayers.push(m);
+      bounds.push([a.lat, a.lng]);
+      routePoints.push([a.lat, a.lng]);
+    });
+
+    // Route polyline
+    if (routePoints.length > 1) {
+      const line = L.polyline(routePoints, {
+        color: CITY_ROUTE_COLORS[day.city] || '#C65D3E',
+        weight: 2.5,
+        opacity: 0.4,
+        dashArray: '6,8'
+      }).addTo(map);
+      mapLayers.push(line);
+    }
+  });
+
+  // Optional stops
+  if (dayIdx === -1) {
+    OPTIONAL_STOPS.forEach(o => {
+      const m = L.marker([o.lat, o.lng], { icon: createPin(PIN_COLORS.optional, 8) })
+        .bindPopup(`<b>${o.name}</b><br>${o.desc}`)
+        .addTo(map);
+      mapLayers.push(m);
+      bounds.push([o.lat, o.lng]);
+    });
+  }
+
+  if (bounds.length > 0) {
+    map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+  }
+}
+
+// ============================================================
+// EXPENSES
+// ============================================================
+function getExpenses() {
+  try { return JSON.parse(localStorage.getItem('italy_expenses') || '[]'); }
+  catch { return []; }
+}
+
+function saveExpenses(arr) {
+  localStorage.setItem('italy_expenses', JSON.stringify(arr));
+}
+
+function handlePhoto(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      photoData = e.target.result;
+      document.getElementById('cameraBtnText').textContent = 'Photo added';
+      document.getElementById('cameraBtn').classList.add('has-photo');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function addExpense() {
+  const amount = parseFloat(document.getElementById('expAmount').value);
+  if (!amount || amount <= 0) return;
+  const cat = document.getElementById('expCategory').value;
+  const note = document.getElementById('expNote').value;
+  const dayVal = document.getElementById('expDay').value;
+
+  const expense = {
+    id: Date.now(),
+    amount,
+    category: cat,
+    note,
+    day: dayVal,
+    photo: photoData,
+    timestamp: new Date().toISOString()
+  };
+
+  const expenses = getExpenses();
+  expenses.push(expense);
+  saveExpenses(expenses);
+
+  // Reset form
+  document.getElementById('expAmount').value = '';
+  document.getElementById('expNote').value = '';
+  photoData = null;
+  document.getElementById('cameraBtnText').textContent = 'Add photo';
+  document.getElementById('cameraBtn').classList.remove('has-photo');
+  document.getElementById('cameraInput').value = '';
+
+  renderExpenses();
+}
+
+function deleteExpense(id) {
+  const expenses = getExpenses().filter(e => e.id !== id);
+  saveExpenses(expenses);
+  renderExpenses();
+}
+
+function renderExpenses() {
+  const expenses = getExpenses();
+  const rate = getRate();
+
+  // Summary
+  const totalEur = expenses.reduce((s, e) => s + e.amount, 0);
+  const todayStr = italyDateStr();
+  const todayExpenses = expenses.filter(e => e.day === todayStr);
+  const todayEur = todayExpenses.reduce((s, e) => s + e.amount, 0);
+
+  document.getElementById('expenseSummary').innerHTML = `
+    <div class="expense-stat">
+      <div class="val">\u20ac${totalEur.toFixed(0)}</div>
+      <div class="lbl">Trip total</div>
+    </div>
+    <div class="expense-stat">
+      <div class="val">HK$${(totalEur * rate).toFixed(0)}</div>
+      <div class="lbl">\u2248 HKD</div>
+    </div>
+    <div class="expense-stat">
+      <div class="val">\u20ac${todayEur.toFixed(0)}</div>
+      <div class="lbl">Today</div>
+    </div>`;
+
+  // Day selector for form
+  const daySelect = document.getElementById('expDay');
+  const currentVal = daySelect.value;
+  daySelect.innerHTML = '';
+  DAYS.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d.date;
+    opt.textContent = `${d.label} (${new Date(d.date).getDate()}/${new Date(d.date).getMonth()+1})`;
+    daySelect.appendChild(opt);
+  });
+  // Default to today if available
+  const todayIdx = getTripDayIndex();
+  if (todayIdx >= 0) daySelect.value = DAYS[todayIdx].date;
+  else if (currentVal) daySelect.value = currentVal;
+
+  // Expense list grouped by day
+  const grouped = {};
+  expenses.forEach(e => {
+    if (!grouped[e.day]) grouped[e.day] = [];
+    grouped[e.day].push(e);
+  });
+
+  let listHtml = '';
+  // Sort days in reverse
+  const sortedDays = Object.keys(grouped).sort().reverse();
+  sortedDays.forEach(day => {
+    const dayData = DAYS.find(d => d.date === day);
+    const dayLabel = dayData ? dayData.label : day;
+    const dayTotal = grouped[day].reduce((s, e) => s + e.amount, 0);
+    listHtml += `<div class="expense-day-label">${dayLabel} \u2014 \u20ac${dayTotal.toFixed(2)}</div>`;
+    grouped[day].reverse().forEach(e => {
+      listHtml += `<div class="expense-item">
+        <div class="ei-left">
+          <div class="ei-cat">${e.category}</div>
+          <div class="ei-note">${e.note || '\u2014'}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="ei-amount">\u20ac${e.amount.toFixed(2)}</div>
+          <div class="ei-hkd">HK$${(e.amount * rate).toFixed(0)}</div>
+        </div>
+        <button class="expense-delete" onclick="event.stopPropagation();deleteExpense(${e.id})">\u00d7</button>
+      </div>`;
+    });
+  });
+
+  document.getElementById('expenseList').innerHTML = listHtml;
+  document.getElementById('exportBtn').style.display = expenses.length > 0 ? 'block' : 'none';
+}
+
+function exportCSV() {
+  const expenses = getExpenses();
+  const rate = getRate();
+  let csv = 'Date,Day,Category,Note,EUR,HKD\n';
+  expenses.forEach(e => {
+    const dayData = DAYS.find(d => d.date === e.day);
+    csv += `${e.day},${dayData ? dayData.label : ''},${e.category},"${(e.note||'').replace(/"/g,'""')}",${e.amount.toFixed(2)},${(e.amount*rate).toFixed(2)}\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'italy_2026_expenses.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// CONVERTER
+// ============================================================
+function convertEur() {
+  const v = parseFloat(document.getElementById('convEur').value);
+  const rate = parseFloat(document.getElementById('convRate').value) || DEFAULT_RATE;
+  document.getElementById('convHkd').value = v ? (v * rate).toFixed(2) : '';
+}
+
+function convertHkd() {
+  const v = parseFloat(document.getElementById('convHkd').value);
+  const rate = parseFloat(document.getElementById('convRate').value) || DEFAULT_RATE;
+  document.getElementById('convEur').value = v ? (v / rate).toFixed(2) : '';
+}
+
+function quickConvert(eur) {
+  document.getElementById('convEur').value = eur;
+  convertEur();
+}
+
+// ============================================================
+// PHRASEBOOK
+// ============================================================
+function renderPhrasebook() {
+  const container = document.getElementById('phrasebook');
+  let html = '';
+  Object.entries(PHRASES).forEach(([group, phrases]) => {
+    html += `<div class="phrase-group"><div class="phrase-group-title">${group}</div>`;
+    phrases.forEach(([it, pro, zh]) => {
+      html += `<div class="phrase-item"><div><span class="phrase-it">${it}</span><span class="phrase-pro">${pro}</span></div><span class="phrase-zh">${zh}</span></div>`;
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+// ============================================================
+// CHECKLIST
+// ============================================================
+function getCheckedItems() {
+  try { return JSON.parse(localStorage.getItem('italy_checklist') || '{}'); }
+  catch { return {}; }
+}
+
+function renderChecklist() {
+  const container = document.getElementById('checklist');
+  const checked = getCheckedItems();
+  let total = 0, done = 0;
+  let html = '';
+
+  Object.entries(PACKING).forEach(([group, items]) => {
+    html += `<div class="checklist-group"><div class="checklist-group-title">${group}</div>`;
+    items.forEach(item => {
+      const key = group + ':' + item;
+      const isDone = !!checked[key];
+      total++;
+      if (isDone) done++;
+      html += `<div class="check-item${isDone ? ' done' : ''}" onclick="toggleCheck('${key.replace(/'/g, "\\'")}')">
+        <div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span class="check-label">${item}</span>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+  document.getElementById('checkProgress').textContent = `${done} / ${total} packed`;
+}
+
+function toggleCheck(key) {
+  const checked = getCheckedItems();
+  checked[key] = !checked[key];
+  localStorage.setItem('italy_checklist', JSON.stringify(checked));
+  renderChecklist();
+}
+
+// ============================================================
+// EMERGENCY
+// ============================================================
+function renderEmergency() {
+  const container = document.getElementById('emergencyInfo');
+  let html = '';
+  EMERGENCY.forEach(section => {
+    html += `<div class="emergency-card"><div class="em-label">${section.label}</div>`;
+    section.items.forEach(item => {
+      if (item.number) {
+        html += `<a href="tel:${item.number.replace(/\s/g,'')}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          ${item.name}: ${item.number}
+        </a>`;
+      } else if (item.name) {
+        html += `<div class="em-note"><strong>${item.name}</strong><br>${item.note || ''}</div>`;
+      } else {
+        html += `<div class="em-note">${item.note}</div>`;
+      }
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+// ============================================================
+// BOOKINGS, CULTURE TIPS, AMENITIES
+// ============================================================
+function renderBookings() {
+  const container = document.getElementById('bookingsList');
+  if (!container) return;
+  let html = '';
+  BOOKINGS.forEach(function(b) {
+    html += '<div class="booking-card"><div class="bk-left"><div class="bk-title">' + b.title + '</div><div class="bk-detail">' + b.day + ' \u2022 ' + b.time + ' \u2014 ' + b.note + '</div></div><div class="bk-ref" onclick="navigator.clipboard&&navigator.clipboard.writeText(\'' + b.ref.replace(/'/g,"\\'") + '\')" title="Tap to copy">' + b.ref + '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderCultureTips() {
+  const container = document.getElementById('cultureTips');
+  if (!container) return;
+  let html = '';
+  Object.entries(CULTURE_TIPS).forEach(function([city, data]) {
+    html += '<div class="culture-card"><h3>' + data.title + '</h3><ul>';
+    data.tips.forEach(function(t) { html += '<li>' + t + '</li>'; });
+    html += '</ul></div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderAmenities() {
+  const container = document.getElementById('amenitiesList');
+  if (!container) return;
+  let html = '';
+  Object.entries(AMENITIES).forEach(function([city, data]) {
+    const cityName = city.charAt(0).toUpperCase() + city.slice(1);
+    html += '<div class="emergency-card"><div class="em-label">' + cityName + '</div><div class="amenity-list">' + data.atm + '<br>' + data.pharmacy + '<br>' + data.toilet + '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  // Load saved rate
+  const savedRate = localStorage.getItem('italy_rate');
+  if (savedRate) document.getElementById('convRate').value = savedRate;
+
+  updateHeader();
+  setInterval(updateHeader, 30000);
+
+  renderToday();
+  setInterval(renderToday, 60000); // Refresh every minute
+
+  // Default day selection
+  const todayIdx = getTripDayIndex();
+  selectedDayIdx = todayIdx >= 0 ? todayIdx : 0;
+  renderDaySelector();
+  renderDayContent();
+
+  renderBookings();
+  renderCultureTips();
+  renderAmenities();
+  renderPhrasebook();
+  renderChecklist();
+  renderEmergency();
+  renderExpenses();
+
+  // Show Today panel
+  switchTab('panelToday', document.querySelector('[data-tab="panelToday"]'));
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
