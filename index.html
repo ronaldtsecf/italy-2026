@@ -1714,7 +1714,7 @@ function renderActivityCard(a, isCurrent, isPast, label, idx, dayIdx) {
     expandHtml += '</div>';
   }
 
-  return `${label}<div class="${classes.join(' ')}" data-expandable="${hasExpand}">
+  return `${label}<div class="${classes.join(' ')}" data-expandable="${!!hasExpand}">
     ${hasExpand ? chevronSVG() : ''}
     ${thumbHtml}
     <div class="ac-time">${a.time}${a.end ? ' \u2013 ' + a.end : ''}</div>
