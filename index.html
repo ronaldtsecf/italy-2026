@@ -16,12 +16,27 @@
   --milan:#6B7B8A;--como:#4A8BAD;--florence:#8B6B4A;--pisa:#C65D3E;--rome:#D4A959;
   --card-bg:#FFFFFF;--shadow:0 2px 12px rgba(61,43,31,0.08);
   --radius:12px;--tab-h:64px;
+  --text-muted:rgba(61,43,31,0.5);--border-light:rgba(61,43,31,0.06);
 }
+[data-theme="dark"]{
+  --cream:#1a1a2e;--brown:#e0d6cc;--card-bg:#262640;--gold:#e8c170;
+  --shadow:0 2px 12px rgba(0,0,0,0.3);--text-muted:rgba(224,214,204,0.5);
+  --border-light:rgba(224,214,204,0.08);
+  --terracotta:#e07a5f;--olive:#9ab87a;
+}
+[data-theme="dark"] .tab-bar{border-top-color:rgba(255,255,255,0.06)}
+[data-theme="dark"] .app-header{border-bottom-color:rgba(255,255,255,0.06)}
+[data-theme="dark"] .tab-btn{color:rgba(224,214,204,0.35)}
+[data-theme="dark"] .expense-form input,[data-theme="dark"] .expense-form select,
+[data-theme="dark"] .converter-input-group input,[data-theme="dark"] .converter-rate input{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:var(--brown)}
+[data-theme="dark"] .day-pill{border-color:rgba(255,255,255,0.1);background:var(--card-bg)}
+[data-theme="dark"] .ac-hero-img{background:rgba(255,255,255,0.04)}
+[data-theme="dark"] .ac-thumb{background:rgba(255,255,255,0.04)}
 html{font-size:16px;-webkit-text-size-adjust:100%}
 body{
   font-family:'Inter',sans-serif;background:var(--cream);color:var(--brown);
   max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;
-  padding-bottom:calc(var(--tab-h) + 20px);overflow-x:hidden;
+  padding-bottom:calc(var(--tab-h) + 60px);overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:600;line-height:1.25}
@@ -427,6 +442,106 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
 
 /* V3: titleEn subtitle */
 .ac-title-en{font-size:0.68rem;color:rgba(61,43,31,0.35);font-weight:400;font-family:'Inter',sans-serif;margin-top:1px}
+
+/* V4: Copy toast */
+.copy-toast{
+  position:fixed;bottom:calc(var(--tab-h) + 70px);left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--brown);color:var(--cream);padding:8px 16px;border-radius:20px;
+  font-size:0.75rem;font-weight:600;z-index:500;opacity:0;
+  transition:opacity 0.25s,transform 0.25s;pointer-events:none;
+}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* V4: Tap-to-copy address */
+.ac-addr.copyable{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.15s;border-radius:4px;padding:1px 4px;margin:-1px -4px}
+.ac-addr.copyable:active{background:rgba(198,93,62,0.1)}
+.hotel-card .addr.copyable{cursor:pointer;transition:background 0.15s;border-radius:4px;padding:1px 4px;margin:-1px -4px}
+.hotel-card .addr.copyable:active{background:rgba(212,169,89,0.15)}
+
+/* V4: Booking reminder */
+.booking-reminder{
+  background:linear-gradient(135deg,rgba(212,169,89,0.1),rgba(212,169,89,0.04));
+  border-left:3px solid var(--gold);border-radius:var(--radius);
+  padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;
+}
+.booking-reminder .br-icon{font-size:1.2rem;flex-shrink:0}
+.booking-reminder .br-info{flex:1}
+.booking-reminder .br-name{font-family:'Playfair Display',serif;font-size:0.85rem;font-weight:600}
+.booking-reminder .br-time{font-size:0.7rem;color:var(--gold);font-weight:600;margin-top:2px}
+
+/* V4: Quick actions bar */
+.quick-bar{
+  position:fixed;bottom:calc(var(--tab-h) + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;z-index:150;
+  display:flex;gap:6px;padding:8px 16px;
+  background:linear-gradient(to top,var(--cream) 80%,transparent);
+  pointer-events:none;
+}
+.quick-bar.hidden{display:none}
+.quick-pill{
+  pointer-events:auto;flex:1;display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:8px 6px;border-radius:20px;background:var(--card-bg);
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);border:1px solid rgba(61,43,31,0.06);
+  font-size:0.65rem;font-weight:600;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:transform 0.15s;
+}
+.quick-pill:active{transform:scale(0.95)}
+.quick-pill .qp-icon{font-size:0.9rem}
+
+/* V4: Quick sheet */
+.quick-sheet-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;
+  opacity:0;pointer-events:none;transition:opacity 0.25s;
+}
+.quick-sheet-overlay.open{opacity:1;pointer-events:auto}
+.quick-sheet{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);
+  width:100%;max-width:430px;background:var(--card-bg);
+  border-radius:16px 16px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));
+  z-index:301;transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);
+  max-height:70vh;overflow-y:auto;
+}
+.quick-sheet-overlay.open .quick-sheet{transform:translateX(-50%) translateY(0)}
+.quick-sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(61,43,31,0.15);margin:0 auto 16px}
+.quick-sheet h3{font-size:1rem;margin-bottom:12px}
+
+/* V4: Weather badge */
+.weather-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:0.75rem;font-weight:600;color:var(--brown);
+  background:var(--card-bg);border-radius:16px;padding:4px 10px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
+}
+.weather-badge .wb-icon{font-size:1rem}
+.weather-badge .wb-temp{font-family:'Playfair Display',serif;font-size:0.85rem}
+
+/* V4: Dark mode toggle */
+.theme-toggle{
+  background:none;border:none;cursor:pointer;padding:6px;
+  color:var(--brown);opacity:0.5;transition:opacity 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.theme-toggle:hover{opacity:0.8}
+.theme-toggle svg{width:18px;height:18px}
+
+/* V4: Day swipe transition */
+#dayContent{transition:opacity 0.15s,transform 0.15s}
+#dayContent.swipe-left{opacity:0;transform:translateX(-30px)}
+#dayContent.swipe-right{opacity:0;transform:translateX(30px)}
+
+/* V4: Discovery spots */
+.discovery-section{margin-top:20px;padding-top:16px;border-top:1px dashed rgba(61,43,31,0.1)}
+.discovery-title{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--olive);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.discovery-card{
+  background:var(--card-bg);border-radius:var(--radius);padding:10px 14px;
+  box-shadow:var(--shadow);margin-bottom:8px;display:flex;align-items:center;gap:10px;
+}
+.discovery-card .dc-icon{font-size:1.2rem;flex-shrink:0}
+.discovery-card .dc-info{flex:1;min-width:0}
+.discovery-card .dc-name{font-weight:600;font-size:0.85rem}
+.discovery-card .dc-type{font-size:0.6rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--olive);margin-left:4px}
+.discovery-card .dc-desc{font-size:0.72rem;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.discovery-card .dc-go{flex-shrink:0}
 </style>
 </head>
 <body>
@@ -437,7 +552,13 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
     <h1>Italy 2026</h1>
     <div class="subtitle">Ronald & Hazel</div>
   </div>
-  <div class="header-date" id="headerDate"></div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <div id="headerWeather"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </button>
+    <div class="header-date" id="headerDate"></div>
+  </div>
 </header>
 
 <!-- Panels -->
@@ -585,6 +706,25 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
   </div>
 </main>
 
+<!-- Copy Toast -->
+<div class="copy-toast" id="copyToast">已複製地址</div>
+
+<!-- Quick Actions Bar -->
+<div class="quick-bar" id="quickBar">
+  <div class="quick-pill" onclick="openSheet('phrases')"><span class="qp-icon">🈯</span>翻譯</div>
+  <div class="quick-pill" onclick="openSheet('currency')"><span class="qp-icon">💱</span>匯率</div>
+  <div class="quick-pill" onclick="openSheet('hotel')"><span class="qp-icon">🏨</span>酒店</div>
+  <div class="quick-pill" onclick="openSheet('emergency')"><span class="qp-icon">🆘</span>緊急</div>
+</div>
+
+<!-- Quick Sheet Overlay -->
+<div class="quick-sheet-overlay" id="quickSheetOverlay" onclick="closeSheet()">
+  <div class="quick-sheet" id="quickSheet" onclick="event.stopPropagation()">
+    <div class="quick-sheet-handle"></div>
+    <div id="quickSheetContent"></div>
+  </div>
+</div>
+
 <!-- Tab Bar -->
 <nav class="tab-bar">
   <button class="tab-btn active" data-tab="panelToday" onclick="switchTab('panelToday',this)">
@@ -644,12 +784,12 @@ const DAYS = [
         next: '\u6a5f\u5834\u51fa\u53e3\u642d Linate Express \u5df4\u58eb\u53bb\u7c73\u862d\u4e2d\u592e\u8eca\u7ad9 (\u20ac5, 25 \u5206\u9418)\uff0c\u6216\u8005\u7684\u58eb ~\u20ac25\u3002' },
       { time: '10:00', end: '11:00', title: '\u6a5f\u5834 \u2192 \u9152\u5e97',
         subtitle: '\u653e\u4f4e\u884c\u674e',
-        here: 'Linate Express \u5df4\u58eb\u76f4\u9054 Milano Centrale\uff0c\u8eca\u7a0b\u7d04 25 \u5206\u9418\u3002\u6216\u8005\u7684\u58eb\u5230\u9152\u5e97 ~\u20ac25-30\u3002',
+        here: '\u6a5f\u5834\u51fa\u53e3\u642d\u7684\u58eb\u5230\u9152\u5e97 ~\u20ac25-30\uff0c\u8eca\u7a0b\u7d04 25 \u5206\u9418\u3002\u6216\u8005\u642d Linate Express \u5df4\u58eb\u53bb Milano Centrale\uff0c\u518d\u8f49 Metro \u5230 Missori \u7ad9\u3002',
         next: '\u9152\u5e97 check-in \u653e\u4f4e\u884c\u674e\uff0c\u57f7\u597d\u8f15\u88dd\u5c31\u51fa\u767c\u3002' },
       { time: '11:00', end: '11:30', title: '\u9152\u5e97 Check-in',
-        subtitle: 'NYX Hotel Milan',
-        addr: 'Via Fabio Filzi 2, Milan', lat: 45.4855, lng: 9.201,
-        next: '\u9152\u5e97\u51fa\u9580\u5411\u5357\u884c 10 \u5206\u9418\uff0c\u6216\u8005\u642d Metro M3 \u53bb Duomo \u7ad9 (2 \u500b\u7ad9)\u3002' },
+        subtitle: 'Palazzo Touring Club Milan (Radisson Collection)',
+        addr: 'Corso Italia 10, Milan', lat: 45.459850, lng: 9.189200,
+        next: '\u9152\u5e97\u51fa\u9580\u5411\u5317\u884c 5 \u5206\u9418\u5c31\u5230 Duomo \u5ee3\u5834\uff0c\u975e\u5e38\u8fd1\u3002' },
       { time: '11:30', end: '13:00', title: '\u9152\u5e97\u9644\u8fd1\u98df Brunch',
         subtitle: '\u610f\u5f0f\u65e9\u5348\u9910\u91ab\u809a',
         food: [
@@ -1361,6 +1501,36 @@ const AMENITIES = {
 };
 
 // ============================================================
+// V4: DISCOVERY SPOTS
+// ============================================================
+const DISCOVERY = {
+  milan: [
+    { name: 'Orsonero Coffee', type: 'coffee', addr: 'Via Giuseppe Broggi 15, Milano', lat: 45.4777, lng: 9.2113, d: '\u7C73\u862D\u5143\u7956\u7CBE\u54C1\u5496\u5561\uFF0C\u52A0\u62FF\u5927\u592B\u5A66\u4E3B\u7406\uFF0C\u55AE\u54C1\u624B\u6C96\u51FA\u8272' },
+    { name: 'Cafezal', type: 'coffee', addr: 'Via Solferino 27, Milano', lat: 45.4744, lng: 9.1858, d: '2025\u5E74\u610F\u5927\u5229\u6700\u4F73\u5496\u5561\u5E97\uFF0CBrera\u5340\u81EA\u5BB6\u70D8\u7119' },
+    { name: 'Ditta Artigianale Milano', type: 'coffee', addr: 'Corso Magenta 31, Milano', lat: 45.4658, lng: 9.1759, d: '\u7FE1\u51B7\u7FE0\u540D\u5E972025\u5E74\u7C73\u862D\u5206\u5E97\uFF0C\u665A\u9593\u8B8A\u8EAB\u7434\u9152\u5427' },
+    { name: 'CIACCO', type: 'gelato', addr: 'Via Spadari 13, Milano', lat: 45.4637, lng: 9.1868, d: '\u96F6\u6DFB\u52A0\u624B\u5DE5\u96EA\u7CD5\uFF0CDuomo\u65C12025\u5F97\u734E' },
+    { name: '10 Corso Como', type: 'shop', addr: 'Corso Como 10, Milano', lat: 45.4820, lng: 9.1876, d: '\u50B3\u5947\u6982\u5FF5\u5E97\uFF1A\u6642\u88DD\u3001\u85DD\u5ECA\u3001\u66F8\u5E97\u3001\u82B1\u5712\u5496\u5561\u5EA7' },
+    { name: 'Cavalli e Nastri', type: 'shop', addr: 'Via Brera 2, Milano', lat: 45.4696, lng: 9.1882, d: '1970\u5E74\u8001\u5B57\u865F\u53E4\u8457\u5E97\uFF0CBrera\u5340\u8A2D\u8A08\u5E2B\u7CBE\u9078vintage' },
+  ],
+  florence: [
+    { name: 'Ditta Artigianale', type: 'coffee', addr: 'Via dei Neri 32R, Firenze', lat: 43.7683, lng: 11.2604, d: '\u7FE1\u51B7\u7FE0\u7CBE\u54C1\u5496\u5561\u59CB\u7956\uFF0C2013\u5E74\u958B\u696D\uFF0C\u665A\u9593\u8B8A\u7434\u9152\u5427' },
+    { name: 'La Cit\u00e9', type: 'coffee', addr: 'Borgo San Frediano 20R, Firenze', lat: 43.7685, lng: 11.2433, d: '\u66F8\u5E97\u5496\u5561\u9928\u9152\u5427\u5408\u4E00\uFF0COltrarno\u6587\u9752\u8056\u5730' },
+    { name: 'Vivoli', type: 'gelato', addr: "Via dell'Isola delle Stinche 7R, Firenze", lat: 43.7700, lng: 11.2598, d: '1930\u5E74\u5BB6\u65CF\u8001\u5E97\uFF0C95\u5E74\u50B3\u7D71\u624B\u5DE5\u96EA\u7CD5\uFF0Caffogato\u5FC5\u8A66' },
+    { name: 'My Sugar', type: 'gelato', addr: 'Via de\' Ginori 49R, Firenze', lat: 43.7769, lng: 11.2558, d: '\u4E9E\u6D32\u98A8\u5473\u624B\u5DE5\u96EA\u7CD5\uFF1A\u9ED1\u829D\u9EBB\u3001\u5976\u8336\u5473\uFF0C\u65E5\u9BAE\u88FD16\u6B3E' },
+    { name: 'Il Papiro', type: 'shop', addr: 'Via dei Tavolini 13R, Firenze', lat: 43.7763, lng: 11.2569, d: '1976\u5E74\u624B\u5DE5\u96F2\u77F3\u7D0B\u7D19\u8001\u5E97\uFF0CDuomo\u65C1\u50B3\u7D71\u5DE5\u85DD' },
+    { name: 'Scuola del Cuoio', type: 'shop', addr: 'Via San Giuseppe 5R, Firenze', lat: 43.7678, lng: 11.2625, d: '\u8056\u5341\u5B57\u6559\u5802\u5167\u76AE\u9769\u5DE5\u574A\uFF0C1950\u5E74\u4FEE\u58EB\u5275\u7ACB\uFF0C\u53EF\u53C3\u89C0' },
+  ],
+  rome: [
+    { name: 'Luna by Faro', type: 'coffee', addr: 'Via delle Quattro Fontane 175, Roma', lat: 41.9014, lng: 12.4923, d: '\u7F85\u99AC\u7CBE\u54C1\u5496\u5561\u5148\u9A45Faro\u65B0\u5E97\uFF0C\u81EA\u5BB6\u70D8\u7119Aliena\u8C46' },
+    { name: 'Roscioli Caff\u00e8', type: 'coffee', addr: 'Piazza Benedetto Cairoli 16, Roma', lat: 41.8941, lng: 12.4744, d: '\u5168\u7403\u50C5\u4E94\u90E8doppiometodo\u5496\u5561\u6A5F\uFF0C\u624B\u5DE5\u7CD5\u9EDE\u4E00\u6D41' },
+    { name: 'Fatamorgana', type: 'gelato', addr: 'Piazza degli Zingari 5, Roma', lat: 41.8962, lng: 12.4920, d: '\u6709\u6A5F\u96F6\u6DFB\u52A0\u624B\u5DE5\u96EA\u7CD5\uFF0CMonti\u5340\u5275\u610F\u53E3\u5473' },
+    { name: 'Giolitti', type: 'gelato', addr: 'Via degli Uffici del Vicario 40, Roma', lat: 41.9010, lng: 12.4772, d: '1900\u5E74\u8001\u5B57\u865F\u96EA\u7CD5\u5E97\uFF0C\u842C\u795E\u6BBF\u65C1\uFF0C\u958B\u5230\u51CC\u6668\u4E00\u9EDE\u534A' },
+    { name: 'Mercato Monti', type: 'shop', addr: 'Via Leonina 46, Roma', lat: 41.8959, lng: 12.4917, d: '\u9031\u672B\u9650\u5B9A\u8A2D\u8A08\u5E02\u96C6\uFF1A\u65B0\u92B3\u8A2D\u8A08\u5E2B\u3001\u53E4\u8457\u3001\u624B\u4F5C\u98FE\u54C1' },
+    { name: 'Overlook Libreria del Cinema', type: 'shop', addr: 'Vicolo della Cancelleria 7, Roma', lat: 41.8978, lng: 12.4714, d: '\u96FB\u5F71\u4E3B\u984C\u66F8\u5E97\uFF0C\u6D77\u5831\u3001DVD\u6536\u85CF\uFF0C\u8FD1Campo de\' Fiori' },
+  ]
+};
+
+// ============================================================
 // V3: UI LABELS (中文)
 // ============================================================
 const UI = {
@@ -1386,6 +1556,8 @@ let mapSelectedDay = -1; // -1 = all
 let map = null;
 let mapLayers = [];
 let photoData = null;
+let weatherCache = {};
+let swipeTouchStartX = 0;
 
 // ============================================================
 // UTILS
@@ -1467,6 +1639,232 @@ function getOpenBadge(hrsStr) {
 }
 
 // ============================================================
+// V4: COPY ADDRESS
+// ============================================================
+function copyAddr(el) {
+  var text = el.getAttribute('data-addr') || el.textContent.replace(/\s*Go$/, '').trim();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  var toast = document.getElementById('copyToast');
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 800);
+}
+
+// ============================================================
+// V4: DARK MODE
+// ============================================================
+function toggleTheme() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var newTheme = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('italy_theme', newTheme);
+  updateThemeIcon(newTheme);
+  if (map) updateMapTiles();
+}
+
+function updateThemeIcon(theme) {
+  var icon = document.getElementById('themeIcon');
+  if (theme === 'dark') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+  }
+}
+
+function initTheme() {
+  var saved = localStorage.getItem('italy_theme');
+  var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  updateThemeIcon(theme);
+}
+
+var mapTileLayer = null;
+function updateMapTiles() {
+  if (!map || !mapTileLayer) return;
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var url = isDark
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+  mapTileLayer.setUrl(url);
+}
+
+// ============================================================
+// V4: WEATHER
+// ============================================================
+var WEATHER_ICONS = {
+  0: '\u2600\uFE0F', 1: '\u26C5', 2: '\u26C5', 3: '\u2601\uFE0F',
+  45: '\uD83C\uDF2B\uFE0F', 48: '\uD83C\uDF2B\uFE0F',
+  51: '\uD83C\uDF26', 53: '\uD83C\uDF26', 55: '\uD83C\uDF27',
+  61: '\uD83C\uDF27', 63: '\uD83C\uDF27\uFE0F', 65: '\uD83C\uDF27\uFE0F',
+  71: '\u2744\uFE0F', 73: '\u2744\uFE0F', 75: '\u2744\uFE0F',
+  80: '\uD83C\uDF26', 81: '\uD83C\uDF27', 82: '\uD83C\uDF27\uFE0F',
+  95: '\u26C8\uFE0F', 96: '\u26C8\uFE0F', 99: '\u26C8\uFE0F'
+};
+
+function getWeatherIcon(code) {
+  return WEATHER_ICONS[code] || '\u2600\uFE0F';
+}
+
+function fetchWeather(city, callback) {
+  var coords = HOTELS[city];
+  if (!coords) return;
+  var key = 'italy_weather_' + city;
+  var cached = weatherCache[city];
+  if (cached && (Date.now() - cached.ts < 1800000)) {
+    callback(cached.data);
+    return;
+  }
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + coords.lat + '&longitude=' + coords.lng + '&current=temperature_2m,weathercode&timezone=Europe/Rome';
+  fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.current) {
+      var result = { temp: Math.round(data.current.temperature_2m), code: data.current.weathercode };
+      weatherCache[city] = { data: result, ts: Date.now() };
+      callback(result);
+    }
+  }).catch(function() {});
+}
+
+function renderHeaderWeather() {
+  var dayIdx = getTripDayIndex();
+  if (dayIdx === -1) return;
+  var city = DAYS[dayIdx].city;
+  var hotelCity = city === 'como' ? 'milan' : city === 'pisa' ? 'florence' : city;
+  fetchWeather(hotelCity, function(w) {
+    document.getElementById('headerWeather').innerHTML = '<div class="weather-badge"><span class="wb-icon">' + getWeatherIcon(w.code) + '</span><span class="wb-temp">' + w.temp + '\u00B0</span></div>';
+  });
+}
+
+// ============================================================
+// V4: QUICK ACTIONS
+// ============================================================
+function openSheet(type) {
+  var content = document.getElementById('quickSheetContent');
+  var html = '';
+  if (type === 'phrases') {
+    html = '<h3>\uD83C\uDDEE\uD83C\uDDF9 \u5E38\u7528\u610F\u5927\u5229\u8A9E</h3>';
+    for (var group in PHRASES) {
+      html += '<div class="phrase-group"><div class="phrase-group-title">' + group + '</div>';
+      PHRASES[group].forEach(function(p) {
+        html += '<div class="phrase-item"><div><span class="phrase-it">' + p[0] + '</span><span class="phrase-pro">' + p[1] + '</span></div><span class="phrase-zh">' + p[2] + '</span></div>';
+      });
+      html += '</div>';
+    }
+  } else if (type === 'currency') {
+    var rate = getRate();
+    html = '<h3>\uD83D\uDCB1 \u532F\u7387\u8A08\u7B97\u5668</h3>';
+    html += '<div class="converter-box">';
+    html += '<div class="converter-input-group"><div class="curr">\u20AC</div><input type="number" id="qsEur" placeholder="0" inputmode="decimal" oninput="qsConvert(\'eur\')"></div>';
+    html += '<div class="converter-swap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="17 1 21 5 17 9"/><line x1="3" y1="5" x2="21" y2="5"/><polyline points="7 23 3 19 7 15"/><line x1="21" y1="19" x2="3" y2="19"/></svg></div>';
+    html += '<div class="converter-input-group"><div class="curr">HK$</div><input type="number" id="qsHkd" placeholder="0" inputmode="decimal" oninput="qsConvert(\'hkd\')"></div>';
+    html += '<div style="text-align:center;font-size:0.7rem;color:var(--text-muted);margin-top:8px">1 EUR = ' + rate.toFixed(1) + ' HKD</div>';
+    html += '<div class="quick-btns">';
+    [5,10,20,50,100].forEach(function(v) {
+      html += '<div class="quick-btn" onclick="qsQuick(' + v + ')">\u20AC' + v + '</div>';
+    });
+    html += '</div></div>';
+  } else if (type === 'hotel') {
+    var dayIdx = getTripDayIndex();
+    var city = dayIdx >= 0 ? DAYS[dayIdx].hotel || DAYS[dayIdx].city : 'milan';
+    html = '<h3>\uD83C\uDFE8 \u9152\u5E97\u8CC7\u8A0A</h3>';
+    for (var k in HOTELS) {
+      var h = HOTELS[k];
+      var isCurrent = (k === city);
+      html += '<div class="hotel-card" style="margin-bottom:10px;' + (isCurrent ? 'border-color:var(--terracotta)' : '') + '">';
+      html += '<div class="label">' + (isCurrent ? '\u4ECA\u665A\u4F4F\u5BBF' : {milan:'\u7C73\u862D',florence:'\u7FE1\u51B7\u7FE0',rome:'\u7F85\u99AC'}[k]) + '</div>';
+      html += '<div class="name">' + h.name + ' <a class="ac-nav" href="https://maps.google.com/maps?q=' + h.lat + ',' + h.lng + '" target="_blank">' + navSVG() + 'Go</a></div>';
+      html += '<div class="addr copyable" data-addr="' + h.addr + '" onclick="copyAddr(this)">' + h.addr + (h.note ? ' \u2014 ' + h.note : '') + '</div>';
+      html += '</div>';
+    }
+  } else if (type === 'emergency') {
+    html = '<h3>\uD83C\uDD98 \u7DCA\u6025\u8CC7\u8A0A</h3>';
+    EMERGENCY.forEach(function(e) {
+      html += '<div class="emergency-card"><div class="em-label">' + e.label + '</div>';
+      e.items.forEach(function(item) {
+        html += '<a href="tel:' + item.num.replace(/\s/g,'') + '">';
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>';
+        html += item.name + ': ' + item.num + '</a>';
+      });
+      if (e.note) html += '<div class="em-note">' + e.note + '</div>';
+      html += '</div>';
+    });
+  }
+  content.innerHTML = html;
+  document.getElementById('quickSheetOverlay').classList.add('open');
+}
+
+function closeSheet() {
+  document.getElementById('quickSheetOverlay').classList.remove('open');
+}
+
+function qsConvert(from) {
+  var rate = getRate();
+  if (from === 'eur') {
+    var v = parseFloat(document.getElementById('qsEur').value) || 0;
+    document.getElementById('qsHkd').value = v > 0 ? (v * rate).toFixed(0) : '';
+  } else {
+    var v = parseFloat(document.getElementById('qsHkd').value) || 0;
+    document.getElementById('qsEur').value = v > 0 ? (v / rate).toFixed(1) : '';
+  }
+}
+
+function qsQuick(eur) {
+  document.getElementById('qsEur').value = eur;
+  qsConvert('eur');
+}
+
+// ============================================================
+// V4: SWIPE DAYS
+// ============================================================
+function initSwipe() {
+  var el = document.getElementById('dayContent');
+  el.addEventListener('touchstart', function(e) {
+    swipeTouchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  el.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - swipeTouchStartX;
+    if (Math.abs(dx) < 50) return;
+    if (dx < 0 && selectedDayIdx < DAYS.length - 1) {
+      el.classList.add('swipe-left');
+      setTimeout(function() {
+        selectDay(selectedDayIdx + 1);
+        el.classList.remove('swipe-left');
+      }, 150);
+    } else if (dx > 0 && selectedDayIdx > 0) {
+      el.classList.add('swipe-right');
+      setTimeout(function() {
+        selectDay(selectedDayIdx - 1);
+        el.classList.remove('swipe-right');
+      }, 150);
+    }
+  }, { passive: true });
+}
+
+// ============================================================
+// V4: AUTO-SCROLL TO CURRENT
+// ============================================================
+function scrollToCurrentActivity() {
+  setTimeout(function() {
+    var el = document.querySelector('#panelToday [data-current="true"]') || document.querySelector('#panelToday [data-next="true"]');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 200);
+}
+
+// ============================================================
+// V4: QUICK BAR VISIBILITY
+// ============================================================
+function updateQuickBar() {
+  var bar = document.getElementById('quickBar');
+  var show = (currentTab === 'panelToday' || currentTab === 'panelDays');
+  bar.classList.toggle('hidden', !show);
+}
+
+// ============================================================
 // TABS
 // ============================================================
 function switchTab(id, btn) {
@@ -1477,6 +1875,7 @@ function switchTab(id, btn) {
   currentTab = id;
   if (id === 'panelMap') initMap();
   if (id === 'panelExpenses') renderExpenses();
+  updateQuickBar();
 }
 
 // ============================================================
@@ -1539,11 +1938,21 @@ function renderToday() {
   if (day.hotel) {
     const h = HOTELS[day.hotel];
     const hNav = `<a class="ac-nav" href="https://maps.google.com/maps?q=${h.lat},${h.lng}" target="_blank" style="margin-left:6px">${navSVG()}Go</a>`;
-    html += `<div class="hotel-card"><div class="label">${UI.hotel}</div><div class="name">${h.name}${hNav}</div><div class="addr">${h.addr}${h.note ? ' \u2014 ' + h.note : ''}</div></div>`;
+    html += `<div class="hotel-card"><div class="label">${UI.hotel}</div><div class="name">${h.name}${hNav}</div><div class="addr copyable" data-addr="${h.addr}" onclick="copyAddr(this)">${h.addr}${h.note ? ' \u2014 ' + h.note : ''}</div></div>`;
   }
 
   if (day.warning) {
     html += `<div class="warn-card"><strong>${UI.note}\uff1a</strong> ${day.warning}</div>`;
+  }
+
+  // Booking countdown cards for today
+  var todayBookings = BOOKINGS.filter(function(b) { return b.date === day.date; });
+  if (todayBookings.length) {
+    todayBookings.forEach(function(b) {
+      var bTime = parseTime(b.time, day.date);
+      var cd = formatCountdown(bTime - now);
+      html += '<div class="booking-reminder"><div class="br-icon">\uD83C\uDFAB</div><div class="br-info"><div class="br-name">' + b.name + '</div><div class="br-time">' + b.time + (cd ? ' \u2014 ' + cd + '\u5F8C' : b.time && now > bTime ? ' \u2014 \u5DF2\u904E' : '') + '</div></div></div>';
+    });
   }
 
   // Progress bar
@@ -1573,11 +1982,12 @@ function renderToday() {
       label = '<div class="next-up-label">' + UI.upNext + (cd ? ' <span class="cd">\u2014 ' + cd + '\u5f8c</span>' : '') + '</div>';
     }
 
-    html += renderActivityCard(a, isCurrent, isPast, label, i, dayIdx);
+    html += renderActivityCard(a, isCurrent, isPast, label, i, dayIdx, isNext);
   });
 
   panel.innerHTML = html;
   attachCardListeners(panel);
+  scrollToCurrentActivity();
 }
 
 // ============================================================
@@ -1622,7 +2032,7 @@ function renderDayContent() {
   if (day.hotel) {
     const h = HOTELS[day.hotel];
     const hNav = `<a class="ac-nav" href="https://maps.google.com/maps?q=${h.lat},${h.lng}" target="_blank" style="margin-left:6px">${navSVG()}Go</a>`;
-    html += `<div class="hotel-card"><div class="label">${UI.hotel}</div><div class="name">${h.name}${hNav}</div><div class="addr">${h.addr}${h.note ? ' \u2014 ' + h.note : ''}</div></div>`;
+    html += `<div class="hotel-card"><div class="label">${UI.hotel}</div><div class="name">${h.name}${hNav}</div><div class="addr copyable" data-addr="${h.addr}" onclick="copyAddr(this)">${h.addr}${h.note ? ' \u2014 ' + h.note : ''}</div></div>`;
   }
 
   if (day.warning) {
@@ -1634,6 +2044,22 @@ function renderDayContent() {
     var progress = getDayProgress(day);
     html += '<div class="day-progress"><div class="day-progress-fill" style="width:' + progress + '%"></div></div>';
   }
+
+  // Weather badge for day header
+  var weatherCity = day.city === 'como' ? 'milan' : day.city === 'pisa' ? 'florence' : day.city;
+  fetchWeather(weatherCity, function(w) {
+    var badge = document.querySelector('#dayContent .weather-badge');
+    if (!badge) {
+      var header = document.querySelector('#dayContent .day-header');
+      if (header) {
+        var wb = document.createElement('div');
+        wb.className = 'weather-badge';
+        wb.style.marginTop = '6px';
+        wb.innerHTML = '<span class="wb-icon">' + getWeatherIcon(w.code) + '</span><span class="wb-temp">' + w.temp + '\u00B0C</span>';
+        header.appendChild(wb);
+      }
+    }
+  });
 
   day.activities.forEach((a, i) => {
     html += renderActivityCard(a, false, false, '', i, selectedDayIdx);
@@ -1651,6 +2077,22 @@ function renderDayContent() {
     });
   }
 
+  // Discovery spots for this city
+  var discCity = day.city === 'como' ? 'milan' : day.city === 'pisa' ? 'florence' : day.city;
+  if (typeof DISCOVERY !== 'undefined' && DISCOVERY[discCity]) {
+    html += '<div class="discovery-section"><div class="discovery-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>\u63A2\u7D22\u9644\u8FD1</div>';
+    var typeIcons = { coffee: '\u2615', gelato: '\uD83C\uDF66', shop: '\uD83D\uDECD\uFE0F' };
+    DISCOVERY[discCity].forEach(function(s) {
+      html += '<div class="discovery-card">';
+      html += '<div class="dc-icon">' + (typeIcons[s.type] || '\uD83D\uDCCD') + '</div>';
+      html += '<div class="dc-info"><div class="dc-name">' + s.name + '<span class="dc-type">' + s.type + '</span></div>';
+      html += '<div class="dc-desc">' + s.d + '</div></div>';
+      html += '<a class="ac-nav" href="https://maps.google.com/maps?q=' + s.lat + ',' + s.lng + '" target="_blank">' + navSVG() + 'Go</a>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
   container.innerHTML = html;
   attachCardListeners(container);
 }
@@ -1658,7 +2100,7 @@ function renderDayContent() {
 // ============================================================
 // ACTIVITY CARD RENDERER
 // ============================================================
-function renderActivityCard(a, isCurrent, isPast, label, idx, dayIdx) {
+function renderActivityCard(a, isCurrent, isPast, label, idx, dayIdx, isNext) {
   const hasExpand = a.guide || a.tips || a.tip || a.food || a.prac || a.here || a.highlights || a.img;
   const classes = ['activity-card'];
   if (isCurrent) classes.push('now');
@@ -1754,13 +2196,22 @@ function renderActivityCard(a, isCurrent, isPast, label, idx, dayIdx) {
     expandHtml += '</div>';
   }
 
-  return `${label}<div class="${classes.join(' ')}" data-expandable="${!!hasExpand}">
+  var dataAttrs = ' data-expandable="' + (!!hasExpand) + '"';
+  if (isCurrent) dataAttrs += ' data-current="true"';
+  if (isNext) dataAttrs += ' data-next="true"';
+
+  var addrHtml = '';
+  if (a.addr) {
+    addrHtml = '<div class="ac-addr copyable" data-addr="' + a.addr + '" onclick="event.stopPropagation();copyAddr(this)">' + a.addr + '</div>';
+  }
+
+  return `${label}<div class="${classes.join(' ')}"${dataAttrs}>
     ${hasExpand ? chevronSVG() : ''}
     ${thumbHtml}
     <div class="ac-time">${a.time}${a.end ? ' \u2013 ' + a.end : ''}</div>
     <div class="ac-title">${a.title}${navBtn}</div>
     ${a.titleEn ? '<div class="ac-title-en">' + a.titleEn + '</div>' : ''}
-    ${a.addr ? '<div class="ac-addr">' + a.addr + '</div>' : ''}
+    ${addrHtml}
     ${a.subtitle ? '<div class="ac-subtitle">' + a.subtitle + '</div>' : ''}
     ${expandHtml}
   </div>`;
@@ -1800,8 +2251,12 @@ function initMap() {
   setTimeout(() => {
     map = L.map('map-container', { zoomControl: false }).setView([43.5, 11.5], 6);
     L.control.zoom({ position: 'topright' }).addTo(map);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap',
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var tileUrl = isDark
+      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+    mapTileLayer = L.tileLayer(tileUrl, {
+      attribution: '&copy; OpenStreetMap &copy; CartoDB',
       maxZoom: 18
     }).addTo(map);
 
@@ -1900,6 +2355,27 @@ function renderMapPins(dayIdx) {
         .addTo(map);
       mapLayers.push(m);
       bounds.push([o.lat, o.lng]);
+    });
+  }
+
+  // Discovery spots
+  if (typeof DISCOVERY !== 'undefined') {
+    var discCities = dayIdx === -1 ? Object.keys(DISCOVERY) : [];
+    if (dayIdx >= 0) {
+      var c = DAYS[dayIdx].city;
+      var dc = c === 'como' ? 'milan' : c === 'pisa' ? 'florence' : c;
+      if (DISCOVERY[dc]) discCities = [dc];
+    }
+    var discColor = '#9B59B6';
+    discCities.forEach(function(city) {
+      DISCOVERY[city].forEach(function(s) {
+        var typeEmoji = { coffee: '\u2615', gelato: '\uD83C\uDF66', shop: '\uD83D\uDECD' }[s.type] || '\uD83D\uDCCD';
+        var m = L.marker([s.lat, s.lng], { icon: createPin(discColor, 7) })
+          .bindPopup('<b>' + typeEmoji + ' ' + s.name + '</b><br><span style="font-size:0.75rem">' + s.d + '</span>')
+          .addTo(map);
+        mapLayers.push(m);
+        if (dayIdx >= 0) bounds.push([s.lat, s.lng]);
+      });
     });
   }
 
@@ -2201,6 +2677,9 @@ function renderAmenities() {
 // INIT
 // ============================================================
 function init() {
+  // V4: Init theme
+  initTheme();
+
   // Load saved rate
   const savedRate = localStorage.getItem('italy_rate');
   if (savedRate) document.getElementById('convRate').value = savedRate;
@@ -2224,6 +2703,11 @@ function init() {
   renderChecklist();
   renderEmergency();
   renderExpenses();
+
+  // V4: Init swipe, weather, quick bar
+  initSwipe();
+  renderHeaderWeather();
+  updateQuickBar();
 
   // Show Today panel
   switchTab('panelToday', document.querySelector('[data-tab="panelToday"]'));
