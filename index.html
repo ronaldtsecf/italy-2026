@@ -787,14 +787,14 @@ const DAYS = [
       { time: '05:00', end: '06:50', title: '\u62b5\u9054 Heathrow',
         subtitle: 'Check-in + \u904e\u5b89\u6aa2'
       },
-      { time: '06:50', end: '09:50', title: '\u822a\u73ed LHR \u2192 LIN',
-        subtitle: '09:50 \u62b5\u9054\u7c73\u862d Linate \u6a5f\u5834',
-        here: '\u822a\u73ed\uff1aBA570 (\u6216\u8005\u4f60 booking \u5605\u822a\u73ed)\u3002Linate \u4fc2\u7c73\u862d\u6700\u8fd1\u5e02\u4e2d\u5fc3\u5605\u6a5f\u5834\uff0c\u843d\u6a5f\u5f8c\u8ddf\u6307\u793a\u53bb Arrivals\u3002',
-        next: '\u6a5f\u5834\u51fa\u53e3\u642d Linate Express \u5df4\u58eb\u53bb\u7c73\u862d\u4e2d\u592e\u8eca\u7ad9 (\u20ac5, 25 \u5206\u9418)\uff0c\u6216\u8005\u7684\u58eb ~\u20ac25\u3002' },
-      { time: '10:00', end: '11:00', title: '\u6a5f\u5834 \u2192 \u9152\u5e97',
-        subtitle: '\u653e\u4f4e\u884c\u674e',
-        here: '\u6a5f\u5834\u51fa\u53e3\u642d\u7684\u58eb\u5230\u9152\u5e97 ~\u20ac25-30\uff0c\u8eca\u7a0b\u7d04 25 \u5206\u9418\u3002\u6216\u8005\u642d Linate Express \u5df4\u58eb\u53bb Milano Centrale\uff0c\u518d\u8f49 Metro \u5230 Missori \u7ad9\u3002',
-        next: '\u9152\u5e97 check-in \u653e\u4f4e\u884c\u674e\uff0c\u57f7\u597d\u8f15\u88dd\u5c31\u51fa\u767c\u3002' },
+      { time: '06:50', end: '09:50', title: '航班 LHR → LIN',
+        subtitle: '09:50 抵達米蘭 Linate 機場',
+        here: '航班：BA570 (或者你 booking 嘅航班)。Linate 係米蘭最近市中心嘅機場，落機後跟指示去 Arrivals。',
+        next: '🚇 推薦 M4 Metro（藍線）— Linate Aeroporto → San Babila，7 站 12 分鐘，€2.20/人。2024 年 10 月全線通車，最平最快！出 San Babila 站沿 Corso Vittorio Emanuele II 向南行 10 分鐘到酒店。其他選擇：🚌 Bus 73（€2，25-35 min 直達 Duomo，但會塞車）｜🚌 Linate Express（€5，25 min 去 Centrale 要轉車）｜🚕 的士（€15-25，方便帶行李）。' },
+      { time: '10:00', end: '11:00', title: '機場 → 酒店',
+        subtitle: '放低行李',
+        here: '推薦路線：M4 Metro Linate Aeroporto → San Babila（12 分鐘，€2.20/人）。出站後沿 Corso Vittorio Emanuele II 向南，經 Piazza San Carlo 到 Corso Italia 10，步行約 10 分鐘。Milan Metro 支援 Apple Pay contactless 直接拍入閘，唔使買飛。如果行李多可以搭的士（€15-25），同司機講 "Corso Italia dieci" 就得。',
+        next: '酒店 check-in 放低行李，執好輕裝就出發。' },
       { time: '11:00', end: '11:30', title: '\u9152\u5e97 Check-in',
         subtitle: 'Palazzo Touring Club Milan (Radisson Collection)',
         addr: 'Corso Italia 10, Milan', lat: 45.459850, lng: 9.189200,
@@ -804,7 +804,8 @@ const DAYS = [
         food: [
           { n: 'Pav\u00e9', a: 'Via Felice Casati 27', d: '\u7c73\u862d\u6700\u51fa\u540d\u5605 brunch \u4e4b\u4e00\u3002\u81ea\u5bb6\u88fd\u9eb5\u5305\u540c\u7cd5\u9ede\uff0c\u5496\u5561\u4e00\u6d41\u3002\u20ac8-15\u3002' },
           { n: 'Taglio', a: 'Via Vigevano 10', d: '\u610f\u5f0f focaccia \u4e09\u6587\u6cbb + \u624b\u6c96\u5496\u5561\u3002\u7c21\u55ae\u4f46\u8cea\u7d20\u597d\u9ad8\u3002\u20ac6-12\u3002' },
-          { n: 'Marchesi 1824', a: 'Via Monte Napoleone 9', d: 'Prada \u65d7\u4e0b\u5605\u767e\u5e74\u7cd5\u9905\u8001\u5e97\uff0c\u610f\u5f0f\u65e9\u9910\u9ad4\u9a57\u3002Cornetto + cappuccino \u20ac8-12\u3002' }
+          { n: 'Marchesi 1824', a: 'Via Monte Napoleone 9', d: 'Prada 旗下嘅百年糕餅老店，意式早餐體驗。Cornetto + cappuccino €8-12。Galleria 分店望 Duomo。' },
+          { n: 'Bar Luce', a: 'Largo Isarco 2 (Fondazione Prada)', d: '⭐ Wes Anderson 親自設計嘅 café，喺 Fondazione Prada 入面。粉色調復古氛圍，咖啡 €5-12。打卡必去。' }
         ],
         here: '\u9152\u5e97\u9644\u8fd1\u6b65\u884c\u7bc4\u570d\u5167\uff0c\u5514\u4f7f\u642d\u8eca\u3002',
         next: '\u98df\u5b8c\u884c\u53bb Duomo\uff0c\u5927\u7d04 15-20 \u5206\u9418\u6b65\u884c\uff0c\u6216\u8005\u642d Metro M3 (Centrale \u2192 Duomo\uff0c2 \u500b\u7ad9)\u3002' },
@@ -819,7 +820,8 @@ const DAYS = [
         food: [
           { n: 'Luini', a: 'Via Santa Radegonda 16', d: '\u7c73\u862d\u6700\u51fa\u540d\u5605 panzerotti\uff08\u70b8\u9903\uff09\u3002\u20ac3 \u4e00\u500b\uff0c\u829d\u58eb\u756a\u8304\u9921\u5fc5\u8a66\u3002\u6210\u65e5\u6392\u9577\u9f8d\u4f46\u597d\u5feb\u3002' },
           { n: 'Spontini', a: 'Via Santa Radegonda 11', d: '\u539a\u5207 pizza al taglio\uff0c\u4e00\u4ef6\u8d77\u3002\u20ac5-8\u3002\u4f01\u55ba\u5ea6\u98df\u5605\u672c\u5730\u98a8\u683c\u3002' },
-          { n: 'Rinascente Food Hall', a: 'Piazza Duomo (7/F)', d: '\u767e\u8ca8\u516c\u53f8\u9802\u6a13\uff0c\u908a\u98df\u908a\u671b\u5927\u6559\u5802\u5929\u53f0\u3002Aperitivo \u20ac12-18\u3002' }
+          { n: 'Rinascente Food Hall', a: 'Piazza Duomo (7/F)', d: '\u767e\u8ca8\u516c\u53f8\u9802\u6a13\uff0c\u908a\u98df\u908a\u671b\u5927\u6559\u5802\u5929\u53f0\u3002Aperitivo \u20ac12-18\u3002' },
+          { n: 'Camparino in Galleria', a: 'Piazza del Duomo 21 (Galleria 入口)', d: '⭐ Campari 創辦人 1915 年開嘅酒吧，就喺 Galleria 入面。Campari Soda 係必飲（€12-18）。百年裝潢，意大利 aperitivo 文化嘅發源地之一。' }
         ],
         here: 'Metro M1/M3 \u53bb Duomo \u7ad9\uff0c\u51fa\u7ad9\u5c31\u898b\u5230\u3002\u6216\u8005\u5f9e\u9152\u5e97\u6b65\u884c 15-20 \u5206\u9418\u3002',
         next: '\u5927\u6559\u5802\u65c1\u908a\u5c31\u4fc2 Galleria\uff0c\u6b65\u884c 1 \u5206\u9418\u3002' },
@@ -856,9 +858,11 @@ const DAYS = [
         prac: { hours: '\u5168\u65e5\u958b\u653e\uff08\u5e97\u8216\u7d04 10:00-19:30\uff0c\u9910\u5ef3\u81f3\u6df1\u591c\uff09', cost: '\u514d\u8cbb\u6f2b\u6b65 / \u665a\u9910 \u20ac25-45 / Aperitivo \u20ac8-15' },
         tips: { insider: 'Aperitivo \u6642\u9593\u4fc2 18:00-21:00\u3002\u63c0\u4e00\u9593\u6709\u6236\u5916\u5ea7\u4f4d\u5605\u9910\u5ef3\u5750\u4f4e\uff0c\u53eb\u676f Negroni \u6216 Aperol Spritz\uff0c\u6703\u9001\u4e00\u789f\u5c0f\u98df\u3002', photo: 'Via Fiori Chiari \u5605\u5e38\u6625\u85e4\u7246 + \u53e4\u8001\u5927\u9580\u4fc2\u6700\u975a\u80cc\u666f\u3002\u65e5\u843d\u5f8c\u5605\u6696\u9ec3\u8857\u71c8\u66f4\u6709\u6c23\u6c1b\u3002', timing: '18:30-19:30 \u4fc2\u9ec3\u91d1\u6642\u6bb5\uff0c\u5149\u7dda\u975a\u53c8\u6709\u6c23\u6c1b\u3002\u98df\u5b8c\u98ef\u518d\u884c\u591c\u8857\u3002' },
         food: [
-          { n: 'Pisacco', a: 'Via Solferino 48', d: '\u6469\u767b\u610f\u5f0f\u5c0f\u9928\u3002Risotto alla milanese\uff08\u85cf\u7d05\u82b1\u71c9\u98ef\uff09\u5fc5\u8a66\u3002\u20ac25-40\u3002' },
-          { n: 'Nabucco', a: 'Via Fiori Chiari 10', d: '\u7d93\u5178 Brera \u9910\u5ef3\uff0c\u6236\u5916\u5ea7\u4f4d\u5c0d\u4f4f\u689d\u85dd\u8853\u8857\u3002Pasta \u20ac14-18\uff0c\u6c23\u6c1b\u4e00\u6d41\u3002' },
-          { n: 'N\u2019Ombra de Vin', a: 'Via San Marco 2', d: '\u767e\u5e74\u9152\u7a96\u6539\u5efa\u5605\u9152\u5427\uff0c600+ \u6b3e\u610f\u5927\u5229\u9152\u3002\u914d\u829d\u58eb\u62fc\u76e4 \u20ac15-25\u3002' }
+          { n: 'Bar Basso', a: 'Via Plinio 39', d: '⭐ Negroni Sbagliato 發源地！1947 年開，米蘭 designer 聖地。巨型 Negroni €12-15。唔飲酒都值得去感受氣氛。' },
+          { n: 'Pisacco', a: 'Via Solferino 48', d: '摩登意式小館。Risotto alla milanese（藏紅花燉飯）必試。€25-40。' },
+          { n: 'Nabucco', a: 'Via Fiori Chiari 10', d: '經典 Brera 餐廳，戶外座位對住條藝術街。Pasta €14-18，氣氛一流。' },
+          { n: 'N\u2019Ombra de Vin', a: 'Via San Marco 2', d: '百年酒窖改建嘅酒吧，600+ 款意大利酒。配芝士拼盤 €15-25。' },
+          { n: 'Antica Trattoria della Pesa', a: 'Viale Pasubio 10', d: '⭐ 1880 年開業，米蘭三寶聖地：Risotto alla milanese + Ossobuco + Cotoletta alla milanese。€50-100/人。想食最正宗嘅米蘭菜就嚟呢度。建議訂位。' }
         ],
         here: 'Metro M2 Lanza \u7ad9\uff0c\u51fa\u7ad9\u5373\u5230\u3002\u6216\u8005\u5f9e Last Supper \u642d\u7684\u58eb ~\u20ac8\u3002',
         next: '\u9152\u5e97 \u2192 Metro M2 Lanza \u2192 M3 Missori (10 \u5206\u9418)\uff0c\u6216\u8005 20 \u5206\u9418\u6b65\u884c\u6cbf Via Monte Napoleone \u5357\u884c\u3002' },
@@ -879,17 +883,17 @@ const DAYS = [
         highlights: ['\u4e3b\u5927\u5802\u7a79\u9802 + \u5de8\u578b\u77f3\u96d5 \u2014 \u6c23\u52e2\u5ab2\u7f8e\u5bae\u6bbf', '\u6708\u53f0\u5c64\u5605\u9435\u67b6\u73bb\u7483\u5929\u5e55\uff0c\u5de5\u696d\u6642\u4ee3\u5605\u6d6a\u6f2b', '\u610f\u5927\u5229\u6cd5\u897f\u65af\u6642\u671f\u5efa\u7bc9\uff0c\u7559\u610f\u7246\u4e0a\u5605\u9df9\u540c\u675f\u68d2\u88dd\u98fe'],
         prac: { hours: '\u8eca\u7ad9 24 \u5c0f\u6642\u958b\u653e', cost: '\u514d\u8cbb\u53c3\u89c0 / \u706b\u8eca\u7968\u5df2\u9810\u8cfc' },
         tips: { timing: '\u63d0\u65e9 15 \u5206\u9418\u5230\u6708\u53f0\u3002Trenitalia \u5217\u8eca\u6703\u55ba\u958b\u8eca\u524d 15-20 \u5206\u9418\u5148\u986f\u793a\u6708\u53f0\u865f\u78bc\u3002', insider: '\u5927\u5802\u4e2d\u592e\u5605\u5927\u9418\u4e0b\u9762\u4fc2\u6700\u4f73\u96c6\u5408\u9ede\u3002' },
-        here: 'Metro M2/M3 Centrale FS \u7ad9\u76f4\u9054\u3002\u5f9e\u9152\u5e97 Metro M3 \u5750 4 \u500b\u7ad9\u3002',
-        next: '\u4e0a Trenitalia \u5217\u8eca\u53bb Varenna-Esino\uff0c\u8eca\u7a0b\u7d04 1 \u5c0f\u6642\u3002\u9760\u53f3\u7a97\u53e3\u5750\uff0c\u6cbf\u9014\u98a8\u666f\u975a\u3002' },
+        here: 'Metro M2/M3 Centrale FS 站直達。從酒店 Metro M3 坐 4 個站。Milan Metro 支援 Apple Pay contactless 直接拍入閘。',
+        next: '上 Trenord 區間車去 Varenna-Esino，車程約 1 小時，€14.80/人來回。每小時一班。靠右窗口坐，過咗 Lecco 之後湖景一路靚到尾。⚠️ 紙票必須上車前喺月台黃色機打票，否則罰款 €50+！建議用 Trenitalia app 買電子票免打票。' },
       { time: '10:20', end: '11:25', title: '\u706b\u8eca\u53bb Varenna-Esino',
         subtitle: 'Trenitalia \u2014 \u9760\u53f3\u7a97\u5750\u7747\u98a8\u666f',
         tips: { insider: '\u4e0a\u8eca\u5f8c\u63c0\u53f3\u908a\u7a97\u53e3\u4f4d\uff0c\u904e\u5497 Lecco \u4e4b\u5f8c\u958b\u59cb\u898b\u5230\u79d1\u83ab\u6e56\uff0c\u98a8\u666f\u4e00\u8def\u975a\u5230\u5c3e\u3002', timing: '\u8eca\u7a0b\u7d04 1 \u5c0f\u6642\u3002\u53ef\u4ee5\u7793\u89ba\u6216\u8005\u7747\u98a8\u666f\u3002' },
-        here: 'Milano Centrale \u6708\u53f0\u4e0a\u8eca\u3002\u8eca\u7968\u5df2\u9810\u8cfc\uff0c\u8a18\u5f97\u5e36 confirmation\u3002',
-        next: '\u5230 Varenna-Esino \u7ad9\u843d\u8eca\uff0c\u8ddf\u6307\u793a\u884c\u843d\u5c71\u53bb\u6e56\u908a\u6e21\u8f2a\u78bc\u982d (10 \u5206\u9418\u4e0b\u5761\u8def)\u3002' },
+        here: 'Milano Centrale 月台上車。車票已預購，記得帶 confirmation。如果係紙票，上車前喺月台黃色機打票！',
+        next: '到 Varenna-Esino 站落車，跟指示行落山去湖邊渡輪碼頭 (10 分鐘下坡路)。' },
       { time: '12:05', end: '12:30', title: '\u6e21\u8f2a Varenna \u2192 \u8c9d\u62c9\u7126',
         titleEn: 'Ferry to Bellagio',
         subtitle: '\u79d1\u83ab\u6e56\u6e21\u8f2a ~20 \u5206\u9418',
-        tips: { insider: '\u4f01\u55ba\u8239\u982d\u6216\u8005\u53f3\u908a\uff0c\u53ef\u4ee5\u5f71\u5230\u8c9d\u62c9\u7126\u5605\u5f69\u8272\u623f\u5c4b\u5168\u666f\u3002', timing: '\u6e21\u8f2a\u57fa\u672c\u6e96\u6642\u3002\u55ba Varenna \u78bc\u982d\u8cb7\u4f86\u56de\u7968 (\u20ac9.20) \u6bd4\u55ae\u7a0b\u62b5\u3002' },
+        tips: { insider: '企喺船頭或者右邊，可以影到貝拉焦嘅彩色房屋全景。', timing: '渡輪基本準時。喺 Varenna 碼頭買來回票 (€9.20/人) 比單程抵。3月29日起轉 summer timetable，班次更密。' },
         here: 'Varenna-Esino \u706b\u8eca\u7ad9\u843d\u8eca\u5f8c\uff0c\u6cbf\u6a13\u68af\u884c\u843d\u5c71\u53bb Varenna \u6e21\u8f2a\u78bc\u982d (\u7d04 10 \u5206\u9418)\u3002',
         next: '\u8c9d\u62c9\u7126\u78bc\u982d\u843d\u8239\uff0c\u6cbf\u6e56\u908a\u884c\u5165\u5c0f\u93ae\u4e2d\u5fc3\u3002' },
       { time: '12:30', end: '14:45', title: '\u8c9d\u62c9\u7126',
@@ -920,15 +924,16 @@ const DAYS = [
         prac: { hours: '\u5c0f\u93ae\u5168\u65e5\u958b\u653e / Villa Monastero 09:30-19:00', cost: 'Villa Monastero \u20ac5 / \u60c5\u4eba\u6b65\u9053\u514d\u8cbb' },
         tips: { insider: '\u60c5\u4eba\u6b65\u9053\u5165\u53e3\u55ba\u78bc\u982d\u5357\u908a\uff0c\u8ddf\u4f4f\u6e56\u908a\u884c\u5c31\u898b\u5230\u3002\u6210\u689d\u8def\u5927\u7d04 15-20 \u5206\u9418\u884c\u5b8c\u3002', photo: '\u60c5\u4eba\u6b65\u9053\u4e2d\u6bb5\u6709\u4e00\u500b\u5c0f\u967d\u53f0\uff0c\u4fc2\u5f71 Varenna \u5f69\u8272\u623f\u5c4b\u5168\u666f\u5605\u6700\u4f73\u4f4d\u7f6e\u3002', timing: '1.5 \u5c0f\u6642\u8db3\u5920\u884c\u60c5\u4eba\u6b65\u9053 + \u5c0f\u93ae\u4e2d\u5fc3\u3002\u60f3\u5165 Villa Monastero \u8981\u9810\u591a 45 \u5206\u9418\u3002' },
         food: [
-          { n: 'Bar Il Molo', a: 'Via per Esino 1', d: '\u78bc\u982d\u65c1\u908a\u5605\u5c0f\u9152\u5427\u3002\u53eb\u676f Aperol Spritz (\u20ac6) \u5750\u6e56\u908a\u7747\u65e5\u843d\u3002' },
-          { n: 'Ristorante La Vista', a: 'Via XX Settembre 35', d: '\u6e56\u666f\u9910\u5ef3\uff0cmission\uff08\u9c56\u9b5a\uff09\u597d\u51fa\u540d\u3002\u20ac20-35\u3002' }
+          { n: 'Il Molo', a: 'Via per Esino 1, Varenna', d: '⭐ 碼頭旁邊嘅湖景餐廳。必試 Lavarello（科莫湖白魚）同 Missoltini（風乾湖魚）— 湖區特產。Fresh lake fish €30-45。' },
+          { n: 'La Punta Spartivento', a: 'Via Valassina 132, Bellagio', d: '⭐ 貝拉焦最靚景嘅餐廳，坐喺湖角尖端。Lake fish + View €30-50。建議訂位。' },
+          { n: 'Ristorante La Vista', a: 'Via XX Settembre 35', d: '湖景餐廳，鱒魚好出名。€20-35。' }
         ],
         here: '\u8c9d\u62c9\u7126\u6e21\u8f2a 15 \u5206\u9418\u5230 Varenna \u78bc\u982d\u3002',
         next: '\u884c\u8fd4\u4e0a\u5c71\u53bb Varenna-Esino \u706b\u8eca\u7ad9 (10 \u5206\u9418\u4e0a\u5761\u8def)\u3002\u706b\u8eca\u8fd4\u7c73\u862d\u7d04 1 \u5c0f\u6642\u3002' },
       { time: '17:35', end: '18:45', title: '\u706b\u8eca Varenna \u2192 \u7c73\u862d',
         subtitle: 'Trenitalia \u56de\u7a0b ~1 \u5c0f\u6642',
-        here: 'Varenna-Esino \u706b\u8eca\u7ad9\u3002\u5f9e\u78bc\u982d\u884c\u4e0a\u5c71\u7d04 10 \u5206\u9418\u3002',
-        next: 'Milano Centrale \u843d\u8eca\uff0c\u8f49 Metro M2 (\u7da0\u7dda) \u53bb Porta Genova \u7ad9 (15 \u5206\u9418)\u3002' },
+        here: 'Varenna-Esino 火車站。從碼頭行上山約 10 分鐘。⚠️ 紙票上車前要打票！',
+        next: 'Milano Centrale 落車，轉 Metro M2 (綠線) 去 Porta Genova 站 (15 分鐘, €2.20)。Apple Pay 直接拍入閘。' },
       { time: '19:00', end: '21:30', title: 'Navigli \u904b\u6cb3\u5340',
         titleEn: 'Navigli District',
         subtitle: 'Aperitivo + \u904b\u6cb3\u908a\u665a\u9910',
@@ -938,12 +943,13 @@ const DAYS = [
         prac: { hours: '\u5168\u65e5\u958b\u653e\uff08\u9910\u5ef3 12:00-\u6df1\u591c / \u9152\u5427\u81f3\u51cc\u6668 2:00\uff09', cost: 'Aperitivo \u20ac8-15 / \u665a\u9910 \u20ac20-40' },
         tips: { insider: '\u63c0 Naviglio Grande \u897f\u908a\uff08\u5947\u6578\u9580\u724c\u55f0\u908a\uff09\u5605\u9910\u5ef3\uff0c\u671b\u5230\u904b\u6cb3\u5c0d\u9762\u5605\u5f69\u8272\u623f\u5c4b\uff0c\u666f\u89c0\u6700\u597d\u3002', photo: '\u65e5\u843d\u524d\u5f8c 30 \u5206\u9418\u4fc2\u9ec3\u91d1\u6642\u9593\uff0c\u904b\u6cb3\u6c34\u9762\u5012\u6620\u5169\u5cb8\u71c8\u5149\u3002Ponte di Via Corsico \u6a4b\u4e0a\u5f71\u5168\u666f\u6700\u6b63\u3002', timing: '18:30 \u5230\u5606 aperitivo\uff0c19:30-20:00 \u63c0\u9593\u9910\u5ef3\u98df\u665a\u98ef\u3002' },
         food: [
-          { n: 'El Brellin', a: 'Alzaia Naviglio Grande 14', d: '\u904b\u6cb3\u908a\u7d93\u5178\u9910\u5ef3\uff0c\u5efa\u55ba\u820a\u6d17\u8863\u5834\u4e0a\u9762\u3002Ossobuco\uff08\u71c9\u725b\u819d\uff09+ \u85cf\u7d05\u82b1 risotto \u5fc5\u8a66\u3002\u20ac25-40\u3002' },
-          { n: 'Taglio', a: 'Via Vigevano 10', d: '\u65b0\u6d3e\u610f\u5f0f\u5c0f\u9928\uff0cfocaccia \u4e09\u6587\u6cbb\u540c\u624b\u5de5 pasta \u90fd\u51fa\u8272\u3002\u20ac12-20\u3002' },
-          { n: 'Trattoria Madonnina', a: 'Via Gentilino 6', d: '\u6b63\u5b97\u7c73\u862d\u8001\u9910\u5ef3\u3002Cotoletta\uff08\u70b8\u8089\u6392\uff09\u3001mondeghili\uff08\u8089\u4e38\uff09\u3002\u20ac12-20\u3002\u6700\u597d\u7528\u73fe\u91d1\u3002' }
+          { n: 'El Brellin', a: 'Alzaia Naviglio Grande 14', d: '運河邊經典餐廳，建喺舊洗衣場上面。Ossobuco（燉牛膝）+ 藏紅花 risotto 必試。€25-40。' },
+          { n: 'Taglio', a: 'Via Vigevano 10', d: '新派意式小館，focaccia 三文治同手工 pasta 都出色。€12-20。' },
+          { n: 'Rita & Cocktails', a: 'Via Angelo Fumagalli 1', d: '⭐ Navigli 少數唔伏嘅酒吧！行入巷仔避開運河邊遊客陷阱。Cocktails €8-12。' },
+          { n: 'Trattoria Madonnina', a: 'Via Gentilino 6', d: '正宗米蘭老餐廳。Cotoletta（炸肉排）、mondeghili（肉丸）。€12-20。最好用現金。' }
         ],
-        here: '\u5f9e Centrale \u642d Metro M2 (\u7da0\u7dda) \u2192 Porta Genova (15 \u5206\u9418, \u20ac2.20)\u3002\u51fa\u7ad9\u884c 3 \u5206\u9418\u5230\u904b\u6cb3\u3002\u6216\u8005\u7684\u58eb ~\u20ac15\u3002',
-        next: '\u8fd4\u9152\u5e97 \u2192 Metro M2 Porta Genova \u2192 Cadorna \u8f49 M1 \u2192 Duomo \u2192 \u884c 10 \u5206\u9418\u3002\u6216\u8005\u7684\u58eb ~\u20ac12\u3002' },
+        here: '從 Centrale 搭 Metro M2 (綠線) → Porta Genova (15 分鐘, €2.20)。出站行 3 分鐘到運河。Apple Pay 直接拍入閘。或者的士 ~€15。',
+        next: '返酒店 → Metro M2 Porta Genova → Cadorna 轉 M1 → Duomo → 行 10 分鐘。或者的士 ~€12。💡 意大利冇 UberX，只有 Uber Black（貴）。叫的士用 Free Now 或 IT Taxi app。' },
     ]
   },
   {
@@ -955,8 +961,8 @@ const DAYS = [
         next: 'Check out \u2192 Metro M3 Missori \u2192 Centrale FS (4 \u500b\u7ad9, 10 \u5206\u9418)' },
       { time: '09:30', end: '10:10', title: '\u51fa\u767c\u53bb\u7c73\u862d\u4e2d\u592e\u8eca\u7ad9',
         subtitle: 'Check out + \u8f49\u8eca',
-        here: 'Check out\uff0c\u884c\u674e\u53ef\u4ee5\u5bc4\u5b58\u9152\u5e97\u3002Metro M3 Missori \u2192 Centrale FS (4 \u500b\u7ad9)\u3002',
-        next: '\u7747\u51fa\u767c\u986f\u793a\u677f\u6435\u6708\u53f0\u3002Frecciarossa \u9ad8\u9435\u7528\u6708\u53f0 16-21\u3002' },
+        here: 'Check out，行李可以寄存酒店。Metro M3 Missori → Centrale FS (4 個站, €2.20)。Apple Pay 直接拍入閘。',
+        next: '睇出發顯示板搵月台。Frecciarossa 高鐵用月台 16-21。💡 高鐵票 Advance 價可以低至 €20 以下/人！喺 Trenitalia 或 Italo app 買最抵。' },
       { time: '10:10', end: '12:04', title: '\u9ad8\u9435 \u7c73\u862d \u2192 \u7fe1\u51b7\u7fe0',
         titleEn: 'Frecciarossa Milan \u2192 Florence SMN',
         subtitle: 'Frecciarossa \u9ad8\u9435\uff0c\u8eca\u7968\u55ba\u9280\u5305',
@@ -978,8 +984,9 @@ const DAYS = [
         prac: { hours: '\u5730\u4e0b 7:00-14:00 / \u4e00\u6a13 10:00-24:00', cost: '\u514d\u8cbb\u5165\u5834\u3002\u6bcf\u500b\u6524\u4f4d \u20ac5-15\u3002' },
         tips: { insider: 'Lampredotto \u4e09\u6587\u6cbb (\u725b\u809a, \u20ac5) \u4fc2\u7fe1\u51b7\u7fe0 street food \u4e4b\u738b\u3002\u914d salsa verde \u98df\u3002\u5982\u679c\u5514\u98df\u5f97\u725b\u809a\uff0c\u9bae\u88fd pasta \u6524\u4e00\u6a23\u51fa\u8272\u3002', planB: '\u592a\u591a\u4eba\u5605\u8a71\uff0c\u5c0d\u9762\u8857 Trattoria Mario \u4fc2\u8001\u5b57\u865f \u2014 \u4f01\u67b1\u3001\u5171\u4eab\u5ea7\u4f4d\u3001\u6b63\u5b97\u7fe1\u51b7\u7fe0\u83dc\u3002\u20ac8-15\u300212:00 \u958b\u9580\uff0c\u9810\u8a08\u8981\u6392\u968a\u3002' },
         food: [
-          { n: 'Da Nerbone (Lampredotto)', a: '\u5730\u4e0b, Mercato Centrale', d: '1872 \u5e74\u8001\u5b57\u865f\u5605\u725b\u809a\u4e09\u6587\u6cbb\u6524\u3002Lampredotto + salsa verde = \u20ac5\u3002\u7fe1\u51b7\u7fe0 icon\u3002' },
-          { n: 'Fresh Pasta Lab', a: '\u4e00\u6a13, Mercato Centrale', d: '\u73fe\u5834\u505a pasta \u73fe\u5834\u98df\u3002Pappardelle al rag\u00f9\u3001cacio e pepe\u3002\u20ac8-12\u3002' }
+          { n: 'Da Nerbone (Lampredotto)', a: '地下, Mercato Centrale', d: '⭐ 1872 年老字號嘅牛肚三文治攤。Lampredotto + salsa verde = €5。5+ 個 source 評為翡冷翠 #1 lampredotto！地面層，一開門就去。' },
+          { n: 'Trattoria Mario', a: 'Via Rosina 2', d: '⭐ 1953 年，lunch only，cash only，共享長枱。Bistecca (€35/kg) + Ribollita（托斯卡納麵包湯）。€15-35。要排隊但絕對值！12:00 開門。' },
+          { n: 'Fresh Pasta Lab', a: '一樓, Mercato Centrale', d: '現場做 pasta 現場食。Pappardelle al ragù、cacio e pepe。€8-12。' }
         ],
         here: '\u9152\u5e97\u51fa\u9580\u5de6\u8f49\uff0c1 \u5206\u9418\u5c31\u5230\u3002',
         next: '\u7a79\u9802\u5927\u6559\u5802\u55ba\u5357\u908a 10 \u5206\u9418\u6b65\u884c\uff0c\u6cbf Via dei Cerretani \u884c\u3002' },
@@ -1045,9 +1052,9 @@ const DAYS = [
         titleEn: 'Regional train to Pisa Centrale',
         subtitle: '\u5340\u9593\u8eca\uff0c\u53ef\u63db\u4e58\u4efb\u4f55\u73ed\u6b21',
         guide: '\u7d04 1 \u5c0f\u6642\u5605\u5340\u9593\u8eca\u7a7f\u8d8a\u6258\u65af\u5361\u7d0d\u7530\u5712\u3002\u6bd4\u85a9\u4e2d\u592e\u8eca\u7ad9\u4fc2\u4e3b\u8981\u8eca\u7ad9\uff0c\u96e2\u659c\u5854\u7d04 25 \u5206\u9418\u6b65\u884c\u3002\u884c\u904e\u53bb\u6703\u7d93\u904e\u6bd4\u85a9\u5605\u6b77\u53f2\u57ce\u5340\u540c Arno \u6cb3\u3002',
-        tips: { insider: '\u8eca\u7968\u53ef\u4ee5\u642d\u4efb\u4f55\u5340\u9593\u8eca\uff0c\u6bcf 30 \u5206\u9418\u4e00\u73ed\u3002\u5514\u4f7f\u5283\u4f4d\u3002' },
-        here: '\u7fe1\u51b7\u7fe0 SMN \u8eca\u7ad9 \u2014 \u9152\u5e97\u884c 1 \u5206\u9418\u3002\u5340\u9593\u8eca\u55ba\u6708\u53f0 1-8 \u51fa\u767c\u3002',
-        next: '\u51fa\u6bd4\u85a9\u4e2d\u592e\u8eca\u7ad9 \u2192 \u5411\u5317\u884c 25 \u5206\u9418\u5230\u5947\u8e5f\u5ee3\u5834\uff0c\u6216\u8005\u642d Bus LAM Rossa (15 \u5206\u9418, \u20ac1.50)\u3002' },
+        tips: { insider: '車票可以搭任何區間車，每 15-30 分鐘一班。唔使劃位。€14-18/人來回。' },
+        here: '翡冷翠 SMN 車站 — 酒店行 1 分鐘。區間車喺月台 1-8 出發。⚠️ 紙票必須上車前喺月台黃色機打票，罰款 €50+！用 Trenitalia app 買電子票就唔使打。',
+        next: '出比薩中央車站 → 向北行 25 分鐘到奇蹟廣場，或者搭 Bus LAM Rossa (15 分鐘, €1.50)。' },
       { time: '10:40', end: '11:15', title: '\u6b65\u884c\u53bb\u5947\u8e5f\u5ee3\u5834',
         subtitle: '25 \u5206\u9418\u7a7f\u8d8a\u6bd4\u85a9\u820a\u57ce',
         lat: 43.722952, lng: 10.396597,
@@ -1069,15 +1076,15 @@ const DAYS = [
         subtitle: '\u7c21\u55ae\u5348\u9910\u8d95\u8fd4\u7a0b\u706b\u8eca',
         lat: 43.717, lng: 10.399,
         food: [
-          { n: 'Pizzeria Il Montino', a: 'Vicolo del Monte 1', d: '\u767e\u5e74\u6bd4\u85a9\u8001\u5b57\u865f\u3002\u5fc5\u8a66 cecina\uff08\u9df9\u5634\u8c46\u8584\u9905\uff09\u540c castagnaccio\uff08\u6817\u5b50\u86cb\u7cd5\uff09\u3002\u20ac5-10\u3002\u6700\u597d\u5e36\u73fe\u91d1\u3002' },
+          { n: 'Pizzeria Il Montino', a: 'Vicolo del Monte 1', d: '⭐ 百年比薩老字號。必試 Cecina（鷹嘴豆薄餅）— 比薩特產 chickpea pancake！同 castagnaccio（栗子蛋糕）。€3-5。最好帶現金。' },
           { n: 'Osteria dei Cavalieri', a: 'Via San Frediano 16', d: '\u60f3\u98df\u591a\u5572\u5605\u8a71\u3002Pappardelle al cinghiale\uff08\u91ce\u8c6c\u8089\u91ac\u95ca\u9eb5\uff09\u3001bistecca\u3002\u20ac20-35\u3002' }
         ],
         here: '\u5f9e\u659c\u5854\u6cbf Via Santa Maria \u5357\u884c 10 \u5206\u9418\u3002',
         next: '\u884c\u8fd4\u6bd4\u85a9\u4e2d\u592e\u8eca\u7ad9 (10-15 \u5206\u9418)\u3002' },
       { time: '14:27', end: '15:35', title: '\u706b\u8eca \u6bd4\u85a9 \u2192 \u7fe1\u51b7\u7fe0',
         subtitle: '\u5340\u9593\u8eca\uff0c\u53ef\u63db\u4e58',
-        here: '\u884c\u8fd4\u6bd4\u85a9\u4e2d\u592e\u8eca\u7ad9 (10-15 \u5206\u9418)\u3002\u5340\u9593\u8eca\u6bcf 30 \u5206\u9418\u4e00\u73ed\u3002',
-        next: '\u5230\u7fe1\u51b7\u7fe0 SMN \u2192 \u8fd4\u9152\u5e97\u653e\u4f4e\u5622 (1 \u5206\u9418) \u518d\u51fa\u53bb\u884c\u3002' },
+        here: '行返比薩中央車站 (10-15 分鐘)。區間車每 15-30 分鐘一班，唔使劃位。⚠️ 紙票要打票！',
+        next: '到翡冷翠 SMN → 返酒店放低嘢 (1 分鐘) 再出去行。' },
       { time: '16:00', end: '17:00', title: '\u8001\u6a4b + \u65b0\u5e02\u5834',
         titleEn: 'Ponte Vecchio + Mercato Nuovo',
         subtitle: '\u6cb3\u666f\u5496\u5561 + \u6478\u9285\u91ce\u8c6c',
@@ -1097,8 +1104,11 @@ const DAYS = [
         subtitle: '\u6700\u5f8c\u4e00\u665a\u7fe1\u51b7\u7fe0',
         lat: 43.77, lng: 11.252,
         food: [
-          { n: 'Trattoria Sostanza', a: 'Via del Porcellana 25r', d: '1869 \u5e74\u50b3\u5947\u8001\u5b57\u865f\u3002\u51fa\u540d\u5605\u725b\u6cb9\u96de\u80f8\u540c\u6d0b\u858a\u86cb\u5377\u3002\u5514\u8b1b\u7a76\u88dd\u4fee\u3001\u5171\u4eab\u9577\u67b1\u3002\u20ac20-35\u3002\u53ea\u6536\u73fe\u91d1\u3002\u5514\u63a5\u53d7\u8a02\u4f4d\u3002' },
-          { n: 'Buca Mario', a: 'Piazza degli Ottaviani 16r', d: '1886 \u5e74\u62f1\u9802\u5730\u7a96\u8001\u9910\u5ef3\u3002\u7d93\u5178\u7fe1\u51b7\u7fe0 bistecca\uff08\u4e01\u9aa8\u725b\u6252\uff09\u3002\u5efa\u8b70\u8a02\u4f4d\u3002\u20ac25-45\u3002' }
+          { n: 'Trattoria Sostanza', a: 'Via del Porcellana 25r', d: '1869 年傳奇老字號。出名嘅牛油雞胸同洋薊蛋卷。唔講究裝修、共享長枱。€20-35。只收現金。唔接受訂位。' },
+          { n: 'Buca Mario', a: 'Piazza degli Ottaviani 16r', d: '1886 年拱頂地窖老餐廳。經典翡冷翠 bistecca（丁骨牛扒）。建議訂位。€25-45。' },
+          { n: 'All\'Antico Vinaio', a: 'Via dei Neri 65r', d: '⭐ 翡冷翠最紅三文治店！Schiacciata 麵包夾火腿芝士，€5-8。排 30 分鐘但全城最值！' },
+          { n: 'Gelateria dei Neri', a: 'Via dei Neri 9r', d: '⭐ 5+ 個 source 評為翡冷翠 #1 gelato。Crema、pistachio 必試。€3-5。金屬蓋 tins = 真正 artisan gelato。' },
+          { n: 'La Strega Nocciola', a: 'Via de\' Bardi 51r', d: '⭐ Ponte Vecchio 過橋即到。Nocciola + Buontalenti（翡冷翠獨有口味）必試。€3-5。' }
         ],
         here: '\u5169\u9593\u9910\u5ef3\u90fd\u55ba Via dei Tornabuoni \u6b65\u884c 10 \u5206\u9418\u7bc4\u570d\u5167\u3002',
         next: '\u8fd4\u9152\u5e97 \u2014 \u5411\u5317\u884c\u8fd4\u8eca\u7ad9\u5340\u3002\u4eca\u665a\u57f7\u884c\u674e \u2014 \u807d\u65e5\u4e00\u65e9\u9ad8\u9435\u53bb\u7f85\u99ac\uff01' },
@@ -1107,6 +1117,7 @@ const DAYS = [
   {
     date: '2026-04-02', day: 'Thu', label: 'Day 5', route: '\u7fe1\u51b7\u7fe0 \u2192 \u7f85\u99ac', city: 'rome',
     hotel: 'rome',
+    warning: '\u8056\u9031\u56db\uff08Holy Thursday\uff09\uff1a\u665a\u4e0a 5:30pm St. John Lateran \u6709 Mass of the Lord\u2019s Supper\uff08\u6d17\u8173\u79ae\uff09\u3002\u90e8\u5206\u6559\u5802\u6709\u7279\u5225\u5100\u5f0f\uff0c\u5e02\u5167\u6c23\u6c1b\u7279\u5225\u3002\u53e6\u5916\u90e8\u5206\u5e97\u8216\u53ef\u80fd\u63d0\u65e9\u95dc\u9580\uff08\u5c24\u5176\u665a\u4e0a\uff09\u3002',
     activities: [
       { time: '08:14', end: '09:49', title: '\u9ad8\u9435 \u7fe1\u51b7\u7fe0 \u2192 \u7f85\u99ac',
         titleEn: 'Frecciarossa Florence \u2192 Rome Termini',
@@ -1119,10 +1130,10 @@ const DAYS = [
       { time: '10:00', end: '10:10', title: '\u9152\u5e97 Check-in',
         subtitle: 'UNA Hotels Deco Roma\uff08Termini 2 \u5206\u9418\uff09',
         addr: 'Via Giovanni Amendola 57, 00185 Roma', lat: 41.9014, lng: 12.4992,
-        next: '\u653e\u4f4e\u884c\u674e \u2192 Metro B \u5f9e Termini \u2192 Colosseo (2 \u500b\u7ad9, 4 \u5206\u9418, \u20ac1.50)' },
+        next: '放低行李 → Metro B 從 Termini → Colosseo (2 個站, 4 分鐘, €1.50)。💡 羅馬交通 Tips：可以買 72H Roma Pass (€18/人，任搭 Metro + Bus + Tram) 或者直接用 Apple Pay contactless 拍入閘 (€1.50/程，每日封頂 €7)。3 日 intensive 行程用 contactless 可能更抵！' },
       { time: '10:10', end: '10:30', title: 'Metro B \u2192 \u9b25\u7378\u5834',
         subtitle: 'Termini \u2192 Colosseo (2 \u500b\u7ad9, \u20ac1.50)',
-        here: '\u9152\u5e97\u884c 2 \u5206\u9418\u5230 Termini \u7ad9\u3002\u55ba\u7ad9\u5167\u6435 Metro B\uff08\u85cd\u7dda\uff09\u5165\u53e3\u3002\u65b9\u5411\uff1aLaurentina\u3002',
+        here: '酒店行 2 分鐘到 Termini 站。喺站內搵 Metro B（藍線）入口。方向：Laurentina。Apple Pay 直接拍入閘。',
         next: 'Colosseo \u7ad9\u51fa\u53e3 \u2192 \u9b25\u7378\u5834\u5c31\u55ba\u982d\u9802\u3002\u884c\u53bb\u5357\u9762\u5165\u53e3\u3002' },
       { time: '10:30', end: '11:30', title: '\u9b25\u7378\u5834',
         titleEn: 'Colosseum',
@@ -1156,7 +1167,10 @@ const DAYS = [
         prac: { hours: '\u661f\u671f\u4e00\u81f3\u516d 9:00-19:00 / \u661f\u671f\u65e5 9:00-18:00', cost: '\u20ac5\uff08\u5efa\u8b70\u7db2\u4e0a\u9810\u8cfc\uff09' },
         tips: { photo: '\u4f01\u55ba\u6b63\u4e0b\u65b9\u76f4\u5f71 oculus \u4e0a\u53bb\u3002\u6674\u5929\u5605\u5149\u67f1\u6383\u904e\u5167\u58c1\u597d\u975a\u3002', insider: '\u4e2d\u5348 12 \u9ede\u5149\u67f1\u6548\u679c\u6700\u5f37\u70c8\u3002\u5730\u9762\u5927\u7406\u77f3\u78c1\u78da\u4fc2\u539f\u88dd\u7f85\u99ac\u6642\u671f\u3002\u62c9\u6590\u723e\u5605\u5893\u55ba\u5de6\u908a\u3002' },
         food: [
-          { n: 'Armando al Pantheon', a: 'Salita dei Crescenzi 31', d: '1961 \u5e74\u8001\u5b57\u865f\u7f85\u99ac\u9910\u5ef3\u3002Cacio e pepe\u3001amatriciana\u3001carciofi\u3002\u20ac15-30\u3002\u53ea\u63a5\u53d7\u7db2\u4e0a\u8a02\u4f4d \u2014 \u5514\u6536 walk-in\u3002' }
+          { n: 'Armando al Pantheon', a: 'Salita dei Crescenzi 31', d: '1961 年老字號羅馬餐廳。Cacio e pepe、amatriciana、carciofi。€15-30。只接受網上訂位 — 唔收 walk-in。' },
+          { n: 'Pasticceria Regoli', a: 'Via dello Statuto 60', d: '⭐ 1916 年，羅馬最好嘅 Maritozzo con la panna（奶油麵包）€3-5。一定要試！近 Termini。' },
+          { n: 'Trattoria Monti', a: 'Via di San Vito 13', d: '⭐ 多個 source 稱係羅馬最好嘅餐廳之一。Seasonal Marches 菜，每碟都驚喜。€35-50/人。一定要 book！近 Termini。' },
+          { n: 'Come il Latte', a: 'Via Silvio Spaventa 24/26', d: '⭐ 近 Termini 嘅 artisan gelato。Salted caramel 必試。Handmade wafer cone 係賣點。€3-5。' }
         ],
         here: '\u5f9e Forum \u5411\u5317\u884c 15 \u5206\u9418\uff1aVia dei Fori Imperiali \u2192 Piazza Venezia \u2192 Via del Corso \u2192 \u5c0f\u5df7\u5230 Piazza della Rotonda\u3002',
         next: '\u7279\u840a\u7dad\u5674\u6cc9 \u2192 \u5411\u6771\u884c 10 \u5206\u9418\uff0c\u7d93 Via del Seminario\u3002' },
@@ -1185,7 +1199,7 @@ const DAYS = [
         prac: { hours: '\u661f\u671f\u4e00\u81f3\u516d 8:00-19:00\uff08\u6700\u5f8c\u5165\u5834 16:00\uff09', cost: '\u20ac17\uff08\u7db2\u4e0a\uff09/ \u5c0e\u8cde\u5718\u8cbb\u7528\u5df2\u5305\u542b', booking: '\u5c0e\u8cde\u5718 14:00 \u5df2\u9810\u7d04\u3002\u55ba\u5165\u53e3\u96c6\u5408\u3002', dress: '\u906e\u84cb\u818a\u982d\u540c\u819d\u982d\uff08\u56b4\u683c\u57f7\u884c\uff09\u3002\u5514\u53ef\u4ee5\u5e36\u4e09\u8173\u67b6\u3002\u5f71\u76f8 OK\uff0c\u4f46\u897f\u65af\u5ef7\u79ae\u62dc\u5802\u5b98\u65b9\u5514\u51c6\u5f71\uff08\u4e0d\u904e\u4eba\u4eba\u90fd\u5f71\uff09\u3002' },
         tips: { photo: '\u5730\u5716\u9577\u5eca\u5605\u76f4\u7dda\u900f\u8996\u597d\u975a\u3002\u62c9\u6590\u723e\u300a\u96c5\u5178\u5b78\u9662\u300b\u3002\u8056\u4f2f\u591a\u797f\u5927\u6559\u5802\u4e2d\u6bbf\u3002\u73bb\u7483\u5f8c\u9762\u5605 Piet\u00e0\u3002', timing: '\u5c0e\u8cde\u5718\u6703\u5e36\u4f60\u907f\u958b\u4eba\u6f6e\u3002\u55ba\u897f\u65af\u5ef7\u79ae\u62dc\u5802\u8ddf\u4f4f\u5c0e\u904a\u3002', insider: '\u55ba\u897f\u65af\u5ef7\u79ae\u62dc\u5802\uff0c\u6435\u7c73\u958b\u6717\u57fa\u7f85\u5605\u81ea\u756b\u50cf \u2014\u300a\u6700\u5f8c\u7684\u5be9\u5224\u300b\u5165\u9762\uff0c\u4f62\u5c07\u81ea\u5df1\u5605\u9762\u756b\u55ba\u8056\u5df4\u723e\u591a\u797f\u8302\u5605\u525d\u76ae\u4e0a\u3002\u5f9e\u53f3\u908a\u9580\u51fa\u53bb\u53ef\u4ee5\u76f4\u5165\u8056\u4f2f\u591a\u797f\u5927\u6559\u5802\uff08\u554f\u5c0e\u904a\uff09\u3002', planB: '\u5982\u679c\u535a\u7269\u9928\u592a overwhelming\uff0c\u8df3\u904e\u90e8\u5206\u5c55\u5ef3\u76f4\u53bb\u62c9\u6590\u723e\u623f\u9593\u540c\u897f\u65af\u5ef7\u79ae\u62dc\u5802\uff08\u5c0e\u904a\u6703\u5e6b\u4f60\u63c0\u91cd\u9ede\uff09\u3002' },
         food: [
-          { n: 'Panificio Bonci', a: 'Via Trionfale 36', d: '\u50b3\u5947 pizza al taglio\uff08\u6309\u91cd\u91cf\u8ce3\uff09\u3002\u5fc5\u8a66 mortadella \u6216\u8005\u85af\u4ed4\u8ff7\u8fed\u9999\u53e3\u5473\u3002\u20ac5-10\u3002\u68b5\u8482\u5ca1 10 \u5206\u9418\u6b65\u884c\u3002' }
+          { n: 'Pizzarium Bonci', a: 'Via della Meloria 43', d: '⭐ 羅馬 pizza al taglio 之王！72 小時發酵麵糰，每日 20+ 款 topping 輪換。按重量賣，€5-10 食到飽。4+ 個 source 評為全羅馬最好嘅 pizza。梵蒂岡 10 分鐘步行。' }
         ],
         here: '\u5f9e Ottaviano Metro \u884c 10 \u5206\u9418\u5230\u68b5\u8482\u5ca1\u535a\u7269\u9928\u5165\u53e3\uff08Viale Vaticano\uff09\u3002\u8ddf\u6307\u793a\u3002',
         next: '\u7747\u5b8c\u8056\u4f2f\u591a\u797f\u4e4b\u5f8c\uff1a\u884c\u53bb\u897f\u73ed\u7259\u968e\u68af\u5340 \u2192 Bus 64 \u5f9e Via della Conciliazione (30 \u5206\u9418) \u6216 Metro A Ottaviano \u2192 Spagna (3 \u500b\u7ad9)\u3002' },
@@ -1213,8 +1227,10 @@ const DAYS = [
         highlights: ['\u9d5d\u5375\u77f3\u7a84\u5df7 + \u5e38\u6625\u85e4\u8d6d\u8272\u5efa\u7bc9 \u2014 \u591c\u665a\u6696\u9ec3\u71c8\u5149\u6700\u6709\u6c23\u6c1b', 'Piazza Santa Maria in Trastevere \u2014 \u5341\u4e8c\u4e16\u7d00\u91d1\u8272\u99ac\u8cfd\u514b\u6559\u5802', '\u96a8\u4fbf\u63c0\u689d\u5c0f\u5df7\u884c\u5165\u53bb \u2014 \u6bcf\u689d\u90fd\u6709\u9a5a\u559c', 'Da Enzo al 29 \u2014 \u50b3\u5947\u9910\u5ef3\uff0c\u8981\u65e9\u5230\u6216\u8005\u9072\u5230\u5148\u5c11\u4eba'],
         tips: { photo: '\u7a84\u5df7\u591c\u666f + \u6696\u9ec3\u71c8\u5149\u3002Piazza Santa Maria \u5605\u5674\u6cc9\u540c\u6559\u5802\u5916\u7246\u3002', insider: '\u6700\u597d\u5605\u9ad4\u9a57\u4fc2\u96a8\u4fbf\u884c\u5c0f\u5df7\u3002Via della Lungaretta \u540c Vicolo del Cinque \u6700\u6709\u6c23\u6c1b\u3002Da Enzo 19:30 \u5230\u6216\u8005 21:30 \u5230\u5148\u5c11\u4eba\u6392\u968a\u3002' },
         food: [
-          { n: 'Da Enzo al 29', a: 'Via dei Vascellari 29', d: '\u50b3\u5947\u7f85\u99ac\u9910\u5ef3\u3002Cacio e pepe\u3001carbonara\u3001\u70b8\u6d0b\u858a\u3002\u20ac12-20\u3002\u5514\u63a5\u53d7\u8a02\u4f4d \u2014 19:30 \u6216 21:30 \u5230\u6392\u968a\u6700\u77ed\u3002' },
-          { n: 'Tonnarello', a: 'Via della Paglia 77', d: '\u5927\u4efd\u91cf\u7d93\u5178\u7f85\u99ac pasta\u3002\u71b1\u9b27\u6c23\u6c1b\uff0c\u6236\u5916\u5ea7\u4f4d\u3002\u20ac10-20\u3002Walk-in \u53cb\u5584\u5572\u3002' }
+          { n: 'Da Enzo al 29', a: 'Via dei Vascellari 29', d: '⭐ 5+ 個 source 評為 Trastevere #1！Carbonara + Carciofi alla giudia 必試。€15-25。唔接受訂位 — 19:30 或 21:30 到排隊最短。' },
+          { n: 'Supplizio', a: 'Via dei Banchi Vecchi 143', d: '⭐ Gourmet suppli（炸飯糰）專門店。試 Carbonara 同 Cacio e pepe 版 suppli！€3-6。完美 street food。' },
+          { n: 'Tonnarello', a: 'Via della Paglia 77', d: '大份量經典羅馬 pasta。熱鬧氣氛，戶外座位。€10-20。Walk-in 友善啲。' },
+          { n: 'Otaleg', a: 'Via di San Cosimato 14a', d: '⭐ 4+ 個 source 評為羅馬 #1 gelato！必試 Cacio e pepe gelato（係真嘅！）— 鹹甜交織超驚喜。€3-5。名字係 Gelato 倒轉拼。' }
         ],
         here: '\u5f9e\u897f\u73ed\u7259\u968e\u68af\uff1aPiazza Barberini \u642d Bus H (20 \u5206\u9418) \u6216\u7684\u58eb ~\u20ac10\u3002\u6216\u8005\u5f9e Piazza Venezia \u884c\u904e Ponte Garibaldi (25 \u5206\u9418)\u3002',
         next: '\u8fd4\u9152\u5e97 \u2192 Bus H \u6216\u591c\u73ed\u5df4\u58eb\u53bb Termini\uff0c\u6216\u7684\u58eb ~\u20ac12\u3002\u8f9b\u82e6\u5497\u4e00\u65e5 \u2014 \u597d\u597d\u4f11\u606f\uff01' },
@@ -1332,13 +1348,14 @@ const DAYS = [
         highlights: ['\u706b\u70ac\u7167\u660e\u5605\u9b25\u7378\u5834 \u2014 \u591c\u665a\u71c8\u5149\u4e0b\u5605\u9707\u64bc\u5834\u9762', '\u6559\u5b97\u65b9\u6fdf\u5404\u89aa\u81ea\u4e3b\u6301\u5341\u56db\u8655\u82e6\u8def', '\u6578\u842c\u4eba\u5605\u838a\u56b4\u6c1b\u570d \u2014 \u7121\u8ad6\u4fe1\u4ef0\u90fd\u6703\u88ab\u6253\u52d5', '\u5de8\u578b\u5341\u5b57\u67b6 + \u591a\u8a9e\u8a00\u9ed8\u60f3\u6717\u8b80'],
         prac: { hrs: '21:15 \u958b\u59cb\uff0c\u7d04 22:45 \u7d50\u675f\u300219:30-20:00 \u5230\u5148\u6709\u597d\u4f4d\u3002', adm: '\u514d\u8cbb \u2014 \u5514\u4f7f\u9580\u7968\u3002\u6240\u6709\u4eba\u958b\u653e\u3002', dress: '\u4fdd\u6696\u5c64\u5fc5\u5099\u3002\u5168\u7a0b\u4f01 2-3 \u5c0f\u6642\uff08\u7b49\u5019 + \u5100\u5f0f\uff09\u3002\u8457\u8212\u9069\u978b\u3002' },
         tips: { photo: '\u706b\u70ac\u7167\u7247\u597d\u975a\u4f46\u96e3\u5f71 \u2014 \u7528\u591c\u666f\u6a21\u5f0f\u3002\u5341\u5b57\u67b6\u5c0d\u4f4f\u767c\u5149\u5605\u9b25\u7378\u5834\u4fc2\u7d93\u5178 shot\u3002', crowd: '19:30-20:00 \u5230\u5148\u6709\u597d\u4f4d\u300220:30 \u5df2\u7d93\u903c\u7206\u3002\u8d8a\u8fd1\u9b25\u7378\u5834\u8d8a\u597d\u3002', insider: 'Via dei Fori Imperiali \u540c\u9b25\u7378\u5834\u4e4b\u9593\uff08\u541b\u58eb\u5766\u4e01\u51f1\u65cb\u9580\u9644\u8fd1\uff09\u8996\u7dda\u6700\u597d\u3002\u68b5\u8482\u5ca1\u5b98\u54e1\u540c\u50b3\u5a92\u4f54\u6700\u8fd1\u4f4d \u2014 \u516c\u773e\u89c0\u770b\u5340\u7a0d\u9060\u4f46\u4e00\u6a23\u9707\u64bc\u3002', planB: '\u5982\u679c\u4eba\u592a\u591a\uff0c\u5f9e Via Nicola Salvi \u9ad8\u8655\u671b\uff08\u9b25\u7378\u5834\u5730\u9435\u51fa\u53e3\u9644\u8fd1\u5605\u8def\uff09\u2014 \u53ef\u4ee5\u898b\u5230\u767c\u5149\u5605\u9b25\u7378\u5834\u540c\u807d\u5230\u64f4\u97f3\u5668\u3002' },
-        here: '\u5f9e Trastevere\uff1a\u7684\u58eb\u6216 Uber \u6700\u65b9\u4fbf\uff0815 \u5206\u9418\uff0c\u20ac8-12\uff09\u3002\u6216\u8005\u642d Bus H \u5230 Termini\uff0c\u518d\u642d Metro B \u4e00\u500b\u7ad9\u5230 Colosseo\u3002\u6700\u9072 20:00-20:30 \u51fa\u9580\u3002',
-        next: '\u8fd4\u9152\u5e97\uff1aMetro B Colosseo \u2192 Circo Massimo\uff0c\u7136\u5f8c\u884c 10 \u5206\u9418\u5230 Trastevere\u3002\u6216\u8005\u7684\u58eb \u20ac8-10\u3002\u5c3e\u73ed\u8eca ~23:30\u3002' },
+        here: '從 Trastevere：的士最方便 (15 分鐘, €8-12)，用 Free Now 或 IT Taxi app 叫。⚠️ 意大利冇 UberX，只有 Uber Black（貴）。或者搭 Bus H 到 Termini，再搭 Metro B 一個站到 Colosseo。最遲 20:00-20:30 出門。',
+        next: '返酒店：Metro B Colosseo → Circo Massimo，然後行 10 分鐘到 Trastevere。或者的士 €8-10。尾班車 ~23:30。' },
     ]
   },
   {
     date: '2026-04-04', day: 'Sat', label: 'Day 7', route: '\u7f85\u99ac \u2192 \u9999\u6e2f', city: 'rome',
     hotel: null,
+    warning: '\u8056\u9031\u516d\uff08Holy Saturday\uff09\uff1a\u4eca\u665a 9pm \u8056\u4f2f\u591a\u797f\u5927\u6559\u5802\u6709 Easter Vigil Mass\uff08\u5fa9\u6d3b\u7bc0\u5b88\u591c\u79ae\uff0c\u6559\u5b97\u4e3b\u6301\uff09\u3002\u53ef\u60dc\u4f60\u5011\u4e0b\u665d\u98db\uff0c\u5514\u904a\u53c3\u52a0\u5230\u3002\u4f46\u671d\u65e9\u5e02\u5167\u6c23\u6c1b\u5df2\u7d93\u597d\u7279\u5225 \u2014 \u611f\u53d7\u4e0b\u7f85\u99ac\u5fa9\u6d3b\u7bc0\u524d\u5915\u5605\u5be7\u975c\u3002',
     activities: [
       { time: '08:00', end: '09:00', title: '\u8d77\u8eab + \u57f7\u884c\u674e',
         titleEn: 'Wake up & pack',
@@ -1351,7 +1368,7 @@ const DAYS = [
         subtitle: '\u642d Tram 8 \u6216\u884c\u8def',
         guide: '\u5f9e Trastevere \u9152\u5e97\u53bb Trastevere \u706b\u8eca\u7ad9\u3002\u53ef\u4ee5\u884c\uff0810-15 \u5206\u9418\uff09\u6216\u8005\u642d Tram 8\uff0c\u5f9e Viale di Trastevere \u4e0a\u8eca\uff08\u6bcf 5 \u5206\u9418\u4e00\u73ed\uff0c\u20ac1.50\uff0c\u4e0a\u8eca\u6253\u7968\uff09\u3002\u8eca\u7ad9\u7d30\u7d30\u500b\u597d\u6613\u6435\u3002',
         here: '\u6cbf Viale di Trastevere \u5411\u5357\u884c\u5230\u706b\u8eca\u7ad9\uff0c\u6216\u8005\u642d Tram 8\uff08Casaletto \u65b9\u5411\uff093 \u500b\u7ad9\u3002\u7ad9\u5165\u53e3\u55ba Piazzale Flavio Biondo\u3002',
-        next: '\u4e0b\u4e00\u7ad9\uff1aLeonardo Express \u63a5\u99c1\u3002\u5f9e Trastevere \u7ad9\u642d\u4efb\u4f55\u53bb Fiumicino Aeroporto \u5605\u706b\u8eca\uff0c\u6216\u8005\u55ba Roma Ostiense/Termini \u8f49 Leonardo Express\u3002' },
+        next: '下一站：去 Fiumicino 機場。🚇 推薦 FL1 區間車從 Trastevere 直達 — €8/人，30 分鐘，每 15 分鐘一班，免去繞路去 Termini。另一選擇：Leonardo Express 從 Termini — €14/人，32 分鐘。⚠️ 紙票必須打票！用 Trenitalia app 買電子票最方便。' },
       { time: '09:35', end: '10:10', title: '\u706b\u8eca\u53bb Fiumicino (FCO)',
         titleEn: 'Train to Fiumicino (FCO)',
         subtitle: 'Leonardo Express \u6216\u5340\u9593\u8eca',
@@ -1520,6 +1537,16 @@ const DISCOVERY = {
     { name: 'CIACCO', type: 'gelato', addr: 'Via Spadari 13, Milano', lat: 45.4637, lng: 9.1868, d: '\u96F6\u6DFB\u52A0\u624B\u5DE5\u96EA\u7CD5\uFF0CDuomo\u65C12025\u5F97\u734E' },
     { name: '10 Corso Como', type: 'shop', addr: 'Corso Como 10, Milano', lat: 45.4820, lng: 9.1876, d: '\u50B3\u5947\u6982\u5FF5\u5E97\uFF1A\u6642\u88DD\u3001\u85DD\u5ECA\u3001\u66F8\u5E97\u3001\u82B1\u5712\u5496\u5561\u5EA7' },
     { name: 'Cavalli e Nastri', type: 'shop', addr: 'Via Brera 2, Milano', lat: 45.4696, lng: 9.1882, d: '1970\u5E74\u8001\u5B57\u865F\u53E4\u8457\u5E97\uFF0CBrera\u5340\u8A2D\u8A08\u5E2B\u7CBE\u9078vintage' },
+    { name: 'Bar Basso', type: 'bar', addr: 'Via Plinio 39, Milano', lat: 45.4785, lng: 9.2067, d: '⭐ Negroni Sbagliato 發源地！1947 年開，米蘭 designer 聖地。巨型 Negroni €12-15。' },
+    { name: 'Camparino in Galleria', type: 'bar', addr: 'Piazza del Duomo 21, Milano', lat: 45.4654, lng: 9.1900, d: '⭐ Campari 創辦人 1915 年開嘅酒吧，Galleria 入面。Campari Soda 必飲。€12-18。' },
+    { name: 'Bar Luce', type: 'coffee', addr: 'Largo Isarco 2, Milano', lat: 45.4445, lng: 9.2044, d: '⭐ Wes Anderson 親自設計嘅 café，Fondazione Prada 入面。粉色調復古氛圍。€5-12。' },
+    { name: 'Marchesi 1824', type: 'food', addr: 'Via Monte Napoleone 9, Milano', lat: 45.4685, lng: 9.1949, d: '⭐ Prada 旗下百年糕餅店。Galleria 分店望 Duomo。Cornetto + cappuccino €8-12。' },
+    { name: 'Antica Trattoria della Pesa', type: 'food', addr: 'Viale Pasubio 10, Milano', lat: 45.4801, lng: 9.1784, d: '⭐ 1880 年老字號。米蘭三寶：Risotto + Ossobuco + Cotoletta。€50-100/人。' },
+    { name: 'Rita & Cocktails', type: 'bar', addr: 'Via Angelo Fumagalli 1, Milano', lat: 45.4482, lng: 9.1791, d: '⭐ Navigli 少數唔伏嘅酒吧！行入巷仔避開運河邊遊客陷阱。€8-12。' },
+  ],
+  como: [
+    { name: 'Il Molo', type: 'food', addr: 'Via per Esino 1, Varenna', lat: 46.0100, lng: 9.2839, d: '⭐ 碼頭旁湖景餐廳。必試 Lavarello（科莫湖白魚）同 Missoltini（風乾湖魚）。€30-45。' },
+    { name: 'La Punta Spartivento', type: 'food', addr: 'Via Valassina 132, Bellagio', lat: 45.9894, lng: 9.2646, d: '⭐ 貝拉焦最靚景嘅餐廳，坐喺湖角尖端。Lake fish + view。€30-50。建議訂位。' },
   ],
   florence: [
     { name: 'Ditta Artigianale', type: 'coffee', addr: 'Via dei Neri 32R, Firenze', lat: 43.7683, lng: 11.2604, d: '\u7FE1\u51B7\u7FE0\u7CBE\u54C1\u5496\u5561\u59CB\u7956\uFF0C2013\u5E74\u958B\u696D\uFF0C\u665A\u9593\u8B8A\u7434\u9152\u5427' },
@@ -1528,6 +1555,12 @@ const DISCOVERY = {
     { name: 'My Sugar', type: 'gelato', addr: 'Via de\' Ginori 49R, Firenze', lat: 43.7769, lng: 11.2558, d: '\u4E9E\u6D32\u98A8\u5473\u624B\u5DE5\u96EA\u7CD5\uFF1A\u9ED1\u829D\u9EBB\u3001\u5976\u8336\u5473\uFF0C\u65E5\u9BAE\u88FD16\u6B3E' },
     { name: 'Il Papiro', type: 'shop', addr: 'Via dei Tavolini 13R, Firenze', lat: 43.7763, lng: 11.2569, d: '1976\u5E74\u624B\u5DE5\u96F2\u77F3\u7D0B\u7D19\u8001\u5E97\uFF0CDuomo\u65C1\u50B3\u7D71\u5DE5\u85DD' },
     { name: 'Scuola del Cuoio', type: 'shop', addr: 'Via San Giuseppe 5R, Firenze', lat: 43.7678, lng: 11.2625, d: '\u8056\u5341\u5B57\u6559\u5802\u5167\u76AE\u9769\u5DE5\u574A\uFF0C1950\u5E74\u4FEE\u58EB\u5275\u7ACB\uFF0C\u53EF\u53C3\u89C0' },
+    { name: 'Trattoria Mario', type: 'food', addr: 'Via Rosina 2, Firenze', lat: 43.7755, lng: 11.2529, d: '⭐ 1953 年，lunch only，cash only。Bistecca (€35/kg) + Ribollita。€15-35。' },
+    { name: 'Da Nerbone', type: 'food', addr: 'Mercato Centrale, Firenze', lat: 43.7763, lng: 11.2536, d: '⭐ 1872 年老字號。翡冷翠 #1 Lampredotto 三文治 + salsa verde。€5。' },
+    { name: "All'Antico Vinaio", type: 'food', addr: 'Via dei Neri 65R, Firenze', lat: 43.7683, lng: 11.2582, d: '⭐ 翡冷翠最紅三文治！Schiacciata 夾火腿芝士。€5-8。排 30 分鐘但值。' },
+    { name: 'Gelateria dei Neri', type: 'gelato', addr: 'Via dei Neri 9R, Firenze', lat: 43.7692, lng: 11.2592, d: '⭐ 5+ 個 source 翡冷翠 #1 gelato。Crema、pistachio 必試。€3-5。' },
+    { name: 'La Strega Nocciola', type: 'gelato', addr: "Via de' Bardi 51R, Firenze", lat: 43.7665, lng: 11.2528, d: '⭐ Ponte Vecchio 過橋即到。Nocciola + Buontalenti（翡冷翠獨有口味）。€3-5。' },
+    { name: 'San Miniato al Monte', type: 'sunset', addr: 'Via delle Porte Sante 34, Firenze', lat: 43.7629, lng: 11.2649, d: '⭐ 比 Piazzale Michelangelo 更高更靜嘅日落位。免費。11 世紀教堂外望全景。' },
   ],
   rome: [
     { name: 'Luna by Faro', type: 'coffee', addr: 'Via delle Quattro Fontane 175, Roma', lat: 41.9014, lng: 12.4923, d: '\u7F85\u99AC\u7CBE\u54C1\u5496\u5561\u5148\u9A45Faro\u65B0\u5E97\uFF0C\u81EA\u5BB6\u70D8\u7119Aliena\u8C46' },
@@ -1536,6 +1569,13 @@ const DISCOVERY = {
     { name: 'Giolitti', type: 'gelato', addr: 'Via degli Uffici del Vicario 40, Roma', lat: 41.9010, lng: 12.4772, d: '1900\u5E74\u8001\u5B57\u865F\u96EA\u7CD5\u5E97\uFF0C\u842C\u795E\u6BBF\u65C1\uFF0C\u958B\u5230\u51CC\u6668\u4E00\u9EDE\u534A' },
     { name: 'Mercato Monti', type: 'shop', addr: 'Via Leonina 46, Roma', lat: 41.8959, lng: 12.4917, d: '\u9031\u672B\u9650\u5B9A\u8A2D\u8A08\u5E02\u96C6\uFF1A\u65B0\u92B3\u8A2D\u8A08\u5E2B\u3001\u53E4\u8457\u3001\u624B\u4F5C\u98FE\u54C1' },
     { name: 'Overlook Libreria del Cinema', type: 'shop', addr: 'Vicolo della Cancelleria 7, Roma', lat: 41.8978, lng: 12.4714, d: '\u96FB\u5F71\u4E3B\u984C\u66F8\u5E97\uFF0C\u6D77\u5831\u3001DVD\u6536\u85CF\uFF0C\u8FD1Campo de\' Fiori' },
+    { name: 'Da Enzo al 29', type: 'food', addr: 'Via dei Vascellari 29, Roma', lat: 41.8876, lng: 12.4730, d: '⭐ 5+ 個 source Trastevere #1！Carbonara + Carciofi alla giudia。€15-25。唔接受訂位。' },
+    { name: 'Pizzarium Bonci', type: 'food', addr: 'Via della Meloria 43, Roma', lat: 41.9073, lng: 12.4433, d: '⭐ 羅馬 pizza al taglio 之王！72 小時發酵麵糰。按重量賣。€5-10。' },
+    { name: 'Trattoria Monti', type: 'food', addr: 'Via di San Vito 13, Roma', lat: 41.8968, lng: 12.5006, d: '⭐ 多個 source 稱係羅馬最好餐廳之一。Seasonal Marches 菜。€35-50。必 book。' },
+    { name: 'Supplizio', type: 'food', addr: 'Via dei Banchi Vecchi 143, Roma', lat: 41.8969, lng: 12.4705, d: '⭐ Gourmet suppli 專門店。Carbonara 同 Cacio e pepe 版炸飯糰。€3-6。' },
+    { name: 'Pasticceria Regoli', type: 'food', addr: 'Via dello Statuto 60, Roma', lat: 41.8972, lng: 12.5032, d: '⭐ 1916 年，羅馬最好 Maritozzo con la panna（奶油麵包）。€3-5。' },
+    { name: 'Otaleg', type: 'gelato', addr: 'Via di San Cosimato 14a, Roma', lat: 41.8852, lng: 12.4710, d: '⭐ 4+ 個 source 羅馬 #1 gelato！Cacio e pepe gelato 必試。€3-5。' },
+    { name: 'Come il Latte', type: 'gelato', addr: 'Via Silvio Spaventa 24/26, Roma', lat: 41.9025, lng: 12.4988, d: '⭐ 近 Termini 嘅 artisan gelato。Salted caramel + handmade wafer cone。€3-5。' },
   ]
 };
 
@@ -2087,10 +2127,10 @@ function renderDayContent() {
   }
 
   // Discovery spots for this city
-  var discCity = day.city === 'como' ? 'milan' : day.city === 'pisa' ? 'florence' : day.city;
+  var discCity = DISCOVERY[day.city] ? day.city : (day.city === 'pisa' ? 'florence' : day.city);
   if (typeof DISCOVERY !== 'undefined' && DISCOVERY[discCity]) {
     html += '<div class="discovery-section"><div class="discovery-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>\u63A2\u7D22\u9644\u8FD1</div>';
-    var typeIcons = { coffee: '\u2615', gelato: '\uD83C\uDF66', shop: '\uD83D\uDECD\uFE0F' };
+    var typeIcons = { coffee: '\u2615', gelato: '\uD83C\uDF66', shop: '\uD83D\uDECD\uFE0F', food: '\uD83C\uDF7D\uFE0F', bar: '\uD83C\uDF78', sunset: '\uD83C\uDF05' };
     DISCOVERY[discCity].forEach(function(s) {
       html += '<div class="discovery-card">';
       html += '<div class="dc-icon">' + (typeIcons[s.type] || '\uD83D\uDCCD') + '</div>';
@@ -2372,13 +2412,13 @@ function renderMapPins(dayIdx) {
     var discCities = dayIdx === -1 ? Object.keys(DISCOVERY) : [];
     if (dayIdx >= 0) {
       var c = DAYS[dayIdx].city;
-      var dc = c === 'como' ? 'milan' : c === 'pisa' ? 'florence' : c;
+      var dc = DISCOVERY[c] ? c : (c === 'pisa' ? 'florence' : c);
       if (DISCOVERY[dc]) discCities = [dc];
     }
     var discColor = '#9B59B6';
     discCities.forEach(function(city) {
       DISCOVERY[city].forEach(function(s) {
-        var typeEmoji = { coffee: '\u2615', gelato: '\uD83C\uDF66', shop: '\uD83D\uDECD' }[s.type] || '\uD83D\uDCCD';
+        var typeEmoji = { coffee: '\u2615', gelato: '\uD83C\uDF66', shop: '\uD83D\uDECD', food: '\uD83C\uDF7D\uFE0F', bar: '\uD83C\uDF78', sunset: '\uD83C\uDF05' }[s.type] || '\uD83D\uDCCD';
         var m = L.marker([s.lat, s.lng], { icon: createPin(discColor, 7) })
           .bindPopup('<b>' + typeEmoji + ' ' + s.name + '</b><br><span style="font-size:0.75rem">' + s.d + '</span>')
           .addTo(map);
