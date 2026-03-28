@@ -1,4 +1,4 @@
-var CACHE = 'italy-v6';
+var CACHE = 'italy-v7';
 var URLS = ['./', './index.html'];
 
 self.addEventListener('install', function(e) {
