@@ -123,6 +123,12 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
 }
 .activity-card.open .ac-chevron{transform:rotate(180deg)}
 
+/* Progress bar */
+.day-progress{height:3px;background:rgba(61,43,31,0.08);border-radius:2px;margin:0 0 12px;overflow:hidden}
+.day-progress-fill{height:100%;background:var(--terracotta);border-radius:2px;transition:width 0.5s}
+/* Countdown badge */
+.next-up-label .cd{font-weight:400;opacity:0.8}
+
 /* Day header */
 .day-header{margin-bottom:16px}
 .day-header h2{margin-bottom:4px}
@@ -1408,6 +1414,27 @@ function cityClass(city) {
   return 'city-' + city;
 }
 
+function getDayProgress(day) {
+  var now = italyNow(), today = italyDateStr();
+  if (day.date !== today) return day.date < today ? 100 : 0;
+  var acts = day.activities;
+  if (!acts.length) return 0;
+  var start = parseTime(acts[0].time, day.date);
+  var lastAct = acts[acts.length - 1];
+  var end = lastAct.end ? parseTime(lastAct.end, day.date) : parseTime(lastAct.time, day.date);
+  if (now <= start) return 0;
+  if (now >= end) return 100;
+  return Math.round((now - start) / (end - start) * 100);
+}
+
+function formatCountdown(ms) {
+  if (ms <= 0) return null;
+  var mins = Math.floor(ms / 60000);
+  if (mins < 60) return mins + ' \u5206\u9418';
+  var h = Math.floor(mins / 60), m = mins % 60;
+  return h + ' \u5c0f\u6642' + (m > 0 ? ' ' + m + ' \u5206\u9418' : '');
+}
+
 function getRate() {
   const stored = localStorage.getItem('italy_rate');
   return stored ? parseFloat(stored) : DEFAULT_RATE;
@@ -1519,6 +1546,10 @@ function renderToday() {
     html += `<div class="warn-card"><strong>${UI.note}\uff1a</strong> ${day.warning}</div>`;
   }
 
+  // Progress bar
+  var progress = getDayProgress(day);
+  html += '<div class="day-progress"><div class="day-progress-fill" style="width:' + progress + '%"></div></div>';
+
   // Find current/next activity
   let currentIdx = -1, nextIdx = -1;
   for (let i = 0; i < day.activities.length; i++) {
@@ -1537,7 +1568,10 @@ function renderToday() {
 
     let label = '';
     if (isCurrent) label = '<div class="now-label">' + UI.now + '</div>';
-    else if (isNext) label = '<div class="next-up-label">' + UI.upNext + '</div>';
+    else if (isNext) {
+      var cd = formatCountdown(start - now);
+      label = '<div class="next-up-label">' + UI.upNext + (cd ? ' <span class="cd">\u2014 ' + cd + '\u5f8c</span>' : '') + '</div>';
+    }
 
     html += renderActivityCard(a, isCurrent, isPast, label, i, dayIdx);
   });
@@ -1593,6 +1627,12 @@ function renderDayContent() {
 
   if (day.warning) {
     html += `<div class="warn-card"><strong>${UI.note}\uff1a</strong> ${day.warning}</div>`;
+  }
+
+  // Progress bar (today only)
+  if (day.date === italyDateStr()) {
+    var progress = getDayProgress(day);
+    html += '<div class="day-progress"><div class="day-progress-fill" style="width:' + progress + '%"></div></div>';
   }
 
   day.activities.forEach((a, i) => {
@@ -2190,6 +2230,11 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// Offline support
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
 </script>
 </body>
 </html>
