@@ -551,6 +551,20 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
 .discovery-card .dc-type{font-size:0.6rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--olive);margin-left:4px}
 .discovery-card .dc-desc{font-size:0.72rem;color:var(--text-muted);margin-top:2px;line-height:1.4}
 .discovery-card .dc-go{flex-shrink:0}
+
+/* V6: Travel tips */
+.travel-tip-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(var(--ink),0.04);font-size:0.8rem;line-height:1.55;color:rgba(var(--ink),0.7)}
+.travel-tip-item:last-child{border-bottom:none}
+.travel-tip-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+
+/* V6: Budget table */
+.budget-table{width:100%;border-collapse:collapse;font-size:0.7rem;background:var(--card-bg);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.budget-table th{background:var(--terracotta);color:#fff;padding:8px 6px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;font-size:0.6rem}
+.budget-table td{padding:7px 6px;border-bottom:1px solid rgba(var(--ink),0.04);text-align:center;color:rgba(var(--ink),0.7)}
+.budget-table td:first-child{text-align:left;font-weight:600;color:var(--brown);white-space:nowrap}
+.budget-table tr:last-child td{border-bottom:none;font-weight:700;color:var(--terracotta);background:rgba(198,93,62,0.04)}
+.budget-total{font-size:0.78rem;color:rgba(var(--ink),0.6);margin-top:10px;text-align:center;font-style:italic}
+[data-theme="dark"] .budget-table tr:last-child td{background:rgba(224,126,95,0.08)}
 </style>
 </head>
 <body>
@@ -625,6 +639,16 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
 
   <!-- MORE -->
   <div class="panel" id="panelMore">
+    <!-- Pre-trip Checklist -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        出發前 Checklist
+      </h2>
+      <div class="checklist-progress" id="preTripProgress"></div>
+      <div id="preTripChecklist"></div>
+    </div>
+
     <!-- Bookings -->
     <div class="more-section">
       <h2>
@@ -641,6 +665,15 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
         \u6587\u5316\u8cbc\u58eb
       </h2>
       <div id="cultureTips"></div>
+    </div>
+
+    <!-- Travel Tips -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        實用旅行貼士
+      </h2>
+      <div id="travelTips"></div>
     </div>
 
     <!-- Converter -->
@@ -702,6 +735,15 @@ h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
         Nearby Amenities
       </h2>
       <div id="amenitiesList"></div>
+    </div>
+
+    <!-- Daily Budget -->
+    <div class="more-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        每日預算
+      </h2>
+      <div id="budgetTable"></div>
     </div>
 
     <!-- Emergency -->
@@ -1447,6 +1489,23 @@ const PHRASES = {
     ['Ho bisogno di un medico', 'oh bee-ZOH-nyoh dee oon MEH-dee-koh', '\u6211\u8981\u777d\u91ab\u751f'],
     ['Chiamate la polizia', 'kyah-MAH-teh lah poh-lee-TSEE-ah', '\u5831\u8b66'],
     ['Non parlo italiano', 'nohn PAHR-loh ee-tah-lee-AH-noh', '\u6211\u5514\u8b58\u610f\u5927\u5229\u6587']
+  ],
+  'Transport': [
+    ["Dov'\u00e8 la metro?", 'doh-VEH lah MEH-troh', '\u5730\u9435\u5592\u908a\uff1f'],
+    ['Un biglietto per favore', 'oon bee-LYEH-toh pehr fah-VOH-reh', '\u4e00\u5f35\u7968'],
+    ['Quale binario?', 'KWAH-leh bee-NAH-ree-oh', '\u908a\u500b\u6708\u53f0\uff1f'],
+    ['Andata e ritorno', 'ahn-DAH-tah eh ree-TOHR-noh', '\u4f86\u56de\u7968']
+  ],
+  'Numbers': [
+    ['Uno / Due / Tre', 'OO-noh / DOO-eh / TREH', '1 / 2 / 3'],
+    ['Quattro / Cinque / Sei', 'KWAH-troh / CHEEN-kweh / SAY', '4 / 5 / 6'],
+    ['Sette / Otto / Nove / Dieci', 'SEH-teh / OH-toh / NOH-veh / dee-EH-chee', '7 / 8 / 9 / 10']
+  ],
+  'Food & Allergy': [
+    ['Vino della casa', 'VEE-noh DEH-lah KAH-sah', '\u9910\u5ef3\u7d05\u9152'],
+    ['Sono allergico a...', 'SOH-noh ah-LEHR-jee-koh ah', '\u6211\u5c0d...\u904e\u654f'],
+    ['\u00c8 senza glutine?', 'EH SEHN-tsah GLOO-tee-neh', '\u5462\u500b\u7121\u9ea9\u8cea\uff1f'],
+    ['Il piatto del giorno', 'eel pee-AH-toh del JOHR-noh', '\u4eca\u65e5\u63a8\u4ecb']
   ]
 };
 
@@ -1454,13 +1513,38 @@ const PACKING = {
   '\u8b49\u4ef6': ['\u8b77\u7167', '\u65c5\u904a\u4fdd\u96aa', '\u6a5f\u7968', '\u9152\u5e97\u78ba\u8a8d\u66f8', '\u706b\u8eca\u7968', '\u666f\u9ede\u9580\u7968\uff08\u5927\u6559\u5802\u3001\u6700\u5f8c\u7684\u665a\u9910\u3001\u6bd4\u85a9\u3001\u9b25\u7378\u5834\u3001\u68b5\u8482\u5ca1\uff09'],
   '\u96fb\u5b50\u7522\u54c1': ['\u624b\u6a5f\u5145\u96fb\u5668', '\u5145\u96fb\u5bf6', '\u6b50\u6d32\u8f49\u63db\u63d2\uff08Type C/L\uff09', '\u76f8\u6a5f', '\u8033\u6a5f'],
   '\u8863\u7269': ['\u8584\u5916\u5957 / \u98a8\u8938', '\u570d\u5dfe / \u62ab\u80a9\uff08\u5165\u6559\u5802\u7528\uff09', '\u884c\u8def\u978b', '\u591a\u5c64\u7a7f\u642d', '\u647a\u758a\u5098'],
-  '\u5fc5\u9700\u54c1': ['\u53ef\u91cd\u7528\u6c34\u6a3d', '\u592a\u967d\u773c\u93e1', '\u659c\u63f9\u65e5\u7528\u888b', '\u85e5\u7269', '\u73fe\u91d1\uff08EUR\uff09']
+  '\u5fc5\u9700\u54c1': ['\u53ef\u91cd\u7528\u6c34\u6a3d', '\u592a\u967d\u773c\u93e1', '\u659c\u63f9\u65e5\u7528\u888b', '\u85e5\u7269', '\u73fe\u91d1\uff08EUR\uff09', 'eSIM / Portable WiFi', '\u5bc6\u5be6\u888b\uff08\u653e\u98df\u5269\u5600/\u6fd5\u5600\uff09']
+};
+
+// ============================================================
+// V6: PRE-TRIP CHECKLIST
+// ============================================================
+const PRE_TRIP = {
+  '\u4e0b\u8f09 App': [
+    'Trenitalia\uff08\u706b\u8eca\u73ed\u6b21 + \u8cb7\u7968\uff09',
+    'Italo\uff08\u9ad8\u901f\u706b\u8eca\u66ff\u4ee3\u9078\u64c7\uff09',
+    'Google Maps \u2014 \u96e2\u7dda\u5730\u5716\uff08Milan, Florence, Rome, Como\uff09',
+    'Free Now / IT Taxi\uff08\u53eb\u7684\u58eb\uff09'
+  ],
+  '\u9810\u7d04 & \u8a02\u4f4d': [
+    'Trattoria Monti (Rome) \u2014 \u8a02\u4f4d',
+    'Antica Trattoria della Pesa (Milan) \u2014 \u8a02\u4f4d',
+    '\u63d0\u524d\u8cb7 Milan\u2192Florence Frecciarossa \u706b\u8eca\u7968\uff08\u63d0\u524d \u20ac20 vs \u5373\u65e5 \u20ac50+\uff09'
+  ],
+  '\u51fa\u767c\u6e96\u5099': [
+    '\u901a\u77e5\u9280\u884c\u610f\u5927\u5229\u65c5\u884c\u65e5\u671f',
+    'Screenshot / \u5132\u5b58\u9152\u5e97\u78ba\u8a8d\u66f8 + \u706b\u8eca\u7968\uff08\u96e2\u7dda\u7528\uff09',
+    '\u6aa2\u67e5\u65c5\u904a\u4fdd\u96aa\u89ba\u84cb\u6b50\u76df\u91ab\u7642',
+    '\u63db\u6b50\u5143\u73fe\u91d1\uff08\u5c0f\u9762\u984d \u2014 tips / coperto\uff09',
+    '\u8cb7 eSIM / Portable WiFi'
+  ]
 };
 
 const EMERGENCY = [
   { label: '\u7dca\u6025\u670d\u52d9', items: [
     { name: '\u7dca\u6025\u6c42\u52a9\uff08\u5168\u90e8\uff09', number: '112' },
-    { name: '\u6551\u8b77\u8eca', number: '118' }
+    { name: '\u6551\u8b77\u8eca', number: '118' },
+    { name: '\u82f1\u8a9e\u91ab\u7642\u5354\u52a9 (Rome American Hospital)', number: '+39 06-22551' }
   ]},
   { label: '\u9818\u4e8b\u9928', items: [
     { name: '\u4e2d\u570b\u99d0\u7f85\u99ac\u5927\u4f7f\u9928', number: '+39 06-44250240' },
@@ -1474,6 +1558,9 @@ const EMERGENCY = [
   ]},
   { label: '\u6642\u5340', items: [
     { note: '\u610f\u5927\u5229 = UTC+2 (CET)\u3002\u9999\u6e2f\u5feb 6 \u5c0f\u6642\u3002' }
+  ]},
+  { label: '\u65c5\u904a\u4fdd\u96aa', items: [
+    { note: '\u4fdd\u96aa\u516c\u53f8\uff1a_____________<br>\u4fdd\u55ae\u865f\u78bc\uff1a_____________<br>24hr \u7d22\u8ce0\u71b1\u7dda\uff1a_____________<br>\uff08\u51fa\u767c\u524d\u586b\u5beb\uff09' }
   ]}
 ];
 
@@ -1508,6 +1595,21 @@ const CULTURE_TIPS = {
   ]}
 };
 
+// ============================================================
+// V6: TRAVEL TIPS
+// ============================================================
+const TRAVEL_TIPS = [
+  {icon:'\ud83d\ude95', tip:'\u610f\u5927\u5229\u5187 UberX \u2014 \u53ea\u6709 Uber Black\uff08\u8cb4\uff09\u3002\u7528 Free Now \u6216 IT Taxi app \u53eb\u7684\u58eb\u3002'},
+  {icon:'\ud83d\udcb3', tip:'Milan + Rome \u652f\u63f4 contactless \u5165\u9598\uff08Apple Pay \u76f4\u63a5\u62cd\uff09\u3002Florence \u8981\u8cb7\u7d19\u7968\u3002'},
+  {icon:'\ud83c\udfab', tip:'Regional train \u7d19\u7968\u4e00\u5b9a\u8981 stamp\uff01\u4e0a\u8eca\u524d\u55ba\u6708\u53f0\u6253\u7968\u6a5f\u84cb\u5370\u3002\u7f70\u6b3e \u20ac50+\u3002'},
+  {icon:'\ud83d\udca7', tip:'Tap water \u5168\u610f\u5927\u5229\u5b89\u5168\u98f2\u3002\u8857\u908a nasoni \u5674\u6cc9\u90fd\u4fc2\u98df\u6c34\u3002\u5e36\u53ef\u91cd\u7528\u6c34\u6a3d\u3002'},
+  {icon:'\ud83d\udcb0', tip:'Tipping \u5514\u4fc2\u5fc5\u9808\u3002Coperto\uff08\u20ac1-3 \u5ea7\u4f4d\u8cbb\uff09\u5df2\u5305\u542b\u3002\u6eff\u610f\u53ef round up \u5230\u6700\u8fd1\u6b50\u5143\u3002'},
+  {icon:'\ud83c\udf66', tip:'Gelato \u8fa8\u771f\u5047\uff1a\u984f\u8272\u592a\u9bae\u8271 = \u4eba\u5de5\u8272\u7d20\u3002\u91d1\u5c6c\u84cb tins + \u5514\u8d77\u5c71 = artisan\u3002'},
+  {icon:'\ud83c\udf7d\ufe0f', tip:'\u6709\u4eba\u62c9\u5ba2\u5605\u9910\u5ef3 = 100% \u5514\u597d\u5165\u3002\u96e2\u958b\u666f\u9ede 2-3 \u689d\u8857\u5148\u98df\u3002'},
+  {icon:'\u23f0', tip:'Siesta\uff1a\u597d\u591a\u5c0f\u5e97/\u9910\u5ef3 14:00-16:00 \u4f11\u606f\u3002Plan accordingly\u3002'},
+  {icon:'\ud83d\udc57', tip:'\u6559\u5802 dress code\uff1a\u906e\u819d\u84cb + \u818a\u982d\u3002\u96a8\u8eab\u5e36\u570d\u5dfe/\u62ab\u80a9\u3002'}
+];
+
 const AMENITIES = {
   milan:{
     atm:'<strong>ATM:</strong> Intesa Sanpaolo, Via Torino 25 (3 min from hotel)',
@@ -1524,6 +1626,21 @@ const AMENITIES = {
     pharmacy:'<strong>Pharmacy:</strong> Farmacia Piram, Via Nazionale 228 (8 min, open 24/7)',
     toilet:'<strong>WC:</strong> Termini station (\u20ac1). Free nasoni for water refills everywhere.'
   }
+};
+
+// ============================================================
+// V6: DAILY BUDGET
+// ============================================================
+const BUDGET = {
+  headers: ['', 'Milan', 'Como', 'Florence', 'Pisa', 'Rome'],
+  rows: [
+    ['\u4f4f\u5bbf', 'Included', '\u2014', 'Included', '\u2014', 'Included'],
+    ['\u9910\u98f2 (2\u4eba)', '\u20ac60-100', '\u20ac50-80', '\u20ac50-90', '\u20ac20-30', '\u20ac50-90'],
+    ['\u4ea4\u901a', '\u20ac4-10', '\u20ac30-50', '\u20ac4-8', '\u20ac14-18', '\u20ac6-10'],
+    ['\u666f\u9ede', '\u20ac0-30', 'Free', '\u20ac20-40', '\u20ac18-24', '\u20ac20-40'],
+    ['\u65e5\u9810\u7b97', '\u20ac70-140', '\u20ac80-130', '\u20ac80-140', '\u20ac50-70', '\u20ac80-140']
+  ],
+  total: '\u5168\u7a0b\u4f30\u8a08\uff1a~\u20ac600-900\uff082\u4eba\uff0c\u5514\u5305\u6a5f\u7968/\u9152\u5e97\uff09'
 };
 
 // ============================================================
@@ -2662,6 +2779,45 @@ function toggleCheck(key) {
 }
 
 // ============================================================
+// V6: PRE-TRIP CHECKLIST
+// ============================================================
+function getPreTripChecked() {
+  try { return JSON.parse(localStorage.getItem('italy_pretrip') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function renderPreTripChecklist() {
+  var container = document.getElementById('preTripChecklist');
+  if (!container) return;
+  var checked = getPreTripChecked();
+  var total = 0, done = 0;
+  var html = '';
+  Object.entries(PRE_TRIP).forEach(function(entry) {
+    var group = entry[0], items = entry[1];
+    html += '<div class="checklist-group"><div class="checklist-group-title">' + group + '</div>';
+    items.forEach(function(item) {
+      var key = 'pt:' + group + ':' + item;
+      var isDone = !!checked[key];
+      total++;
+      if (isDone) done++;
+      html += '<div class="check-item' + (isDone ? ' done' : '') + '" onclick="togglePreTrip(\'' + key.replace(/'/g, "\\'") + '\')">' +
+        '<div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<span class="check-label">' + item + '</span></div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+  document.getElementById('preTripProgress').textContent = done + ' / ' + total + ' done';
+}
+
+function togglePreTrip(key) {
+  var checked = getPreTripChecked();
+  checked[key] = !checked[key];
+  localStorage.setItem('italy_pretrip', JSON.stringify(checked));
+  renderPreTripChecklist();
+}
+
+// ============================================================
 // EMERGENCY
 // ============================================================
 function renderEmergency() {
@@ -2711,6 +2867,19 @@ function renderCultureTips() {
   container.innerHTML = html;
 }
 
+// ============================================================
+// V6: TRAVEL TIPS
+// ============================================================
+function renderTravelTips() {
+  var container = document.getElementById('travelTips');
+  if (!container) return;
+  var html = '';
+  TRAVEL_TIPS.forEach(function(t) {
+    html += '<div class="travel-tip-item"><span class="travel-tip-icon">' + t.icon + '</span><span>' + t.tip + '</span></div>';
+  });
+  container.innerHTML = html;
+}
+
 function renderAmenities() {
   const container = document.getElementById('amenitiesList');
   if (!container) return;
@@ -2719,6 +2888,25 @@ function renderAmenities() {
     const cityName = city.charAt(0).toUpperCase() + city.slice(1);
     html += '<div class="emergency-card"><div class="em-label">' + cityName + '</div><div class="amenity-list">' + data.atm + '<br>' + data.pharmacy + '<br>' + data.toilet + '</div></div>';
   });
+  container.innerHTML = html;
+}
+
+// ============================================================
+// V6: DAILY BUDGET
+// ============================================================
+function renderBudget() {
+  var container = document.getElementById('budgetTable');
+  if (!container) return;
+  var html = '<div style="overflow-x:auto"><table class="budget-table"><thead><tr>';
+  BUDGET.headers.forEach(function(h) { html += '<th>' + h + '</th>'; });
+  html += '</tr></thead><tbody>';
+  BUDGET.rows.forEach(function(row) {
+    html += '<tr>';
+    row.forEach(function(cell) { html += '<td>' + cell + '</td>'; });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  html += '<div class="budget-total">' + BUDGET.total + '</div>';
   container.innerHTML = html;
 }
 
@@ -2747,9 +2935,12 @@ function init() {
 
   renderBookings();
   renderCultureTips();
+  renderTravelTips();
   renderAmenities();
+  renderBudget();
   renderPhrasebook();
   renderChecklist();
+  renderPreTripChecklist();
   renderEmergency();
   renderExpenses();
 
